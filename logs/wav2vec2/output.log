@@ -1,114 +1,0 @@
---- Logging error ---
-Traceback (most recent call last):
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 1083, in emit
-    msg = self.format(record)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 927, in format
-    return fmt.format(record)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 663, in format
-    record.message = record.getMessage()
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 367, in getMessage
-    msg = msg % self.args
-TypeError: not all arguments converted during string formatting
-Call stack:
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 43, in <module>
-    logging.info("Device: ",device)
-Message: 'Device: '
-Arguments: ('cuda',)
-2024-01-26 21:36:53,874 - INFO - models, checkpoints and evaluations will be saved in folder at: '/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240126_213653'.
-2024-01-26 21:36:53,875 - DEBUG - open file: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/saved_dataset.hf/dataset_dict.json
-2024-01-26 21:36:57,404 - INFO - Datasets loaded succesfully!
-2024-01-26 21:36:57,405 - INFO - Loaded the following dataset: 
-
---- Logging error ---
-Traceback (most recent call last):
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 1083, in emit
-    msg = self.format(record)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 927, in format
-    return fmt.format(record)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 663, in format
-    record.message = record.getMessage()
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 367, in getMessage
-    msg = msg % self.args
-TypeError: not all arguments converted during string formatting
-Call stack:
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 102, in <module>
-    logging.info("Train: ",train_dataset)
-Message: 'Train: '
-Arguments: (Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 571151
-}),)
---- Logging error ---
-Traceback (most recent call last):
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 1083, in emit
-    msg = self.format(record)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 927, in format
-    return fmt.format(record)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 663, in format
-    record.message = record.getMessage()
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/logging/__init__.py", line 367, in getMessage
-    msg = msg % self.args
-TypeError: not all arguments converted during string formatting
-Call stack:
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 103, in <module>
-    logging.info("Validation: ",eval_dataset)
-Message: 'Validation: '
-Arguments: (Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 114230
-}),)
-2024-01-26 21:36:58,014 - INFO - A classification problem with 11 classes: ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
-2024-01-26 21:36:58,061 - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
-2024-01-26 21:36:58,547 - DEBUG - https://huggingface.co:443 "HEAD /facebook/wav2vec2-xls-r-2b/resolve/main/preprocessor_config.json HTTP/1.1" 200 0
-2024-01-26 21:36:58,552 - DEBUG - Attempting to acquire lock 140505278241808 on /nlsasfs/home/nltm-st/sujitk/yash/cache/models--facebook--wav2vec2-xls-r-2b/blobs/36ebe8b7c1cc967b3059f0494ae8a1069dd67655.lock
-2024-01-26 21:36:58,553 - DEBUG - Lock 140505278241808 acquired on /nlsasfs/home/nltm-st/sujitk/yash/cache/models--facebook--wav2vec2-xls-r-2b/blobs/36ebe8b7c1cc967b3059f0494ae8a1069dd67655.lock
-2024-01-26 21:36:58,831 - DEBUG - https://huggingface.co:443 "GET /facebook/wav2vec2-xls-r-2b/resolve/main/preprocessor_config.json HTTP/1.1" 200 212
-Number of GPUs: 1
-Current GPU: 0
-GPU Name: A100-SXM4-40GB
-GPU Compute Capability: (8, 0)
-Downloading (…)rocessor_config.json:   0%|          | 0.00/212 [00:00<?, ?B/s]Downloading (…)rocessor_config.json: 100%|██████████| 212/212 [00:00<00:00, 58.6kB/s]
-2024-01-26 21:36:58,863 - DEBUG - Attempting to release lock 140505278241808 on /nlsasfs/home/nltm-st/sujitk/yash/cache/models--facebook--wav2vec2-xls-r-2b/blobs/36ebe8b7c1cc967b3059f0494ae8a1069dd67655.lock
-2024-01-26 21:36:58,863 - DEBUG - Lock 140505278241808 released on /nlsasfs/home/nltm-st/sujitk/yash/cache/models--facebook--wav2vec2-xls-r-2b/blobs/36ebe8b7c1cc967b3059f0494ae8a1069dd67655.lock
-Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]Map (num_proc=300):   0%|          | 0/571151 [00:00<?, ? examples/s]                                                                     multiprocess.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/multiprocess/pool.py", line 125, in worker
-    result = (True, func(*args, **kwds))
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/utils/py_utils.py", line 1353, in _write_generator_to_queue
-    for i, result in enumerate(func(**kwargs)):
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/arrow_dataset.py", line 3380, in _map_single
-    batch = apply_function_on_filtered_inputs(
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/arrow_dataset.py", line 3261, in apply_function_on_filtered_inputs
-    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 146, in preprocess_function
-    speech_list = [speech_file_to_array_fn(path) for path in examples[input_column]]
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 146, in <listcomp>
-    speech_list = [speech_file_to_array_fn(path) for path in examples[input_column]]
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 134, in speech_file_to_array_fn
-    speech_array, sampling_rate = torchaudio.load(path)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torchaudio/backend/sox_io_backend.py", line 256, in load
-    return _fallback_load(filepath, frame_offset, num_frames, normalize, channels_first, format)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torchaudio/backend/sox_io_backend.py", line 30, in _fail_load
-    raise RuntimeError("Failed to load audio from {}".format(filepath))
-RuntimeError: Failed to load audio from /nlsasfs/home/nltm-st/sujitk/yash/datasets/resampled_data_SilencedAndOneSecondData/kan/Doordarshan_Chandana_27-07-2021_10-38/115_1619file-iduqvQ7o39Wn0_10.wav
-"""
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 157, in <module>
-    train_dataset = train_dataset.map(
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/arrow_dataset.py", line 563, in wrapper
-    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/arrow_dataset.py", line 528, in wrapper
-    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/arrow_dataset.py", line 3097, in map
-    for rank, done, content in iflatmap_unordered(
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/utils/py_utils.py", line 1377, in iflatmap_unordered
-    [async_result.get() for async_result in async_results]
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/datasets/utils/py_utils.py", line 1377, in <listcomp>
-    [async_result.get() for async_result in async_results]
-  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/multiprocess/pool.py", line 771, in get
-    raise self._value
-RuntimeError: Failed to load audio from /nlsasfs/home/nltm-st/sujitk/yash/datasets/resampled_data_SilencedAndOneSecondData/kan/Doordarshan_Chandana_27-07-2021_10-38/115_1619file-iduqvQ7o39Wn0_10.wav

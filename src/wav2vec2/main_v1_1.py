@@ -33,9 +33,8 @@ import logging
 from dotenv import load_dotenv
 
 # Configure the logger
-logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 # Create a logger
-logger = logging.getLogger(__name__)
 
 # disable_caching()
 
