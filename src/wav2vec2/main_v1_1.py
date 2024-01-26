@@ -1,6 +1,8 @@
 ## author @Yash Sharma, B20241
 ## imporying all the neccesary modules
 ## loading important libraries
+import sys
+sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common")
 from tqdm import tqdm
 import torchaudio
 import os
@@ -10,13 +12,11 @@ import torch
 from datetime import datetime 
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Union
-import torch
 from transformers import AutoFeatureExtractor, TrainingArguments, AutoConfig, Wav2Vec2Processor, Wav2Vec2FeatureExtractor, EvalPrediction, Trainer
 # is_apex_available
 import torch
-from packaging import version
-from torch import nn
 from huggingface_hub import login
+import numpy as np
 import wandb
 from Model import *
 torch.cuda.empty_cache()
@@ -28,9 +28,12 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, get_
 import evaluate
 import time
 from sklearn.metrics import classification_report, accuracy_score
-import logger
+from datetime import datetime
+import logging 
+from dotenv import load_dotenv
+
 # Configure the logger
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 # Create a logger
 logger = logging.getLogger(__name__)
 
@@ -39,18 +42,51 @@ logger = logging.getLogger(__name__)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 logging.info("Device: ",device)
 
+def print_gpu_info():
+    if torch.cuda.is_available():
+        device_count = torch.cuda.device_count()
+        current_device = torch.cuda.current_device()
+        device_name = torch.cuda.get_device_name(current_device)
+        device_capability = torch.cuda.get_device_capability(current_device)
+        gpu_info = f"Number of GPUs: {device_count}\nCurrent GPU: {current_device}\nGPU Name: {device_name}\nGPU Compute Capability: {device_capability}"
+        print(gpu_info)
+    else:
+        print("No GPU available.")
+print_gpu_info()
+
 
 ##################################################################################################
 ##################################################################################################
 
 ## Important Intializations
+base_directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/"
 repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
+repo_url = "facebook/wav2vec2-xls-r-2b"
 model_name_or_path = repo_url
-chkpt_path = "/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/Saved_Model_1b/chkpt"
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+wandb_run_name = f"Wave2vec2-2B_Training_{timestamp}"
+save_model_path = f"saved-model-{timestamp}"
+save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
+chkpt_path = f"/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/{save_model_path}/chkpt"
+pth_path = f"/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/{save_model_path}/pthFiles"
+eval_path = f"/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/{save_model_path}/evaluations"
+# Create the folder if it doesn't exist
+if not os.path.exists(save_model_path):
+    os.makedirs(save_model_path)
+    os.makedirs(chkpt_path)
+    os.makedirs(pth_path)
+    os.makedirs(eval_path)
+    logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash/cache"
-final_path= os.path.join("/nlsasfs/home/nltm-st/sujitk/yash/datasets","saved_dataset.hf")
-save_path = cache_dir
+final_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/saved_dataset.hf"
 
+# We need to specify the input and output column
+input_column = "path"
+output_column = "language"
+label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
+model_out_dir = os.path.join(cache_dir, "wav2vec2-large-xlsr-indian-language-classification-featureExtractor")
+
+num_epochs = 300
 ##################################################################################################
 ##################################################################################################
 
@@ -60,11 +96,11 @@ logging.info("Datasets loaded succesfully!")
 
 # dataset = concatenate_datasets([dataset["train"],dataset["test"],dataset["validation"]])
 
+logging.info("Loaded the following dataset: \n",dataset)
 train_dataset = dataset["train"]
 eval_dataset = dataset["validation"]
-print("Before: ")
-print("Train: ",train_dataset)
-print("Validation: ",eval_dataset)
+logging.info("Train: ",train_dataset)
+logging.info("Validation: ",eval_dataset)
 
 
 # train test split
@@ -77,32 +113,28 @@ print("Validation: ",eval_dataset)
 # train_dataset = dataset["train"]
 # eval_dataset = dataset["validation"]
 # test_dataset = dataset["test"]
-# print("After: ")
-print("Train: ",train_dataset)
-print("Validation: ",eval_dataset)
-# print("Test: ",test_dataset)
+# logging.info("After: ")
+# logging.info("Train: ",train_dataset)
+# logging.info("Validation: ",eval_dataset)
+# logging.info("Test: ",test_dataset)
 ## defining input and output columns
-# We need to specify the input and output column
-input_column = "path"
-output_column = "language"
 
 # we need to distinguish the unique labels in our SER dataset
 label_list = train_dataset.unique(output_column)
 label_list.sort()  # Let's sort it for determinism
 num_labels = len(label_list)
-print(f"A classification problem with {num_labels} classes: {label_list}")
+logging.info(f"A classification problem with {num_labels} classes: {label_list}")
 
 # Preprocess
 # The next step is to load a Wav2Vec2 feature extractor to process the audio signal:
 feature_extractor = AutoFeatureExtractor.from_pretrained(repo_url , cache_dir=cache_dir)
-
 target_sampling_rate = feature_extractor.sampling_rate
+
 def speech_file_to_array_fn(path):
     speech_array, sampling_rate = torchaudio.load(path)
     resampler = torchaudio.transforms.Resample(sampling_rate, target_sampling_rate)
     speech = resampler(speech_array).squeeze().numpy()
     return speech
-
 
 def label_to_id(label, label_list):
     if len(label_list) > 0:
@@ -139,9 +171,7 @@ eval_dataset = eval_dataset.map(
     
 label2id={label: i for i, label in enumerate(label_list)}
 id2label={i: label for i, label in enumerate(label_list)}
-# label_names = [id2label[0][i] for i in range(num_labels)]
-label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
-print("label_names",label_names)
+logging.info("label_names",label_names)
 
 ### loading the processor and tokenizer contained inside it
 pooling_mode = "mean"
@@ -156,19 +186,17 @@ config = AutoConfig.from_pretrained(
 )
 setattr(config, 'pooling_mode', pooling_mode)
 
-
+## Loading the processor for wav2vec2
 processor = Wav2Vec2Processor.from_pretrained(repo_url, cache_dir=cache_dir)
 target_sampling_rate = processor.feature_extractor.sampling_rate
-print(f"The target sampling rate: {target_sampling_rate}")
-
+logging.info(f"The target sampling rate: {target_sampling_rate}")
 
 data_collator = DataCollatorCTCWithPadding(processor=processor, padding=True)
 is_regression = False
-
     
-## loading the main models
+## loading the main model
 model = Wav2Vec2ForSpeechClassification.from_pretrained(
-    "facebook/wav2vec2-xls-r-1b",
+    repo_url,
 #     num_labels=num_labels,
 #     label2id={label: i for i, label in enumerate(label_list)},
 #     id2label={i: label for i, label in enumerate(label_list)},
@@ -180,9 +208,7 @@ model.freeze_feature_extractor()
 
 batch_size = 256
 eval_steps = int(len(train_dataset)/batch_size)
-print("Eval steps: ",eval_steps)
-model_out_dir = os.path.join(save_path, "wav2vec2-large-xlsr-indian-language-classification-featureExtractor")
-# checkpt = os.path.join(save_path, "chkpt-wav2vec2-large-xlsr-indian-language-classification-featureExtractor")
+logging.info("Eval steps: ",eval_steps)
 proxy_url = "http://proxy-10g.10g.siddhi.param:9090"
 
 
@@ -213,8 +239,8 @@ training_args = TrainingArguments(
 
 
 ##########################################
-print("$$"*100)
-print("The Training is about to start....")
+logging.info("$$"*100)
+logging.info("The Training is about to start....")
 
 #### Using accelerate to train over multiple gpus
 ### making data loaders
@@ -223,9 +249,21 @@ dataloader = DataLoader(train_dataset, batch_size=training_args.per_device_train
 accelerator = Accelerator(mixed_precision= 'fp16')
 
 
-## logging into the huggingface to push to the hub
-secret_value_0 = "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"
-login(secret_value_0)
+## logging into the huggingface to push to the hub and wandb
+## loading env variables
+load_dotenv(base_directory)
+secret_value_0 = os.getenv("hugging_face")
+secret_value_1 = os.getenv("wandb")
+
+if secret_value_0 is None or secret_value_1 is None:
+    logger.error(f"Please set Environment Variables properly. Exiting.")
+    sys.exit(1)
+else:
+    login(secret_value_0)
+    logger.info("Logged into hugging face successfully!")
+    # Initialize Wandb with your API keywandb
+    wandb.login(key=secret_value_1)
+    wandb.init(name = wandb_run_name, project="huggingface")
 
  # Instantiate dataloaders.
 train_dataloader = DataLoader(
@@ -240,10 +278,9 @@ eval_dataloader = DataLoader(
 )
 
 # If the batch size is too big we use gradient accumulation
-num_epochs = 300
 gradient_accumulation_steps = 1
 model = model.to(accelerator.device)
-print("Device of acclt: ", accelerator.device)
+logging.info("Device of accleration: ", accelerator.device)
 # Instantiate optimizer
 optimizer = AdamW(params=model.parameters(), lr=3e-5)
 # Instantiate scheduler
@@ -268,17 +305,13 @@ try:
     accelerator.register_for_checkpointing(lr_scheduler)
     # Save the starting state
     accelerator.save_state(chkpt_path)
-    print("Started checkpointing")
+    logging.info("Started checkpointing")
 except Exception as err:
-    print("Can't checkpoint... error: ",err)
+    logging.info("Can't checkpoint... error: ",err)
 
-
-# ### connecting to wandb
-# Initialize Wandb with your API key
-wandb.login(key="690a936311e63ff7c923d0a2992105f537cd7c59")
-wandb.init(name = "1B_Resampled_data_training_50_8Gpu", project="huggingface")
 
 num_training_steps = num_epochs * len(train_dataloader)
+i=0
 progress_bar = tqdm(range(num_training_steps))
 # Now we train the model
 for epoch in range(num_epochs):
@@ -304,15 +337,15 @@ for epoch in range(num_epochs):
     ### chekpointing the model
     try:
         # Save the starting state
-        print("Saving Mod3l..")
+        logging.info("Saving Mod3l..")
         accelerator.save_state(chkpt_path)
         # Save the model after every epoch
-        model.save_pretrained(f"/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/Saved_Model_1b/pthFiles/model_epoch_{epoch%10}")
+        model.save_pretrained(os.path.join(pth_path,f"model_epoch_{epoch%10}"))
     except Exception as err:
-        print("Some exception occured: ",err)
+        logging.error("Some exception occured while saving the model: ",err)
 
     
-    print("Evaluating Wait...")
+    logging.info("Evaluating Wait...")
     x = np.array([])
     y = np.array([])
     model.eval()
@@ -329,27 +362,27 @@ for epoch in range(num_epochs):
             x = np.concatenate((x,predictions.cpu().numpy()),axis=0)
             y = np.concatenate((y,references.cpu().numpy()),axis=0)
         except Exception as err:
-            print("Error Converting to np and processing the x and y: ",err)
-        # if i==0:
-        #     print("Shape of each eval prediction: " ,predictions.shape)
-        #     i =1
+            logging.error("Error Converting to np and processing the x and y: ",err)
+        if i==0:
+            logging.info("Shape of each eval prediction: " ,predictions.shape)
+            i =1
     final_val_loss = sum(val_loss)/len(val_loss)
 
 
     try:
         result = classification_report(x, y, target_names=label_names)
-        # print(result)
+        # logging.info(result)
         # Additional information to include with the report
-        additional_info = f"/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/Saved_Model_1b/evaluations/eval_epoch{epoch}.txt"
+        additional_info = os.path.join(eval_path,f"eval_epoch{epoch}.txt")
         # Save the report with additional information to a text file
         with open(additional_info, 'w') as f:
             f.write(result)
     except:
-        print("Error in evaluate metric compute: ",Exception)
-    # print(x.shape,"--",x[:4])
-    # print(y.shape,"--", y[:4])
+        logging.info("Error in evaluate metric compute: ",Exception)
+    logging.info("Shape of predictions: ",x.shape,"--",x[:4])
+    logging.info("Shape of targets: ",y.shape,"--", y[:4])
     accuracy = accuracy_score(x,y)
-    # Use accelerator.print to print only on the main process.
+    # Use accelerator.logging.info to logging.info only on the main process.
     try:
         # Log metrics to WandB for this epoch
         wandb.log({
@@ -358,13 +391,13 @@ for epoch in range(num_epochs):
             "val_loss": final_val_loss,
         })
     except Exception as err:
-        print("Not able to log to wandb, ", err)
+        logging.error("Not able to log to wandb, ", err)
 
-    accelerator.print(f"Epoch {epoch+1}/{num_epochs}: train_loss: {final_train_loss} val_loss: {final_val_loss} Val_Accuracy:{accuracy}")
+    accelerator.logging.info(f"Epoch {epoch+1}/{num_epochs}: train_loss: {final_train_loss} val_loss: {final_val_loss} Val_Accuracy:{accuracy}")
 
-print("\nTraining Done!")
-print("$$"*100)
-print("Work done mate")
+logging.info("\nTraining Done!")
+logging.info("$$"*100)
+logging.info("Work done mate")
 
 # # trainer = Trainer(
 # #     model=model,
@@ -419,21 +452,21 @@ print("Work done mate")
 #     os.environ["ftp_proxy"] = proxy_url
 #     os.environ["FTP_PROXY"] = proxy_url
 #     # Check if the proxy variables are set
-#     print("HTTP_PROXY:", os.environ.get("HTTP_PROXY"))
-#     print("HTTPS_PROXY:", os.environ.get("HTTPS_PROXY"))
-#     print("FTP_PROXY:", os.environ.get("FTP_PROXY"))
+#     logging.info("HTTP_PROXY:", os.environ.get("HTTP_PROXY"))
+#     logging.info("HTTPS_PROXY:", os.environ.get("HTTPS_PROXY"))
+#     logging.info("FTP_PROXY:", os.environ.get("FTP_PROXY"))
 # except Exception as err:
-#     print("Error setting up the proxies: ", err)
+#     logging.info("Error setting up the proxies: ", err)
 
 # ####
 
 
 # pathx = f"final_model_saved"
 # trainer.save_model(pathx)
-# print("Model saved at : ",pathx," cheers!!")
+# logging.info("Model saved at : ",pathx," cheers!!")
 
-# print(f"Pushing to hub, you can find at {repo_url}")
+# logging.info(f"Pushing to hub, you can find at {repo_url}")
 # trainer.push_to_hub(repo_url)
 # processor.push_to_hub(repo_url)
 
-# print("Work done mate")
+# logging.info("Work done mate")
