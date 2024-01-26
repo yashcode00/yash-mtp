@@ -1,0 +1,50 @@
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore the virtual environment folder
+venv/
+env/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore data and model files (modify as needed)
+/datasets/
+/models/
+
+# Ignore large files
+*.zip
+*.tar.gz
+*.rar
+
+# Ignore user-specific files
+*.iml
+*.idea/
+.vscode/
+
+# Ignore cache directories
+/cache/
+
+# Ignore temporary files
+*.tmp
+
+# Ignore files generated during build or runtime
+/build/
+/dist/
+/*.egg-info/
+*.egg
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local configuration files
+.env
+*.config
+
+# ignore datasets
+/dataset/
