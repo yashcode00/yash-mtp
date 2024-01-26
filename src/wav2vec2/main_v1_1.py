@@ -28,26 +28,35 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, get_
 import evaluate
 import time
 from sklearn.metrics import classification_report, accuracy_score
+import logger
+# Configure the logger
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+# Create a logger
+logger = logging.getLogger(__name__)
 
 # disable_caching()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+logging.info("Device: ",device)
 
-## fetch trained model from huggingface hub
+
+##################################################################################################
+##################################################################################################
+
+## Important Intializations
 repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 model_name_or_path = repo_url
-print("Device is: ",device)
 chkpt_path = "/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/Saved_Model_1b/chkpt"
-
 cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash/cache"
 final_path= os.path.join("/nlsasfs/home/nltm-st/sujitk/yash/datasets","saved_dataset.hf")
 save_path = cache_dir
-# i = 0
-# final_path = f"/nlsasfs/home/nltm-st/sujitk/yash/datasets/disjointChunks/chunk_{i}"
+
+##################################################################################################
+##################################################################################################
 
 ## loading from saved dataset
 dataset = load_from_disk(final_path)
-print("DAtasets loaded succesfully!!")
+logging.info("Datasets loaded succesfully!")
 
 # dataset = concatenate_datasets([dataset["train"],dataset["test"],dataset["validation"]])
 
