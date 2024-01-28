@@ -4,6 +4,8 @@
 #####################################################
 
 #### importing necessary modules and libraries
+import sys
+sys.path.append("/home/sujeetk.scee.iitmandi/yash-mtp/src/common")
 from Model import *
 from SilenceRemover import *
 import numpy as np
