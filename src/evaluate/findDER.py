@@ -74,7 +74,7 @@ import os
 import sys
 
 from tabulate import tabulate
-
+sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate")
 from scorelib import __version__ as VERSION
 from scorelib.argparse import ArgumentParser
 from scorelib.rttm import load_rttm

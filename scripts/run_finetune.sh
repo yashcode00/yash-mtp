@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH -N 2
 #SBATCH --partition=nltmp
-#SBATCH --gres=gpu:8
+#SBATCH --gres=gpu:7
 #SBATCH --job-name=wave2vec2-finetuning
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/out.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/err.log    # Updated error path
@@ -9,7 +9,7 @@
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/"
-output_main="${log_dir}output.log"
+output_main="${log_dir}finetune-1B.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 
