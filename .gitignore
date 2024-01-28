@@ -16,6 +16,7 @@ Thumbs.db
 # Ignore data and model files (modify as needed)
 /datasets/
 /models/
+/wandb/
 
 # Ignore large files
 *.zip
