@@ -1,0 +1,441 @@
+2024-01-27 16:00:40,656 INFO    StreamThr :7498 [internal.py:wandb_internal():86] W&B internal server running at pid: 7498, started at: 2024-01-27 16:00:40.654848
+2024-01-27 16:00:40,657 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status
+2024-01-27 16:00:40,658 INFO    WriterThread:7498 [datastore.py:open_for_write():85] open: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/run-4bwes2hi.wandb
+2024-01-27 16:00:40,660 DEBUG   SenderThread:7498 [sender.py:send():380] send: header
+2024-01-27 16:00:40,803 DEBUG   SenderThread:7498 [sender.py:send():380] send: run
+2024-01-27 16:00:41,526 INFO    SenderThread:7498 [dir_watcher.py:__init__():211] watching files in: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files
+2024-01-27 16:00:41,526 INFO    SenderThread:7498 [sender.py:_start_run_threads():1122] run started: 4bwes2hi with start time 1706351440.655506
+2024-01-27 16:00:41,533 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: check_version
+2024-01-27 16:00:41,534 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: check_version
+2024-01-27 16:00:41,614 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: run_start
+2024-01-27 16:00:41,625 DEBUG   HandlerThread:7498 [system_info.py:__init__():32] System info init
+2024-01-27 16:00:41,625 DEBUG   HandlerThread:7498 [system_info.py:__init__():47] System info init done
+2024-01-27 16:00:41,625 INFO    HandlerThread:7498 [system_monitor.py:start():194] Starting system monitor
+2024-01-27 16:00:41,625 INFO    SystemMonitor:7498 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-01-27 16:00:41,625 INFO    HandlerThread:7498 [system_monitor.py:probe():214] Collecting system info
+2024-01-27 16:00:41,626 INFO    SystemMonitor:7498 [interfaces.py:start():190] Started cpu monitoring
+2024-01-27 16:00:41,626 INFO    SystemMonitor:7498 [interfaces.py:start():190] Started disk monitoring
+2024-01-27 16:00:41,627 INFO    SystemMonitor:7498 [interfaces.py:start():190] Started gpu monitoring
+2024-01-27 16:00:41,627 INFO    SystemMonitor:7498 [interfaces.py:start():190] Started memory monitoring
+2024-01-27 16:00:41,628 INFO    SystemMonitor:7498 [interfaces.py:start():190] Started network monitoring
+2024-01-27 16:00:41,707 DEBUG   HandlerThread:7498 [system_info.py:probe():196] Probing system
+2024-01-27 16:00:41,712 DEBUG   HandlerThread:7498 [system_info.py:_probe_git():181] Probing git
+2024-01-27 16:00:41,733 DEBUG   HandlerThread:7498 [system_info.py:_probe_git():189] Probing git done
+2024-01-27 16:00:41,733 DEBUG   HandlerThread:7498 [system_info.py:probe():244] Probing system done
+2024-01-27 16:00:41,733 DEBUG   HandlerThread:7498 [system_monitor.py:probe():223] {'os': 'Linux-5.4.0-80-generic-x86_64-with-glibc2.31', 'python': '3.9.18', 'heartbeatAt': '2024-01-27T10:30:41.707313', 'startedAt': '2024-01-27T10:30:40.643672', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py', 'codePathLocal': 'src/wav2vec2/main_v1_1.py', 'codePath': 'src/wav2vec2/main_v1_1.py', 'git': {'remote': 'git@github.com:yashcode00/yash-mtp.git', 'commit': '706276b3e6b2c637a0bb7a9a56b6d326a34d4155'}, 'email': 'yashuvats.42@gmail.com', 'root': '/nlsasfs/home/nltm-st/sujitk/yash-mtp', 'host': 'scn26-mn', 'username': 'sujitk', 'executable': '/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/bin/python', 'cpu_count': 128, 'cpu_count_logical': 256, 'cpu_freq': {'current': 2951.3336249999975, 'min': 1500.0, 'max': 2250.0}, 'cpu_freq_per_core': [{'current': 3393.625, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.286, 'min': 1500.0, 'max': 2250.0}, {'current': 3397.175, 'min': 1500.0, 'max': 2250.0}, {'current': 3398.046, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.216, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.603, 'min': 1500.0, 'max': 2250.0}, {'current': 2800.701, 'min': 1500.0, 'max': 2250.0}, {'current': 3382.44, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.201, 'min': 1500.0, 'max': 2250.0}, {'current': 3400.972, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.956, 'min': 1500.0, 'max': 2250.0}, {'current': 3353.878, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.919, 'min': 1500.0, 'max': 2250.0}, {'current': 3383.219, 'min': 1500.0, 'max': 2250.0}, {'current': 3379.766, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.381, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.672, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.258, 'min': 1500.0, 'max': 2250.0}, {'current': 3389.009, 'min': 1500.0, 'max': 2250.0}, {'current': 3389.976, 'min': 1500.0, 'max': 2250.0}, {'current': 3373.801, 'min': 1500.0, 'max': 2250.0}, {'current': 3375.833, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.017, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.922, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.769, 'min': 1500.0, 'max': 2250.0}, {'current': 3404.383, 'min': 1500.0, 'max': 2250.0}, {'current': 3399.295, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.778, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.882, 'min': 1500.0, 'max': 2250.0}, {'current': 3385.764, 'min': 1500.0, 'max': 2250.0}, {'current': 2473.121, 'min': 1500.0, 'max': 2250.0}, {'current': 3402.707, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.221, 'min': 1500.0, 'max': 2250.0}, {'current': 3398.471, 'min': 1500.0, 'max': 2250.0}, {'current': 3383.457, 'min': 1500.0, 'max': 2250.0}, {'current': 3402.031, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.332, 'min': 1500.0, 'max': 2250.0}, {'current': 3400.293, 'min': 1500.0, 'max': 2250.0}, {'current': 3382.572, 'min': 1500.0, 'max': 2250.0}, {'current': 3405.934, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.635, 'min': 1500.0, 'max': 2250.0}, {'current': 3371.84, 'min': 1500.0, 'max': 2250.0}, {'current': 3386.257, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.307, 'min': 1500.0, 'max': 2250.0}, {'current': 3378.326, 'min': 1500.0, 'max': 2250.0}, {'current': 3383.087, 'min': 1500.0, 'max': 2250.0}, {'current': 3386.778, 'min': 1500.0, 'max': 2250.0}, {'current': 3378.419, 'min': 1500.0, 'max': 2250.0}, {'current': 2545.942, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.446, 'min': 1500.0, 'max': 2250.0}, {'current': 3340.738, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.459, 'min': 1500.0, 'max': 2250.0}, {'current': 3391.141, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.517, 'min': 1500.0, 'max': 2250.0}, {'current': 3383.119, 'min': 1500.0, 'max': 2250.0}, {'current': 3379.022, 'min': 1500.0, 'max': 2250.0}, {'current': 2531.077, 'min': 1500.0, 'max': 2250.0}, {'current': 3397.166, 'min': 1500.0, 'max': 2250.0}, {'current': 3402.308, 'min': 1500.0, 'max': 2250.0}, {'current': 3371.765, 'min': 1500.0, 'max': 2250.0}, {'current': 3365.293, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.886, 'min': 1500.0, 'max': 2250.0}, {'current': 3401.234, 'min': 1500.0, 'max': 2250.0}, {'current': 3379.735, 'min': 1500.0, 'max': 2250.0}, {'current': 3399.585, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.861, 'min': 1500.0, 'max': 2250.0}, {'current': 3382.887, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.753, 'min': 1500.0, 'max': 2250.0}, {'current': 3391.746, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.793, 'min': 1500.0, 'max': 2250.0}, {'current': 3397.014, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.499, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.727, 'min': 1500.0, 'max': 2250.0}, {'current': 3403.619, 'min': 1500.0, 'max': 2250.0}, {'current': 3384.279, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.159, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.204, 'min': 1500.0, 'max': 2250.0}, {'current': 3384.393, 'min': 1500.0, 'max': 2250.0}, {'current': 3384.099, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.565, 'min': 1500.0, 'max': 2250.0}, {'current': 3399.106, 'min': 1500.0, 'max': 2250.0}, {'current': 3397.639, 'min': 1500.0, 'max': 2250.0}, {'current': 3378.465, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.566, 'min': 1500.0, 'max': 2250.0}, {'current': 3379.808, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.042, 'min': 1500.0, 'max': 2250.0}, {'current': 3385.41, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.815, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.128, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.243, 'min': 1500.0, 'max': 2250.0}, {'current': 3398.702, 'min': 1500.0, 'max': 2250.0}, {'current': 2614.142, 'min': 1500.0, 'max': 2250.0}, {'current': 3301.392, 'min': 1500.0, 'max': 2250.0}, {'current': 3403.127, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.824, 'min': 1500.0, 'max': 2250.0}, {'current': 3403.904, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.097, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.812, 'min': 1500.0, 'max': 2250.0}, {'current': 3376.374, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.686, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.169, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.937, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.953, 'min': 1500.0, 'max': 2250.0}, {'current': 3399.208, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.72, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.528, 'min': 1500.0, 'max': 2250.0}, {'current': 1588.611, 'min': 1500.0, 'max': 2250.0}, {'current': 1736.002, 'min': 1500.0, 'max': 2250.0}, {'current': 2266.797, 'min': 1500.0, 'max': 2250.0}, {'current': 3029.297, 'min': 1500.0, 'max': 2250.0}, {'current': 3000.273, 'min': 1500.0, 'max': 2250.0}, {'current': 3020.919, 'min': 1500.0, 'max': 2250.0}, {'current': 2486.256, 'min': 1500.0, 'max': 2250.0}, {'current': 2475.219, 'min': 1500.0, 'max': 2250.0}, {'current': 2480.672, 'min': 1500.0, 'max': 2250.0}, {'current': 2479.329, 'min': 1500.0, 'max': 2250.0}, {'current': 2473.037, 'min': 1500.0, 'max': 2250.0}, {'current': 2475.532, 'min': 1500.0, 'max': 2250.0}, {'current': 2476.814, 'min': 1500.0, 'max': 2250.0}, {'current': 1747.061, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.147, 'min': 1500.0, 'max': 2250.0}, {'current': 3401.73, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.447, 'min': 1500.0, 'max': 2250.0}, {'current': 3382.905, 'min': 1500.0, 'max': 2250.0}, {'current': 3403.468, 'min': 1500.0, 'max': 2250.0}, {'current': 2423.185, 'min': 1500.0, 'max': 2250.0}, {'current': 2416.721, 'min': 1500.0, 'max': 2250.0}, {'current': 2443.901, 'min': 1500.0, 'max': 2250.0}, {'current': 3073.12, 'min': 1500.0, 'max': 2250.0}, {'current': 2988.943, 'min': 1500.0, 'max': 2250.0}, {'current': 2184.843, 'min': 1500.0, 'max': 2250.0}, {'current': 2413.132, 'min': 1500.0, 'max': 2250.0}, {'current': 2480.067, 'min': 1500.0, 'max': 2250.0}, {'current': 2505.904, 'min': 1500.0, 'max': 2250.0}, {'current': 2512.55, 'min': 1500.0, 'max': 2250.0}, {'current': 2508.753, 'min': 1500.0, 'max': 2250.0}, {'current': 2756.176, 'min': 1500.0, 'max': 2250.0}, {'current': 2544.938, 'min': 1500.0, 'max': 2250.0}, {'current': 2439.265, 'min': 1500.0, 'max': 2250.0}, {'current': 3398.491, 'min': 1500.0, 'max': 2250.0}, {'current': 2511.624, 'min': 1500.0, 'max': 2250.0}, {'current': 2525.534, 'min': 1500.0, 'max': 2250.0}, {'current': 2568.618, 'min': 1500.0, 'max': 2250.0}, {'current': 2520.444, 'min': 1500.0, 'max': 2250.0}, {'current': 2393.08, 'min': 1500.0, 'max': 2250.0}, {'current': 3383.385, 'min': 1500.0, 'max': 2250.0}, {'current': 2466.377, 'min': 1500.0, 'max': 2250.0}, {'current': 2520.211, 'min': 1500.0, 'max': 2250.0}, {'current': 2407.494, 'min': 1500.0, 'max': 2250.0}, {'current': 2498.548, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.995, 'min': 1500.0, 'max': 2250.0}, {'current': 3053.963, 'min': 1500.0, 'max': 2250.0}, {'current': 3377.955, 'min': 1500.0, 'max': 2250.0}, {'current': 3378.265, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.101, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.862, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.083, 'min': 1500.0, 'max': 2250.0}, {'current': 3375.899, 'min': 1500.0, 'max': 2250.0}, {'current': 3368.623, 'min': 1500.0, 'max': 2250.0}, {'current': 3400.781, 'min': 1500.0, 'max': 2250.0}, {'current': 3386.454, 'min': 1500.0, 'max': 2250.0}, {'current': 3378.576, 'min': 1500.0, 'max': 2250.0}, {'current': 3393.882, 'min': 1500.0, 'max': 2250.0}, {'current': 3384.793, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.196, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.696, 'min': 1500.0, 'max': 2250.0}, {'current': 3393.166, 'min': 1500.0, 'max': 2250.0}, {'current': 3393.973, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.486, 'min': 1500.0, 'max': 2250.0}, {'current': 3377.314, 'min': 1500.0, 'max': 2250.0}, {'current': 3405.87, 'min': 1500.0, 'max': 2250.0}, {'current': 3398.613, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.978, 'min': 1500.0, 'max': 2250.0}, {'current': 3377.518, 'min': 1500.0, 'max': 2250.0}, {'current': 3399.951, 'min': 1500.0, 'max': 2250.0}, {'current': 3405.431, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.651, 'min': 1500.0, 'max': 2250.0}, {'current': 3386.163, 'min': 1500.0, 'max': 2250.0}, {'current': 3391.761, 'min': 1500.0, 'max': 2250.0}, {'current': 3403.183, 'min': 1500.0, 'max': 2250.0}, {'current': 3377.595, 'min': 1500.0, 'max': 2250.0}, {'current': 3377.818, 'min': 1500.0, 'max': 2250.0}, {'current': 3383.952, 'min': 1500.0, 'max': 2250.0}, {'current': 3413.427, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.094, 'min': 1500.0, 'max': 2250.0}, {'current': 3380.506, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.888, 'min': 1500.0, 'max': 2250.0}, {'current': 3397.032, 'min': 1500.0, 'max': 2250.0}, {'current': 3379.713, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.698, 'min': 1500.0, 'max': 2250.0}, {'current': 3385.22, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.489, 'min': 1500.0, 'max': 2250.0}, {'current': 3384.737, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.913, 'min': 1500.0, 'max': 2250.0}, {'current': 3394.788, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.593, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.272, 'min': 1500.0, 'max': 2250.0}, {'current': 3391.684, 'min': 1500.0, 'max': 2250.0}, {'current': 3384.467, 'min': 1500.0, 'max': 2250.0}, {'current': 3386.055, 'min': 1500.0, 'max': 2250.0}, {'current': 3378.809, 'min': 1500.0, 'max': 2250.0}, {'current': 3390.241, 'min': 1500.0, 'max': 2250.0}, {'current': 3391.31, 'min': 1500.0, 'max': 2250.0}, {'current': 3375.547, 'min': 1500.0, 'max': 2250.0}, {'current': 3392.384, 'min': 1500.0, 'max': 2250.0}, {'current': 3387.606, 'min': 1500.0, 'max': 2250.0}, {'current': 3395.345, 'min': 1500.0, 'max': 2250.0}, {'current': 3396.757, 'min': 1500.0, 'max': 2250.0}, {'current': 2430.596, 'min': 1500.0, 'max': 2250.0}, {'current': 3389.074, 'min': 1500.0, 'max': 2250.0}, {'current': 2425.99, 'min': 1500.0, 'max': 2250.0}, {'current': 2451.182, 'min': 1500.0, 'max': 2250.0}, {'current': 2476.057, 'min': 1500.0, 'max': 2250.0}, {'current': 2495.161, 'min': 1500.0, 'max': 2250.0}, {'current': 2486.526, 'min': 1500.0, 'max': 2250.0}, {'current': 2483.925, 'min': 1500.0, 'max': 2250.0}, {'current': 2475.491, 'min': 1500.0, 'max': 2250.0}, {'current': 2466.247, 'min': 1500.0, 'max': 2250.0}, {'current': 2494.661, 'min': 1500.0, 'max': 2250.0}, {'current': 1742.306, 'min': 1500.0, 'max': 2250.0}, {'current': 3381.541, 'min': 1500.0, 'max': 2250.0}, {'current': 2440.13, 'min': 1500.0, 'max': 2250.0}, {'current': 2434.787, 'min': 1500.0, 'max': 2250.0}, {'current': 2431.271, 'min': 1500.0, 'max': 2250.0}, {'current': 1788.802, 'min': 1500.0, 'max': 2250.0}, {'current': 1793.877, 'min': 1500.0, 'max': 2250.0}, {'current': 3129.255, 'min': 1500.0, 'max': 2250.0}, {'current': 1793.11, 'min': 1500.0, 'max': 2250.0}, {'current': 1744.365, 'min': 1500.0, 'max': 2250.0}, {'current': 2491.525, 'min': 1500.0, 'max': 2250.0}, {'current': 1748.26, 'min': 1500.0, 'max': 2250.0}, {'current': 2486.377, 'min': 1500.0, 'max': 2250.0}, {'current': 2490.715, 'min': 1500.0, 'max': 2250.0}, {'current': 1744.317, 'min': 1500.0, 'max': 2250.0}, {'current': 1743.13, 'min': 1500.0, 'max': 2250.0}, {'current': 1746.084, 'min': 1500.0, 'max': 2250.0}, {'current': 1690.883, 'min': 1500.0, 'max': 2250.0}, {'current': 1696.645, 'min': 1500.0, 'max': 2250.0}, {'current': 1693.81, 'min': 1500.0, 'max': 2250.0}, {'current': 3353.778, 'min': 1500.0, 'max': 2250.0}, {'current': 1796.754, 'min': 1500.0, 'max': 2250.0}, {'current': 1789.306, 'min': 1500.0, 'max': 2250.0}, {'current': 1795.162, 'min': 1500.0, 'max': 2250.0}, {'current': 1800.939, 'min': 1500.0, 'max': 2250.0}, {'current': 1742.777, 'min': 1500.0, 'max': 2250.0}, {'current': 2484.368, 'min': 1500.0, 'max': 2250.0}, {'current': 1741.77, 'min': 1500.0, 'max': 2250.0}, {'current': 2146.882, 'min': 1500.0, 'max': 2250.0}, {'current': 3389.396, 'min': 1500.0, 'max': 2250.0}, {'current': 3391.386, 'min': 1500.0, 'max': 2250.0}, {'current': 3366.023, 'min': 1500.0, 'max': 2250.0}, {'current': 3386.153, 'min': 1500.0, 'max': 2250.0}, {'current': 3388.024, 'min': 1500.0, 'max': 2250.0}, {'current': 2417.772, 'min': 1500.0, 'max': 2250.0}, {'current': 2394.631, 'min': 1500.0, 'max': 2250.0}, {'current': 2419.807, 'min': 1500.0, 'max': 2250.0}], 'disk': {'/': {'total': 1757.8287315368652, 'used': 523.4343948364258}}, 'gpu': 'A100-SXM4-40GB', 'gpu_count': 4, 'gpu_devices': [{'name': 'A100-SXM4-40GB', 'memory_total': 42506321920}, {'name': 'A100-SXM4-40GB', 'memory_total': 42506321920}, {'name': 'A100-SXM4-40GB', 'memory_total': 42506321920}, {'name': 'A100-SXM4-40GB', 'memory_total': 42506321920}], 'memory': {'total': 1007.6966590881348}}
+2024-01-27 16:00:41,733 INFO    HandlerThread:7498 [system_monitor.py:probe():224] Finished collecting system info
+2024-01-27 16:00:41,733 INFO    HandlerThread:7498 [system_monitor.py:probe():227] Publishing system info
+2024-01-27 16:00:41,733 DEBUG   HandlerThread:7498 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2024-01-27 16:00:41,735 DEBUG   HandlerThread:7498 [system_info.py:_save_pip():68] Saving pip packages done
+2024-01-27 16:00:41,735 DEBUG   HandlerThread:7498 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2024-01-27 16:00:42,530 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_created():271] file/dir created: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/conda-environment.yaml
+2024-01-27 16:00:42,531 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_created():271] file/dir created: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/requirements.txt
+2024-01-27 16:00:47,227 DEBUG   HandlerThread:7498 [system_info.py:_save_conda():87] Saving conda packages done
+2024-01-27 16:00:47,231 INFO    HandlerThread:7498 [system_monitor.py:probe():229] Finished publishing system info
+2024-01-27 16:00:47,264 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:00:47,264 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: keepalive
+2024-01-27 16:00:47,265 DEBUG   SenderThread:7498 [sender.py:send():380] send: files
+2024-01-27 16:00:47,265 INFO    SenderThread:7498 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2024-01-27 16:00:47,274 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: stop_status
+2024-01-27 16:00:47,274 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: stop_status
+2024-01-27 16:00:47,276 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: internal_messages
+2024-01-27 16:00:47,531 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/conda-environment.yaml
+2024-01-27 16:00:47,532 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_created():271] file/dir created: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/wandb-metadata.json
+2024-01-27 16:00:47,714 DEBUG   SenderThread:7498 [sender.py:send():380] send: telemetry
+2024-01-27 16:00:48,327 INFO    wandb-upload_0:7498 [upload_job.py:push():131] Uploaded file /tmp/tmpbwiaglbtwandb/u7dpw8gl-wandb-metadata.json
+2024-01-27 16:00:51,715 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:00:56,715 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:00:58,538 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_created():271] file/dir created: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log
+2024-01-27 16:01:00,539 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log
+2024-01-27 16:01:02,396 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: stop_status
+2024-01-27 16:01:02,397 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: stop_status
+2024-01-27 16:01:02,516 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: internal_messages
+2024-01-27 16:01:02,778 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:07,834 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:10,574 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log
+2024-01-27 16:01:13,429 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:14,577 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/config.yaml
+2024-01-27 16:01:18,751 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:23,752 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:28,752 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:33,753 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:38,753 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:41,524 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: stop_status
+2024-01-27 16:01:41,524 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: stop_status
+2024-01-27 16:01:41,566 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: internal_messages
+2024-01-27 16:01:41,629 DEBUG   SystemMonitor:7498 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-01-27 16:01:41,866 DEBUG   SenderThread:7498 [sender.py:send():380] send: stats
+2024-01-27 16:01:43,868 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:48,868 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:53,869 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:01:58,869 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:02:03,870 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:02:08,870 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:02:11,217 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: keepalive
+2024-01-27 16:02:11,293 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: internal_messages
+2024-01-27 16:02:11,634 DEBUG   SenderThread:7498 [sender.py:send():380] send: stats
+2024-01-27 16:02:11,914 ERROR   FileStreamThread:7498 [file_stream.py:_handle_response():504] dropped chunk 404 Client Error: Not Found for url: https://api.wandb.ai/files/b20241/huggingface/4bwes2hi/file_stream
+NoneType: None
+2024-01-27 16:02:14,636 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:02:15,794 DEBUG   SenderThread:7498 [sender.py:send():380] send: exit
+2024-01-27 16:02:15,794 INFO    SenderThread:7498 [sender.py:send_exit():585] handling exit code: 1
+2024-01-27 16:02:15,794 INFO    SenderThread:7498 [sender.py:send_exit():587] handling runtime: 94
+2024-01-27 16:02:15,795 INFO    SenderThread:7498 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2024-01-27 16:02:15,796 INFO    SenderThread:7498 [sender.py:send_exit():593] send defer
+2024-01-27 16:02:15,796 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:15,796 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 0
+2024-01-27 16:02:15,796 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:15,796 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 0
+2024-01-27 16:02:15,796 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 1
+2024-01-27 16:02:15,796 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:15,796 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 1
+2024-01-27 16:02:15,797 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:15,797 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 1
+2024-01-27 16:02:15,797 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 2
+2024-01-27 16:02:15,797 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:15,797 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 2
+2024-01-27 16:02:15,797 INFO    HandlerThread:7498 [system_monitor.py:finish():203] Stopping system monitor
+2024-01-27 16:02:15,797 DEBUG   SystemMonitor:7498 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-01-27 16:02:15,797 DEBUG   SystemMonitor:7498 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-01-27 16:02:15,803 INFO    HandlerThread:7498 [interfaces.py:finish():202] Joined cpu monitor
+2024-01-27 16:02:15,803 INFO    HandlerThread:7498 [interfaces.py:finish():202] Joined disk monitor
+2024-01-27 16:02:16,610 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_created():271] file/dir created: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/wandb-summary.json
+2024-01-27 16:02:17,108 INFO    HandlerThread:7498 [interfaces.py:finish():202] Joined gpu monitor
+2024-01-27 16:02:17,108 INFO    HandlerThread:7498 [interfaces.py:finish():202] Joined memory monitor
+2024-01-27 16:02:17,109 INFO    HandlerThread:7498 [interfaces.py:finish():202] Joined network monitor
+2024-01-27 16:02:17,109 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: poll_exit
+2024-01-27 16:02:17,109 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:17,109 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 2
+2024-01-27 16:02:17,109 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 3
+2024-01-27 16:02:17,109 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:17,109 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 3
+2024-01-27 16:02:17,111 DEBUG   SenderThread:7498 [sender.py:send():380] send: stats
+2024-01-27 16:02:17,112 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: poll_exit
+2024-01-27 16:02:17,112 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:17,112 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 3
+2024-01-27 16:02:17,112 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 4
+2024-01-27 16:02:17,112 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:17,112 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 4
+2024-01-27 16:02:17,112 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:17,113 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 4
+2024-01-27 16:02:17,113 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 5
+2024-01-27 16:02:17,113 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:17,113 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 5
+2024-01-27 16:02:17,113 DEBUG   SenderThread:7498 [sender.py:send():380] send: summary
+2024-01-27 16:02:17,114 INFO    SenderThread:7498 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2024-01-27 16:02:17,114 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:17,114 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 5
+2024-01-27 16:02:17,114 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 6
+2024-01-27 16:02:17,114 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:17,114 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 6
+2024-01-27 16:02:17,115 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:17,115 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 6
+2024-01-27 16:02:17,115 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 7
+2024-01-27 16:02:17,115 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: status_report
+2024-01-27 16:02:17,115 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:17,115 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 7
+2024-01-27 16:02:17,115 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:17,115 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 7
+2024-01-27 16:02:17,612 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log
+2024-01-27 16:02:17,612 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/wandb-summary.json
+2024-01-27 16:02:17,795 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: poll_exit
+2024-01-27 16:02:18,653 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 8
+2024-01-27 16:02:18,653 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: poll_exit
+2024-01-27 16:02:18,653 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:18,653 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 8
+2024-01-27 16:02:18,653 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:18,653 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 8
+2024-01-27 16:02:18,653 INFO    SenderThread:7498 [job_builder.py:build():281] Attempting to build job artifact
+2024-01-27 16:02:18,654 INFO    SenderThread:7498 [job_builder.py:_get_source_type():393] is repo sourced job
+2024-01-27 16:02:18,656 INFO    SenderThread:7498 [job_builder.py:build():369] adding wandb-job metadata file
+2024-01-27 16:02:18,664 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 9
+2024-01-27 16:02:18,664 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:18,664 DEBUG   SenderThread:7498 [sender.py:send():380] send: artifact
+2024-01-27 16:02:18,664 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 9
+2024-01-27 16:02:18,795 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: poll_exit
+2024-01-27 16:02:19,613 INFO    Thread-12 :7498 [dir_watcher.py:_on_file_modified():288] file/dir modified: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log
+2024-01-27 16:02:20,195 ERROR   SenderThread:7498 [internal_api.py:execute():369] 404 response executing GraphQL.
+2024-01-27 16:02:20,195 ERROR   SenderThread:7498 [internal_api.py:execute():370] {"errors":[{"message":"failed to find run huggingface/4bwes2hi","path":["useArtifact"]}],"data":{"useArtifact":null}}
+2024-01-27 16:02:20,203 ERROR   SenderThread:7498 [sender.py:send_artifact():1458] send_artifact: failed for artifact "job/job-git_github.com_yashcode00_yash-mtp.git_src_wav2vec2_main_v1_1.py": It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2024-01-27 16:02:20,203 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:20,203 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 9
+2024-01-27 16:02:20,203 INFO    SenderThread:7498 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-01-27 16:02:20,615 INFO    SenderThread:7498 [dir_watcher.py:finish():388] scan: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files
+2024-01-27 16:02:20,615 INFO    SenderThread:7498 [dir_watcher.py:finish():402] scan save: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/requirements.txt requirements.txt
+2024-01-27 16:02:20,616 INFO    SenderThread:7498 [dir_watcher.py:finish():402] scan save: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/wandb-metadata.json wandb-metadata.json
+2024-01-27 16:02:20,616 INFO    SenderThread:7498 [dir_watcher.py:finish():402] scan save: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/wandb-summary.json wandb-summary.json
+2024-01-27 16:02:20,618 INFO    SenderThread:7498 [dir_watcher.py:finish():402] scan save: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/conda-environment.yaml conda-environment.yaml
+2024-01-27 16:02:20,621 INFO    SenderThread:7498 [dir_watcher.py:finish():402] scan save: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log output.log
+2024-01-27 16:02:20,640 INFO    SenderThread:7498 [dir_watcher.py:finish():402] scan save: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/config.yaml config.yaml
+2024-01-27 16:02:20,645 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 10
+2024-01-27 16:02:20,645 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: poll_exit
+2024-01-27 16:02:20,645 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:20,648 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 10
+2024-01-27 16:02:20,648 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:20,649 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 10
+2024-01-27 16:02:20,649 INFO    SenderThread:7498 [file_pusher.py:finish():175] shutting down file pusher
+2024-01-27 16:02:20,918 ERROR   wandb-upload_1:7498 [internal_api.py:execute():369] 404 response executing GraphQL.
+2024-01-27 16:02:20,918 ERROR   wandb-upload_0:7498 [internal_api.py:execute():369] 404 response executing GraphQL.
+2024-01-27 16:02:20,918 ERROR   wandb-upload_1:7498 [internal_api.py:execute():370] {"errors":[{"message":"run huggingface/4bwes2hi not found during createRunFiles","path":["createRunFiles"]}],"data":{"createRunFiles":null}}
+2024-01-27 16:02:20,918 ERROR   wandb-upload_0:7498 [internal_api.py:execute():370] {"errors":[{"message":"run huggingface/4bwes2hi not found during createRunFiles","path":["createRunFiles"]}],"data":{"createRunFiles":null}}
+2024-01-27 16:02:20,919 ERROR   Thread-11 :7498 [step_upload.py:_handle_event():200] Failed to upload file: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/wandb-summary.json
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 366, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 288, in run_and_notify
+    self._do_upload_sync(event)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 330, in _do_upload_sync
+    job.run()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 57, in run
+    self.push()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 106, in push
+    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 73, in wrapper
+    raise err
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 2175, in upload_urls
+    query_result = self.gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 338, in gql
+    ret = self._retry_gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 147, in __call__
+    retry_timedelta_triggered = check_retry_fn(e)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/util.py", line 906, in no_retry_auth
+    raise CommError(
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2024-01-27 16:02:21,012 ERROR   wandb-upload_3:7498 [internal_api.py:execute():369] 404 response executing GraphQL.
+2024-01-27 16:02:21,013 ERROR   wandb-upload_4:7498 [internal_api.py:execute():369] 404 response executing GraphQL.
+2024-01-27 16:02:21,023 ERROR   wandb-upload_2:7498 [internal_api.py:execute():369] 404 response executing GraphQL.
+2024-01-27 16:02:21,035 ERROR   Thread-11 :7498 [step_upload.py:_handle_event():200] Failed to upload file: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/requirements.txt
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 366, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 288, in run_and_notify
+    self._do_upload_sync(event)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 330, in _do_upload_sync
+    job.run()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 57, in run
+    self.push()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 106, in push
+    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 73, in wrapper
+    raise err
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 2175, in upload_urls
+    query_result = self.gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 338, in gql
+    ret = self._retry_gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 147, in __call__
+    retry_timedelta_triggered = check_retry_fn(e)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/util.py", line 906, in no_retry_auth
+    raise CommError(
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2024-01-27 16:02:21,035 ERROR   wandb-upload_3:7498 [internal_api.py:execute():370] {"errors":[{"message":"run huggingface/4bwes2hi not found during createRunFiles","path":["createRunFiles"]}],"data":{"createRunFiles":null}}
+2024-01-27 16:02:21,036 ERROR   wandb-upload_4:7498 [internal_api.py:execute():370] {"errors":[{"message":"run huggingface/4bwes2hi not found during createRunFiles","path":["createRunFiles"]}],"data":{"createRunFiles":null}}
+2024-01-27 16:02:21,036 ERROR   wandb-upload_2:7498 [internal_api.py:execute():370] {"errors":[{"message":"run huggingface/4bwes2hi not found during createRunFiles","path":["createRunFiles"]}],"data":{"createRunFiles":null}}
+2024-01-27 16:02:21,036 ERROR   Thread-11 :7498 [step_upload.py:_handle_event():200] Failed to upload file: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/output.log
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 366, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 288, in run_and_notify
+    self._do_upload_sync(event)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 330, in _do_upload_sync
+    job.run()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 57, in run
+    self.push()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 106, in push
+    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 73, in wrapper
+    raise err
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 2175, in upload_urls
+    query_result = self.gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 338, in gql
+    ret = self._retry_gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 147, in __call__
+    retry_timedelta_triggered = check_retry_fn(e)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/util.py", line 906, in no_retry_auth
+    raise CommError(
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2024-01-27 16:02:21,037 ERROR   Thread-11 :7498 [step_upload.py:_handle_event():200] Failed to upload file: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/config.yaml
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 366, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 288, in run_and_notify
+    self._do_upload_sync(event)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 330, in _do_upload_sync
+    job.run()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 57, in run
+    self.push()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 106, in push
+    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 73, in wrapper
+    raise err
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 2175, in upload_urls
+    query_result = self.gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 338, in gql
+    ret = self._retry_gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 147, in __call__
+    retry_timedelta_triggered = check_retry_fn(e)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/util.py", line 906, in no_retry_auth
+    raise CommError(
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2024-01-27 16:02:21,037 ERROR   Thread-11 :7498 [step_upload.py:_handle_event():200] Failed to upload file: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/files/conda-environment.yaml
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 366, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 288, in run_and_notify
+    self._do_upload_sync(event)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/step_upload.py", line 330, in _do_upload_sync
+    job.run()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 57, in run
+    self.push()
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/filesync/upload_job.py", line 106, in push
+    _, upload_headers, result = self._api.upload_urls(project, [self.save_name])
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 73, in wrapper
+    raise err
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 2175, in upload_urls
+    query_result = self.gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 338, in gql
+    ret = self._retry_gql(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 147, in __call__
+    retry_timedelta_triggered = check_retry_fn(e)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/wandb/util.py", line 906, in no_retry_auth
+    raise CommError(
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2024-01-27 16:02:21,238 INFO    Thread-11 :7498 [sender.py:transition_state():613] send defer: 11
+2024-01-27 16:02:21,238 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:21,238 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 11
+2024-01-27 16:02:21,238 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:21,239 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 11
+2024-01-27 16:02:21,239 INFO    SenderThread:7498 [file_pusher.py:join():181] waiting for file pusher
+2024-01-27 16:02:21,239 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 12
+2024-01-27 16:02:21,239 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:21,239 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 12
+2024-01-27 16:02:21,239 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:21,239 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 12
+2024-01-27 16:02:21,239 INFO    SenderThread:7498 [file_stream.py:finish():595] file stream finish called
+2024-01-27 16:02:21,515 ERROR   FileStreamThread:7498 [file_stream.py:_handle_response():504] dropped chunk 404 Client Error: Not Found for url: https://api.wandb.ai/files/b20241/huggingface/4bwes2hi/file_stream
+NoneType: None
+2024-01-27 16:02:21,792 INFO    SenderThread:7498 [file_stream.py:finish():599] file stream finish is done
+2024-01-27 16:02:21,792 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 13
+2024-01-27 16:02:21,792 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:21,792 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 13
+2024-01-27 16:02:21,792 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:21,792 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 13
+2024-01-27 16:02:21,792 INFO    SenderThread:7498 [sender.py:transition_state():613] send defer: 14
+2024-01-27 16:02:21,793 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: defer
+2024-01-27 16:02:21,793 DEBUG   SenderThread:7498 [sender.py:send():380] send: final
+2024-01-27 16:02:21,793 INFO    HandlerThread:7498 [handler.py:handle_request_defer():172] handle defer: 14
+2024-01-27 16:02:21,793 DEBUG   SenderThread:7498 [sender.py:send():380] send: footer
+2024-01-27 16:02:21,793 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: defer
+2024-01-27 16:02:21,793 INFO    SenderThread:7498 [sender.py:send_request_defer():609] handle sender defer: 14
+2024-01-27 16:02:21,793 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: poll_exit
+2024-01-27 16:02:21,794 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: poll_exit
+2024-01-27 16:02:21,794 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: server_info
+2024-01-27 16:02:21,794 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: server_info
+2024-01-27 16:02:21,796 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: get_summary
+2024-01-27 16:02:21,796 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: sampled_history
+2024-01-27 16:02:21,796 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: internal_messages
+2024-01-27 16:02:21,797 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: job_info
+2024-01-27 16:02:22,082 DEBUG   SenderThread:7498 [sender.py:send_request():407] send_request: job_info
+2024-01-27 16:02:22,084 INFO    MainThread:7498 [wandb_run.py:_footer_history_summary_info():3599] rendering history
+2024-01-27 16:02:22,084 INFO    MainThread:7498 [wandb_run.py:_footer_history_summary_info():3631] rendering summary
+2024-01-27 16:02:22,084 INFO    MainThread:7498 [wandb_run.py:_footer_sync_info():3558] logging synced files
+2024-01-27 16:02:22,085 DEBUG   HandlerThread:7498 [handler.py:handle_request():146] handle_request: shutdown
+2024-01-27 16:02:22,085 INFO    HandlerThread:7498 [handler.py:finish():866] shutting down handler
+2024-01-27 16:02:22,797 INFO    WriterThread:7498 [datastore.py:close():294] close: /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_160040-4bwes2hi/run-4bwes2hi.wandb
+2024-01-27 16:02:23,083 INFO    SenderThread:7498 [sender.py:finish():1534] shutting down sender
+2024-01-27 16:02:23,083 INFO    SenderThread:7498 [file_pusher.py:finish():175] shutting down file pusher
+2024-01-27 16:02:23,083 INFO    SenderThread:7498 [file_pusher.py:join():181] waiting for file pusher

@@ -91,12 +91,11 @@ class X_vector(nn.Module):
         return x_vec
 
 
-####### Wave2Vec2 code ##############
+####### Wave2Vec2 code ##############################################################################################################################
+##########################################################################################################################################################
 
 is_regression = False
-
 torch.cuda.empty_cache()
- 
 @dataclass
 class SpeechClassifierOutput(ModelOutput):
     loss: Optional[torch.FloatTensor] = None

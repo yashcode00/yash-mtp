@@ -1,0 +1,66 @@
+2024-01-27 17:06:12,930 - models, checkpoints and evaluations will be saved in folder at: '/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612'.
+2024-01-27 17:06:12,975 - Datasets loaded succesfully!
+2024-01-27 17:06:12,975 - Loaded the following dataset: 
+
+2024-01-27 17:06:12,984 - A classification problem with 11 classes: ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
+Ignored unknown kwarg option normalize
+Ignored unknown kwarg option normalize
+Ignored unknown kwarg option normalize
+Ignored unknown kwarg option normalize
+Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at facebook/wav2vec2-xls-r-1b and are newly initialized: ['classifier.out_proj.weight', 'classifier.out_proj.bias', 'classifier.dense.bias', 'classifier.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+2024-01-27 17:06:35,754 - Loading cached processed dataset at /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/saved_dataset.hf/train/cache-d79868eb6c464c1a_*_of_00300.arrow
+2024-01-27 17:06:37,858 - Loading cached processed dataset at /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/saved_dataset.hf/validation/cache-9222984364d9bc4e_*_of_00300.arrow
+2024-01-27 17:06:37,987 - The final processed dataset is as below: 
+2024-01-27 17:06:37,987 - label_names : ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
+2024-01-27 17:06:37,988 - The target sampling rate: 16000
+2024-01-27 17:06:37,989 - -*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-
+2024-01-27 17:06:37,989 - The Training is about to start....
+2024-01-27 17:06:37,991 - Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+2024-01-27 17:06:38,259 - Logged into hugging face successfully!
+wandb: Currently logged in as: b20241. Use `wandb login --relogin` to force relogin
+wandb: Appending key for api.wandb.ai to your netrc file: /nlsasfs/home/nltm-st/sujitk/.netrc
+wandb: wandb version 0.16.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.12
+wandb: Run data is saved locally in /nlsasfs/home/nltm-st/sujitk/yash-mtp/wandb/run-20240127_170641-wxw73t9a
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run Wave2vec2-2B_Training_20240127_170612
+wandb: ⭐️ View project at https://wandb.ai/b20241/huggingface
+wandb: 🚀 View run at https://wandb.ai/b20241/huggingface/runs/wxw73t9a
+2024-01-27 17:06:53,428 - Saving current state to /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt
+2024-01-27 17:06:57,210 - Model weights saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/pytorch_model.bin
+2024-01-27 17:06:57,213 - Optimizer state saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/optimizer.bin
+2024-01-27 17:06:57,214 - Scheduler state saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/scheduler.bin
+2024-01-27 17:06:57,214 - Sampler state for dataloader 0 saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/sampler.bin
+2024-01-27 17:06:57,215 - Sampler state for dataloader 1 saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/sampler_1.bin
+2024-01-27 17:06:57,215 - Gradient scaler state saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/scaler.pt
+2024-01-27 17:06:57,221 - Random states saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/random_states_0.pkl
+2024-01-27 17:06:57,221 - Saving the state of AcceleratedScheduler to /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_170612/chkpt/custom_checkpoint_0.pkl
+2024-01-27 17:06:57,226 - Started checkpointing
+Device:  cuda
+--------------------
+Number of GPUs: 4
+Current GPU: 0
+GPU Name: A100-SXM4-40GB
+GPU Compute Capability: (8, 0)
+--------------------
+Train:  Dataset({
+    features: ['name', 'path', 'sampling_rate', 'language'],
+    num_rows: 571151
+})
+Validation:  Dataset({
+    features: ['name', 'path', 'sampling_rate', 'language'],
+    num_rows: 114230
+})
+Dataset({
+    features: ['name', 'path', 'sampling_rate', 'language', 'input_values', 'attention_mask', 'labels'],
+    num_rows: 571151
+})
+Eval steps:  2231
+Token will not been saved to git credential helper. Pass `add_to_git_credential=True` if you want to set the git credential as well.
+Token is valid (permission: write).
+Your token has been saved to /nlsasfs/home/nltm-st/sujitk/.cache/huggingface/token
+Login successful
+Device of accleration:  cuda
+  0%|          | 0/1338600 [00:00<?, ?it/s]  0%|          | 1/1338600 [00:32<11955:19:35, 32.15s/it]  0%|          | 2/1338600 [00:45<7916:56:28, 21.29s/it]   0%|          | 3/1338600 [00:58<6493:16:21, 17.46s/it]  0%|          | 4/1338600 [01:11<5795:26:03, 15.59s/it]  0%|          | 5/1338600 [01:24<5397:23:49, 14.52s/it]  0%|          | 6/1338600 [01:36<5136:43:21, 13.81s/it]  0%|          | 7/1338600 [01:50<5102:49:23, 13.72s/it]  0%|          | 8/1338600 [02:02<4982:18:20, 13.40s/it]  0%|          | 9/1338600 [02:15<4897:27:44, 13.17s/it]

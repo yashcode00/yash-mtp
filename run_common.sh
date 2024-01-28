@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH -N 1
-#SBATCH --partition=nltmp
-#SBATCH --gres=gpu:1
+#SBATCH --partition=cpup
 #SBATCH --job-name=saving-dataset
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/output.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/error.log    # Updated error path

@@ -1,0 +1,45 @@
+
+Device of accleration:  cuda
+2024-01-27 16:52:50,593 - Saving current state to /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt
+2024-01-27 16:52:54,845 - Model weights saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/pytorch_model.bin
+2024-01-27 16:52:54,847 - Optimizer state saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/optimizer.bin
+2024-01-27 16:52:54,848 - Scheduler state saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/scheduler.bin
+2024-01-27 16:52:54,848 - Sampler state for dataloader 0 saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/sampler.bin
+2024-01-27 16:52:54,848 - Sampler state for dataloader 1 saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/sampler_1.bin
+2024-01-27 16:52:54,850 - Gradient scaler state saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/scaler.pt
+2024-01-27 16:52:54,886 - Random states saved in /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2//nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/random_states_0.pkl
+2024-01-27 16:52:54,886 - Saving the state of AcceleratedScheduler to /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/saved-model-20240127_165216/chkpt/custom_checkpoint_0.pkl
+2024-01-27 16:52:54,887 - Started checkpointing
+
+  0%|          | 1/669300 [01:00<11213:47:06, 60.32s/it]Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py", line 338, in <module>
+    outputs = model(**batch)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/accelerate/utils/operations.py", line 659, in forward
+    return model_forward(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/accelerate/utils/operations.py", line 647, in __call__
+    return convert_to_fp32(self.model_forward(*args, **kwargs))
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/amp/autocast_mode.py", line 14, in decorate_autocast
+    return func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common/Model.py", line 157, in forward
+    outputs = self.wav2vec2(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/transformers/models/wav2vec2/modeling_wav2vec2.py", line 1579, in forward
+    encoder_outputs = self.encoder(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/transformers/models/wav2vec2/modeling_wav2vec2.py", line 908, in forward
+    layer_outputs = layer(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/transformers/models/wav2vec2/modeling_wav2vec2.py", line 737, in forward
+    hidden_states, attn_weights, _ = self.attention(
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/transformers/models/wav2vec2/modeling_wav2vec2.py", line 609, in forward
+    attn_weights = nn.functional.softmax(attn_weights, dim=-1)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/torch/nn/functional.py", line 1843, in softmax
+    ret = input.softmax(dim)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 38.00 MiB (GPU 0; 39.59 GiB total capacity; 37.57 GiB already allocated; 11.19 MiB free; 38.09 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

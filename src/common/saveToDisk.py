@@ -30,7 +30,6 @@ from transformers import AutoFeatureExtractor, TrainingArguments, AutoConfig, Wa
 import numpy as np
 from typing import Any, Dict, Union, Tuple
 import torch
-from packaging import version
 from torch import nn
 from huggingface_hub import login
 import wandb
