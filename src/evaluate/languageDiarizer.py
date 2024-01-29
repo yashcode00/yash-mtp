@@ -44,6 +44,7 @@ IP_dim = 1024*look_back1 # number of input dimension
 path = "/Users/yash/Desktop/MTP-2k23-24"
 xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults/modelEpoch0_xVector.pth"
 outputFolderRTTM = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/predicted-rttm"
+resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
 audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 silencedAndOneSecondAudio_size = 16000
@@ -130,13 +131,28 @@ def diarize(S0,S1):
         else:
             SL.append(1)
 
-    lang_labels = [np.argmax(np.bincount(SL[:math.floor(x[0][0])]))]
-    for i in range(len(x[0])-1):
-        lang_labels.append(np.argmax(np.bincount(SL[math.floor(x[0][i]):math.floor(x[0][i+1])])))
+# Traceback (most recent call last):
+#   File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py", line 256, in <module>
+#     x, lang_labels = diarize(S0, S1)
+#   File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py", line 134, in diarize
+#     lang_labels = [np.argmax(np.bincount(SL[:math.floor(x[0][0])]))]
+#   File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/numpy/core/fromnumeric.py", line 1229, in argmax
+#     return _wrapfunc(a, 'argmax', axis=axis, out=out, **kwds)
+#   File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/numpy/core/fromnumeric.py", line 59, in _wrapfunc
+#     return bound(*args, **kwds)
+# ValueError: attempt to get argmax of an empty sequence
+    # try: 
+    #     lang_labels = [np.argmax(np.bincount(SL[:math.floor(x[0][0])]))]
+    # except Exception as e:
+    #     print("Lang lable extraction error: ",SL,"\n",e)
+    #     lang_labels = np.zeros()
+    # for i in range(len(x[0])-1):
+    #     lang_labels.append(np.argmax(np.bincount(SL[math.floor(x[0][i]):math.floor(x[0][i+1])])))
 
-    if len(x[0])!=1:
-        lang_labels.append(np.argmax(np.bincount(SL[math.floor(x[0][len(x[0])-1]):])))
+    # if len(x[0])!=1:
+    #     lang_labels.append(np.argmax(np.bincount(SL[math.floor(x[0][len(x[0])-1]):])))
     # print("Segment Labels are: ", SL)
+    lang_labels = np.zeros(len(x)+1)
     return x, lang_labels
 
 def preProcessSpeech(path):
@@ -212,7 +228,7 @@ def pipeline(path):
     # print(val_lang_op)
     return val_lang_op[:,0], val_lang_op[:,1]
 
-def generate_rttm_file(name,cp, predicted_labels):
+def generate_rttm_file(name,cp, predicted_labels, total_time):
     rttm_content = ""
     # Add the start time at 0
     start_time = 0
@@ -222,10 +238,16 @@ def generate_rttm_file(name,cp, predicted_labels):
         # Calculate duration for each segment
         duration = end_time - start_time
         # Generate RTTM content
-        rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
+
         # Update start time for the next segment
         start_time = end_time
     
+    ## add last entry
+    duration = total_time - start_time
+    rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
+    # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
     output_rttm_filename = f"Predicted_{name}.rttm"
     targetPath = os.path.join(outputFolderRTTM,output_rttm_filename)
 
@@ -242,27 +264,8 @@ if __name__ == '__main__':
     ## ground truth rttms
     sys_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
     sys_rttm = sorted(sys_rttm, key=numeric_part)
-    sys_rttm = sys_rttm[:4]
-    ref_rttm = []
-    i = 1
-    for i in tqdm(range(1,5)):
-        audio  = f"HECodemixedFemale{i}.wav"
-        actualPath = os.path.join(audioPath,audio)
-        name = audio.split(".")[0]
-        S0, S1 = pipeline(actualPath)
-        # print(S0)
-        # print(S1)
-        # print("English/ S0 shape: ", S0.shape)
-        # print("Hindi/ S1 shape: ", S1.shape)
-        x, lang_labels = diarize(S0, S1)
-        # print(x)
-        # print(lang_labels)
-        x = (x[0]*hop_length_seconds)+0.5
-        ## now generating rttm for this
-        ref_rttm.append(generate_rttm_file(name, x,lang_labels))
+    # ref_rttm = []
     # for audio in tqdm(os.listdir(audioPath)):
-    #     if i==3:
-    #         break
     #     actualPath = os.path.join(audioPath,audio)
     #     name = audio.split(".")[0]
     #     S0, S1 = pipeline(actualPath)
@@ -275,25 +278,32 @@ if __name__ == '__main__':
     #     # print(lang_labels)
     #     x = (x[0]*hop_length_seconds)+0.5
     #     ## now generating rttm for this
-    #     ref_rttm.append(generate_rttm_file(name, x,lang_labels))
-    #     i +=1
+    #     # Load the audio file using torchaudio
+    #     waveform, sample_rate = torchaudio.load(actualPath)
+    #     # Get the duration in seconds
+    #     duration_in_seconds = waveform.size(1) / sample_rate
+    #     ref_rttm.append(generate_rttm_file(name, x,lang_labels, duration_in_seconds))
+    ref_rttm = [os.path.join(outputFolderRTTM,filename) for filename in os.listdir(outputFolderRTTM)]
     ref_rttm = sorted(ref_rttm, key=numeric_part)
-    print("The true and predicted rttm files are: \n")
+    # print("The true and predicted rttm files are: \n")
 
-    print(sys_rttm)
-    print(ref_rttm)
+    # print(sys_rttm)
+    # print(ref_rttm)
     ## joining
     sys_rttm = " ".join(sys_rttm)
     ref_rttm = " ".join(ref_rttm)
 
-    print(sys_rttm)
-    print(ref_rttm)
+    # print(sys_rttm)
+    # print(ref_rttm)
 
     # Finding the DER
     command = f'python {derScriptPath} -r {ref_rttm} -s {sys_rttm}'
     # Run the command
     output = run_command(command)
-    print(output)
+    print(command)
+    der_filename  = os.path.join(resultDERPath,"eval-der-metrics-old-model-29Jan2024.txt")
+    with open(der_filename, 'w') as f_out:
+        f_out.write(output)
 
     # Extract the 4th integer from the last line of the output
     if output:

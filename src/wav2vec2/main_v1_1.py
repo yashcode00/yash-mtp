@@ -411,7 +411,7 @@ for epoch in range(num_epochs):
     except Exception as err:
         logging.error("Not able to log to wandb, ", err)
 
-    accelerator.logging.info(f"Epoch {epoch+1}/{num_epochs}: train_loss: {final_train_loss} val_loss: {final_val_loss} Val_Accuracy:{accuracy}")
+    accelerator.print(f"Epoch {epoch+1}/{num_epochs}: train_loss: {final_train_loss} val_loss: {final_val_loss} Val_Accuracy:{accuracy}")
 
 logging.info("\nTraining Done!")
 logging.info("$$"*100)
