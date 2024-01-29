@@ -5,6 +5,7 @@
 
 #### importing necessary modules and libraries
 import sys
+import math
 sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common")
 from Model import *
 from SilenceRemover import *
@@ -37,6 +38,7 @@ from gaussianSmooth import *
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device: {device}")
+batch_size = 100  # Set your desired batch size
 nc = 11 # Number of language classes 
 n_epoch = 200 # Number of epochs
 look_back1 = 21 # range
@@ -260,6 +262,30 @@ def generate_rttm_file(name,cp, predicted_labels, total_time):
 def numeric_part(filename):
     return int(''.join(filter(str.isdigit, filename)))
 
+def findCumulativeDER():
+    ##List all DER files in the result directory
+    der_files = [os.path.join(resultDERPath, filename) for filename in os.listdir(resultDERPath) if filename.startswith("eval-der-metrics")]
+    
+    total_der = 0.0
+    total_files = 0
+
+    # Process each DER file and calculate average DER
+    for der_file in der_files:
+        with open(der_file, 'r') as f_in:
+            der_content = f_in.read()
+            # Extract the DER value from the content
+            floats = re.findall(r'-?\d+\.\d+', der_content)
+            if len(floats) >= 1:
+                der = float(floats[0])
+                total_der += der
+                total_files += 1
+
+    if total_files > 0:
+        avg_der = total_der / total_files
+        return avg_der
+    else:
+        print("No DER files found or unable to calculate average DER.")
+
 if __name__ == '__main__':
     ## ground truth rttms
     sys_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
@@ -290,33 +316,35 @@ if __name__ == '__main__':
     # print(sys_rttm)
     # print(ref_rttm)
     ## joining
-    sys_rttm = " ".join(sys_rttm)
-    ref_rttm = " ".join(ref_rttm)
+    # sys_rttm = " ".join(sys_rttm)
+    # ref_rttm = " ".join(ref_rttm)
 
     # print(sys_rttm)
     # print(ref_rttm)
+    total_batches = math.ceil(float(len(sys_rttm)*1.0)/float(batch_size))
+    start_idx = 0
+    for batches in tqdm(range(total_batches)):
+        end_idx = min(start_idx+batch_size, len(sys_rttm))
+        ## finding files
+        temp_ref_rttm = ref_rttm[start_idx:end_idx]
+        temp_sys_rttm = sys_rttm[start_idx:end_idx]
+        temp_ref_rttm = " ".join(temp_ref_rttm)
+        temp_sys_rttm = " ".join(temp_sys_rttm)
+        # Finding the DER
+        command = f'python {derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
+        # Run the command
+        output = run_command(command)
+        # print("Command ran: ",command)
+        der_filename  = os.path.join(resultDERPath,f"eval-der-metrics-old-model-29Jan2024-{batches}.txt")
+        with open(der_filename, 'w') as f_out:
+            f_out.write(output)
+        if end_idx == len(sys_rttm):
+            break
+        start_idx = end_idx +1
+    
+    der  = findCumulativeDER()
+    print(f"The average DER is: {der}")
+    print("Evaluation Completed Succesfully!")
 
-    # Finding the DER
-    command = f'python {derScriptPath} -r {ref_rttm} -s {sys_rttm}'
-    # Run the command
-    output = run_command(command)
-    print(command)
-    der_filename  = os.path.join(resultDERPath,"eval-der-metrics-old-model-29Jan2024.txt")
-    with open(der_filename, 'w') as f_out:
-        f_out.write(output)
 
-    # Extract the 4th integer from the last line of the output
-    if output:
-        lines = output.split('\n')
-        last_line = lines[-1].strip()
 
-        # Use regular expression to extract integers
-        floats = re.findall(r'-?\d+\.\d+', last_line)
-
-        if len(floats) >= 1:
-            der = floats[0]
-            print(f"The required DER is : {der}")
-        else:
-            print("Enable to extract the integers.")
-    else:
-        print("Command execution failed.")
