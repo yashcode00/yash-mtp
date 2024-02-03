@@ -9,6 +9,8 @@ import math
 sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common")
 from Model import *
 from SilenceRemover import *
+from datasets import Dataset
+from multiprocess import set_start_method
 import numpy as np
 import pandas as pd
 import subprocess
@@ -35,6 +37,8 @@ import random
 from torch.autograd import Variable
 import concurrent.futures
 from gaussianSmooth import *
+
+torch.cuda.empty_cache()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device: {device}")
@@ -68,7 +72,7 @@ model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(model_name_or_
 target_sampling_rate = processor.feature_extractor.sampling_rate
 
 processor.feature_extractor.return_attention_mask = True
-print("The processor configuration is as follow: ",processor)
+# print("The processor configuration is as follow: ",processor)
 
 ### for x-vector
 model_xVector = X_vector(IP_dim, nc)
@@ -132,29 +136,20 @@ def diarize(S0,S1):
             SL.append(0)
         else:
             SL.append(1)
-
-# Traceback (most recent call last):
-#   File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py", line 256, in <module>
-#     x, lang_labels = diarize(S0, S1)
-#   File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py", line 134, in diarize
-#     lang_labels = [np.argmax(np.bincount(SL[:math.floor(x[0][0])]))]
-#   File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/numpy/core/fromnumeric.py", line 1229, in argmax
-#     return _wrapfunc(a, 'argmax', axis=axis, out=out, **kwds)
-#   File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.9/site-packages/numpy/core/fromnumeric.py", line 59, in _wrapfunc
-#     return bound(*args, **kwds)
-# ValueError: attempt to get argmax of an empty sequence
-    # try: 
-    #     lang_labels = [np.argmax(np.bincount(SL[:math.floor(x[0][0])]))]
-    # except Exception as e:
-    #     print("Lang lable extraction error: ",SL,"\n",e)
-    #     lang_labels = np.zeros()
-    # for i in range(len(x[0])-1):
-    #     lang_labels.append(np.argmax(np.bincount(SL[math.floor(x[0][i]):math.floor(x[0][i+1])])))
-
-    # if len(x[0])!=1:
-    #     lang_labels.append(np.argmax(np.bincount(SL[math.floor(x[0][len(x[0])-1]):])))
+    if len(x[0]) == 0:
+        ## dummy lang labels
+        lang_labels = np.zeros((len(x[0])+1,), dtype=int)
+        return x, lang_labels
+    try: 
+        lang_labels = [np.argmax(np.bincount(SL[:math.ceil(x[0][0])]))]
+    except Exception as e:
+        print("Lang lable extraction error: ",SL,"\n",e)
+        lang_labels = np.zeros((len(x[0])+1,), dtype=int)
+        return x, lang_labels
+    for i in range(1,len(x[0])+1):
+        lang_labels.append(1-lang_labels[i-1])
     # print("Segment Labels are: ", SL)
-    lang_labels = np.zeros(len(x)+1)
+    # lang_labels = np.zeros(len(x)+1)
     return x, lang_labels
 
 def preProcessSpeech(path):
@@ -240,16 +235,17 @@ def generate_rttm_file(name,cp, predicted_labels, total_time):
         # Calculate duration for each segment
         duration = end_time - start_time
         # Generate RTTM content
-        # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
-        rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
+        rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
 
         # Update start time for the next segment
         start_time = end_time
     
     ## add last entry
     duration = total_time - start_time
-    rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
-    # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+    i = len(cp)
+    # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
+    rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
     output_rttm_filename = f"Predicted_{name}.rttm"
     targetPath = os.path.join(outputFolderRTTM,output_rttm_filename)
 
@@ -285,12 +281,53 @@ def findCumulativeDER():
         return avg_der
     else:
         print("No DER files found or unable to calculate average DER.")
+    
+def predictOne(audioPath):
+    name = audioPath.split("/")[-1].split(".")[0]
+    S0, S1 = pipeline(audioPath)
+    x, lang_labels = diarize(S0, S1)
+    x = (x[0]*hop_length_seconds)+0.5
+    ## now generating rttm for this
+    # Load the audio file using torchaudio
+    waveform, sample_rate = torchaudio.load(audioPath)
+    # Get the duration in seconds
+    duration_in_seconds = waveform.size(1) / sample_rate
+    
+    return generate_rttm_file(name, x,lang_labels, duration_in_seconds)
+
+def helper(batch):
+    generated_rttms = [predictOne(path) for path in batch["audio_path"]]
+    batch["ref_rttm"] = generated_rttms
+    return batch
 
 if __name__ == '__main__':
+    torch.cuda.empty_cache()
+    set_start_method("spawn")
+    torch.set_num_threads(1)  ## imp
+    # mp.set_start_method('spawn')
     ## ground truth rttms
     sys_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
     sys_rttm = sorted(sys_rttm, key=numeric_part)
-    # ref_rttm = []
+    paths = [os.path.join(audioPath,audio) for audio in os.listdir(audioPath)]
+
+    # Create a dataset using Hugging Face datasets library
+    dataset = Dataset.from_dict({"audio_path": paths})
+    # print(f"The generated datasset is:\n {dataset}")
+    # print(f"One entry: {dataset[0]}")
+
+    dataset = dataset.map(
+        helper,
+        batched=True,
+        batch_size=16,
+        num_proc=4)
+    
+    # print(f"After proceseing dataset: \n{dataset}")
+    # print(f"One entry: {dataset[0]}")
+    ref_rttm = dataset["ref_rttm"]
+    ref_rttm = sorted(ref_rttm, key=numeric_part)
+    # print(ref_rttm)
+    # print("The true and predicted rttm files are: \n")
+
     # for audio in tqdm(os.listdir(audioPath)):
     #     actualPath = os.path.join(audioPath,audio)
     #     name = audio.split(".")[0]
@@ -309,9 +346,9 @@ if __name__ == '__main__':
     #     # Get the duration in seconds
     #     duration_in_seconds = waveform.size(1) / sample_rate
     #     ref_rttm.append(generate_rttm_file(name, x,lang_labels, duration_in_seconds))
-    ref_rttm = [os.path.join(outputFolderRTTM,filename) for filename in os.listdir(outputFolderRTTM)]
-    ref_rttm = sorted(ref_rttm, key=numeric_part)
-    # print("The true and predicted rttm files are: \n")
+    # # ref_rttm = [os.path.join(outputFolderRTTM,filename) for filename in os.listdir(outputFolderRTTM)]
+    # ref_rttm = sorted(ref_rttm, key=numeric_part)
+    # # print("The true and predicted rttm files are: \n")
 
     # print(sys_rttm)
     # print(ref_rttm)
@@ -331,7 +368,7 @@ if __name__ == '__main__':
         temp_ref_rttm = " ".join(temp_ref_rttm)
         temp_sys_rttm = " ".join(temp_sys_rttm)
         # Finding the DER
-        command = f'python {derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
+        command = f'python {derScriptPath} -r {temp_sys_rttm} -s {temp_ref_rttm}'
         # Run the command
         output = run_command(command)
         # print("Command ran: ",command)

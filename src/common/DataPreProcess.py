@@ -18,10 +18,10 @@ def CreateIfNot(parent, path):
 
 
 # loading the autdio dataset from the directory
-directory  = "/nlsasfs/home/nltm-st/sujitk/Data/16k_data/train"
-root = "/nlsasfs/home/nltm-st/sujitk/yash/datasets"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/spring-labs-dataset"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets"
 # FolderName
-folderName = "resampled_data_SilenceRemovedData"
+folderName = "spring-labs-resampled_data_SilenceRemovedData"
 # check if directory exist
 newDirectory = CreateIfNot(root, folderName)
 # newDirectory = os.path.join(root, folderName)
@@ -35,7 +35,7 @@ for path in tqdm(os.listdir(directory)):
     count = 0;
     if not path.startswith('.'):
         for subFoldlers in os.listdir(pathHere):
-            if not subFoldlers.startswith('.'):
+            if subFoldlers.startswith('Audio'):
                 pathHere2 = os.path.join(pathHere,subFoldlers);
                 NewPathHere2 = CreateIfNot(NewPathHere, subFoldlers);
                 ## Now expploring all the available audio files inside 

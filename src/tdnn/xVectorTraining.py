@@ -38,6 +38,7 @@ model_path = os.path.join(path,"model_xVector.pth")
 trigger_times = 0
 patience = 6
 batch_size = 64
+
 label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
 ##########################################
 
