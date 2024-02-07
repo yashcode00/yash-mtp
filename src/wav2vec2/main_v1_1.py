@@ -63,12 +63,12 @@ print_gpu_info()
 
 base_directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/"
 repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-repo_url = "facebook/wav2vec2-xls-r-1b"
+repo_url = "facebook/wav2vec2-xls-r-300m"
 processor_tokenizer_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 model_name_or_path = repo_url
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-wandb_run_name = f"Wave2vec2-1B_Training_{timestamp}"
-save_model_path = f"saved-model-{timestamp}"
+wandb_run_name = f"Spring-labs-Wave2vec2-300M_Training_{timestamp}"
+save_model_path = f"spring-300M-saved-model-{timestamp}"
 save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
 chkpt_path = f"/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/{save_model_path}/chkpt"
 pth_path = f"/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/{save_model_path}/pthFiles"
@@ -81,13 +81,13 @@ if not os.path.exists(save_model_path):
     os.makedirs(eval_path)
     logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
-final_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/saved_dataset.hf"
+dataset_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs-saved-dataset.hf"
 
 # We need to specify the input and output column
 input_column = "path"
 output_column = "language"
-label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
-model_out_dir = os.path.join(cache_dir, "wav2vec2-large-xls-r-1b-indian-language-classification")
+label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+model_out_dir = os.path.join(cache_dir, "wav2vec2-large-xls-r-300m-indian-language-classification")
 
 num_epochs = 300
 ## this batch size is not used , please refer to batch size per device in training args as this 
@@ -99,7 +99,7 @@ proxy_url = "http://proxy-10g.10g.siddhi.param:9090"
 ##################################################################################################
 
 ## loading from saved dataset
-dataset = load_from_disk(final_path)
+dataset = load_from_disk(dataset_path)
 logging.info("Datasets loaded succesfully!")
 
 # dataset = concatenate_datasets([dataset["train"],dataset["test"],dataset["validation"]])
@@ -197,14 +197,14 @@ train_dataset = train_dataset.map(
     preprocess_function,
     batch_size=1024,
     batched=True,
-    num_proc=300,
+    num_proc=400,
     # keep_in_memory=True
 )
 eval_dataset = eval_dataset.map(
     preprocess_function,
     batch_size=1024,
     batched=True,
-    num_proc=300,
+    num_proc=400,
     # keep_in_memory=True
 )
 
@@ -229,8 +229,8 @@ print("Eval steps: ",str(eval_steps))
 fp16 = True
 training_args = TrainingArguments(
     output_dir=model_out_dir,
-    per_device_train_batch_size=128,
-    per_device_eval_batch_size=128,
+    per_device_train_batch_size=256,
+    per_device_eval_batch_size=256,
     gradient_accumulation_steps=2,
     evaluation_strategy="steps",
     eval_steps=eval_steps,

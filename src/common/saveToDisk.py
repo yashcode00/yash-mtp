@@ -36,27 +36,21 @@ import wandb
 from Model import *
 from datasets import load_dataset, load_metric
 
-torch.cuda.empty_cache()
-
-## fetch trained model from huggingface hub
-repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-model_name_or_path = repo_url
-cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash/cache"
+cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/csv"
 final_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2"
 
 
-## loadfing data from disk
+## loading data from disk
 print("Loading the data from the disk.. wait")
 # # loading the autdio dataset from the directory
-# loading the autdio dataset from the directory
-directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/resampled_data_SilencedAndOneSecondData"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/spring-labs-resampled_data_SilencedAndOneSecondData"
 print(os.listdir(directory))
 data = []
 
 for path in tqdm(os.listdir(directory)):
     # now eplore the inner folder ,
     #  path is actually the audio language
-    if path in ['eng', 'tel' ,'mar' ,'odi' ,'asm' ,'guj' ,'hin' ,'tam', 'kan' ,'mal', 'ben']:
+    if path in ['eng', 'tel' ,'mar' ,'odi' ,'asm' ,'guj' ,'hin' ,'tam', 'kan' ,'mal', 'ben','pun']:
         pathHere = os.path.join(directory, path);
         count = 0
         if not path.startswith('.'):
@@ -83,7 +77,7 @@ for path in tqdm(os.listdir(directory)):
                         except Exception as e:
                             print(str(path), e)
                             pass
-            print(f'Total {count} samples loaded of {path} langueage dataset')
+            print(f'Total {count} samples loaded of {path} language.')
 
 ## now lets form a dataframe from the data array
 df = pd.DataFrame(data)
@@ -129,14 +123,14 @@ data_files = {
 
 dataset = load_dataset("csv", data_files=data_files, delimiter="\t")
 train_dataset = dataset["train"]
-# eval_dataset = dataset["validation"]
-# test_dataset = dataset["test"]
+eval_dataset = dataset["validation"]
+test_dataset = dataset["test"]
 
 print(train_dataset)
-# print(eval_dataset)
-# print(test_dataset)
+print(eval_dataset)
+print(test_dataset)
 
-final_path= os.path.join(final_path,"saved_dataset.hf")
+final_path= os.path.join(final_path,"spring-labs-saved-dataset.hf")
 print("Saving the dataset to be further use at ",final_path)
 dataset.save_to_disk(final_path)
 

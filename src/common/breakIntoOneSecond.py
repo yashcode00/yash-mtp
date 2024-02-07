@@ -14,9 +14,10 @@ from pydub import AudioSegment
 
 
 
-directory  = "/nlsasfs/home/nltm-st/sujitk/yash/datasets/resampled_data_SilenceRemovedData"
-root = "/nlsasfs/home/nltm-st/sujitk/yash/datasets"
-newDirectory = "resampled_data_SilencedAndOneSecondData"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/spring-labs-resampled_data_SilenceRemovedData"
+directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/rest-resampled_data_SilenceRemovedData"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets"
+newDirectory = "spring-labs-resampled_data_SilencedAndOneSecondData"
 
 ## code to break into 1 second chunks
 def break_audio_into_chunks(audio_path, chunk_size=1000):
@@ -36,6 +37,12 @@ def CreateIfNot(parent, path):
 # check if directory exist
 newDirectory = CreateIfNot(root, newDirectory)
 
+mapping_words = {'SPRING_INX_Assamese_R1':'asm', 'SPRING_INX_Bengali_R1':'ben', \
+                 'eng':'eng', 'SPRING_INX_Gujarati_R1':'guj', 'SPRING_INX_Hindi_R1':'hin', \
+                    'SPRING_INX_Kannada_R1':'kan', 'SPRING_INX_Malayalam_R1':'mal',\
+                         'SPRING_INX_Marathi_R1': 'mar', 'SPRING_INX_Odia_R1':'odi', 'SPRING_INX_Tamil_R1':'tam',\
+                              'tel':'tel','SPRING_INX_Punjabi_R1':'pun'}
+
 data = []
 for path in tqdm(os.listdir(directory)):
     # print(path)
@@ -43,11 +50,11 @@ for path in tqdm(os.listdir(directory)):
     #  path is actually the audio language
     pathHere = os.path.join(directory, path);
     # create new path 
-    NewPathHere = CreateIfNot(newDirectory, path);
+    NewPathHere = CreateIfNot(newDirectory, mapping_words[path]);
     count = 0;
     if not path.startswith('.') and path!='pun':
         for subFoldlers in os.listdir(pathHere):
-            if not subFoldlers.startswith('.'):
+            if subFoldlers.startswith('Audio'):
                 # print("Inside ",subFoldlers)
                 pathHere2 = os.path.join(pathHere,subFoldlers);
                 NewPathHere2 = CreateIfNot(NewPathHere, subFoldlers);
