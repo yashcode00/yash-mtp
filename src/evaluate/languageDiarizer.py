@@ -29,8 +29,7 @@ from datasets import load_dataset, load_metric, load_from_disk, disable_caching
 from transformers.file_utils import ModelOutput
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 import torch
-from transformers import AutoFeatureExtractor, TrainingArguments, AutoConfig, Wav2Vec2Processor, Wav2Vec2FeatureExtractor, EvalPrediction, Trainer
-import numpy as np
+from transformers import  AutoConfig, Wav2Vec2Processor
 from typing import Any, Dict, Union, Tuple
 from torch import optim
 import random

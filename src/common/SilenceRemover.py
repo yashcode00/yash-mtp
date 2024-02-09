@@ -1,16 +1,25 @@
 import collections
 import contextlib
 import sys
+import os
 import wave
 import webrtcvad
 import numpy as np
 import librosa
 import contextlib
+from pydub import AudioSegment
+import pydub
+import io
+from pydub.silence import split_on_silence
+import torchaudio
+
+
 
 # parameter how aggresively  the VAD algorithm detects speech segments in an audio signal. 
 # Different levels of aggressiveness correspond to different thresholds for considering a segment as containing speech.
 aggressiveness = 3
-target_sr = 8000
+target_sr = 16000
+default_path = "dummy-save-folder"
 
 
 def read_wave(path):
@@ -19,7 +28,8 @@ def read_wave(path):
     """
     with contextlib.closing(wave.open(path, 'rb')) as wf:
         num_channels = wf.getnchannels()
-        assert num_channels == 1
+        # assert num_channels == 1
+        assert num_channels in (1,2,3)
         sample_width = wf.getsampwidth()
         assert sample_width == 2
         sample_rate = wf.getframerate()
@@ -141,20 +151,21 @@ def vad_collector(sample_rate, frame_duration_ms,
 
 # RemoveSilence functioin takes input a audio file path and retrun 
 def RemoveSilence(path, newPath = None):
-    audio, sample_rate = read_wave(path)
+    audio, sample_rate =  read_wave(path)
     vad = webrtcvad.Vad(aggressiveness)
     frames = frame_generator(30, audio, sample_rate)
     frames = list(frames)
     segments = vad_collector(sample_rate, 30, 300, vad, frames)
     concataudio = [segment for segment in segments]
     joinedaudio = b"".join(concataudio)
+    if newPath is None:
+        if not os.path.exists(default_path):
+            os.makedirs(default_path)
+            print(f"Folder '{default_path}' created successfully.")
+        else:
+            print(f"Folder '{default_path}' already exists.")
+        newPath = os.path.join(default_path, "silenced-audio.wav") 
 
-    # print(np.frombuffer(joinedaudio, dtype=np.short).astype(float))
+    write_wave(newPath, joinedaudio, sample_rate)
+    return newPath
 
-    # Resample to the target sample rate and convert to floating-point
-    silencedAudio = librosa.resample(np.frombuffer(joinedaudio, dtype=np.short).astype(float), orig_sr=sample_rate, target_sr=sample_rate)
-    if newPath is not None:
-        write_wave(newPath, joinedaudio, sample_rate)
-
-    return np.frombuffer(silencedAudio)
-    # write_wave("Non-Silenced-Audio.wav", joinedaudio, sample_rate)
