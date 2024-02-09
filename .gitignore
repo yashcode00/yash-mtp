@@ -17,6 +17,7 @@ Thumbs.db
 /datasets/
 /models/
 /wandb/
+/uploads/
 
 # Ignore large files
 *.zip
