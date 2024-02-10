@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Upload File
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Upload File</h1>
+        <p>Select a .wav file to upload:</p>
+        <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" id="fileInput" name="file" accept=".wav"><br>
+            <select id="languageSelection" name="languageSelection">
+                <option value="asm">Assamese</option>
+                <option value="ben">Bengali</option>
+                <option value="eng">English</option>
+                <option value="guj">Gujarati</option>
+                <option value="hin">Hindi</option>
+                <option value="kan">Kannada</option>
+                <option value="mal">Malayalam</option>
+                <option value="mar">Marathi</option>
+                <option value="odi">Odia</option>
+                <option value="pun">Punjabi</option>
+                <option value="tam">Tamil</option>
+                <option value="tel">Telugu</option>
+            </select>
+            <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
+        </form>
+    </div>
+{% endblock %}

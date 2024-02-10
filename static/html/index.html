@@ -1,90 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language Prediction</title>
-</head>
-<body>
-    <h1>Language Prediction</h1>
-    <button id="recordButton">Record</button>
-    <audio controls id="audioPlayer" style="display: none;"></audio>
-    <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
-        <input type="file" id="fileInput" name="file" accept=".wav" style="display: none;">
-        <label for="fileInput">Upload .wav File</label><br>
-        <input type="hidden" id="audioData" name="audioData">
-        <input type="submit" value="Submit" style="display: none;" id="submitButton">
-        <select id="languageSelection" name="languageSelection">
-            <option value="Assamese">Assamese</option>
-            <option value="Bengali">Bengali</option>
-            <option value="English">English</option>
-            <option value="Gujarati">Gujarati</option>
-            <option value="Hindi">Hindi</option>
-            <option value="Kannada">Kannada</option>
-            <option value="Malayalam">Malayalam</option>
-            <option value="Marathi">Marathi</option>
-            <option value="Odia">Odia</option>
-            <option value="Punjabi">Punjabi</option>
-            <option value="Tamil">Tamil</option>
-            <option value="Telugu">Telugu</option>
-        </select>
-    </form>
-    
-    <script>
-        let audioChunks = [];
-        let stream;
-        let mediaRecorder;
+{% extends "base.html" %}
 
-        const recordButton = document.getElementById('recordButton');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const fileInput = document.getElementById('fileInput');
-        const uploadForm = document.getElementById('uploadForm');
-        const languageSelection = document.getElementById('languageSelection');
-        const submitButton = document.getElementById('submitButton');
-        const audioDataField = document.getElementById('audioData');
+{% block title %}
+    Language Prediction
+{% endblock %}
 
-        recordButton.addEventListener('mousedown', async () => {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-
-                mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
-                };
-
-                mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    audioPlayer.src = audioUrl;
-                    audioPlayer.style.display = 'block';
-                    audioPlayer.play();
-
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        audioDataField.value = reader.result;
-                    };
-                    reader.readAsDataURL(audioBlob);
-
-                    languageSelection.style.display = 'block';
-                    submitButton.style.display = 'block';
-                };
-
-                mediaRecorder.start();
-            } catch (error) {
-                console.error('Error recording audio:', error);
-            }
-        });
-
-        recordButton.addEventListener('mouseup', () => {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                stream.getTracks().forEach(track => track.stop());
-            }
-        });
-
-        fileInput.addEventListener('change', () => {
-            uploadForm.submit();
-        });
-    </script>
-</body>
-</html>
+{% block content %}
+    <div>
+        <h1>Language Prediction</h1>
+        <p>Choose one option:</p>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Record Audio</h5>
+                <p class="card-text">Click here to record audio.</p>
+                <a href="/record" class="btn btn-primary">Record</a>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Upload .wav File</h5>
+                <p class="card-text">Click here to upload a .wav file.</p>
+                <a href="/upload" class="btn btn-primary">Upload</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,20 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language Prediction Result</title>
-</head>
-<body>
-    <h1>Language Prediction Result</h1>
-    <h2>Uploaded File: {{ filename }}</h2>
-    <h2>Predicted Language: {{ prediction_result['predicted_class'] }}</h2>
-    <h2>True Language: {{ target_language}}</h2>
-    <h2>Confidences:</h2>
-    <ul>
-        {% for language, confidence in prediction_result['confidences'].items() %}
-            <li>{{ language }}: {{ confidence }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+    Results
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4">Language Prediction Result</h1>
+        <div class="mt-4">
+            <h2>Play Audio</h2>
+            <audio controls>
+                <source src="{{ url_for('download_file', filename=filename) }}" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <h3>Uploaded File: {{ filename }}</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Target Language:</h3>
+                <span class="badge badge-primary">{{ target_language }}</span>
+            </div>
+            <div class="col-md-6">
+                <h3>Predicted Language:</h3>
+                <span class="badge badge-success">{{ prediction_result['predicted_class'] }}</span>
+            </div>
+        </div>
+
+        <h1>Confidences</h1>
+        <table class="rwd-table">
+            <tbody>
+                <tr>
+                    <th>Language</th>
+                    <th>Confidence (In %)</th>
+                </tr>
+                {% for language, confidence in prediction_result['confidences'].items() %}
+                <tr>
+                    <td data-th="Language">
+                        {{ language }}
+                    </td>
+                    <td data-th="Confidence (In %)">
+                        {{ confidence }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Plot of original speech array -->
+        <div class="mt-4">
+            <h2>Original Speech Array</h2>
+            <div id="plot-original-audio" style="height: 400px; width: 100%;"></div>
+        </div>
+
+        <!-- Plot of silence removed speech array -->
+        <div class="mt-4">
+            <h2>Silence Removed Speech Array</h2>
+            <div id="plot-silence-removed-audio" style="height: 400px; width: 100%;"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<!-- JavaScript to create interactive plots -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var original_audio = {{ prediction_result['original_audio'] | tojson }};
+    var silence_removed_audio = {{ prediction_result['silence_removed_audio'] | tojson }};
+
+    var sampleRate = 16000; // Sample rate in Hz (resampled to 16 kHz)
+
+    var trace1 = {
+        x: Array.from({length: original_audio.length}, (_, i) => i), // Generating a sample vector
+        y: original_audio,
+        mode: 'lines',
+        name: 'Original Audio'
+    };
+
+    var trace2 = {
+        x: Array.from({length: silence_removed_audio.length}, (_, i) => i), // Generating a sample vector
+        y: silence_removed_audio,
+        mode: 'lines',
+        name: 'Silence Removed Audio'
+    };
+
+    var layout = {
+        xaxis: {
+            title: 'Samples'
+        },
+        yaxis: {
+            title: 'Amplitude'
+        }
+    };
+
+    Plotly.newPlot('plot-original-audio', [trace1], layout);
+    Plotly.newPlot('plot-silence-removed-audio', [trace2], layout);
+</script>
+{% endblock %}

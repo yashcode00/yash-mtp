@@ -63,7 +63,7 @@ class ModelForApp:
         pass
     def speech_file_to_array_fn(self, path: str):
         audio, sr =  librosa.load(path, sr = target_sampling_rate, mono = True)
-        clips = librosa.effects.split(audio)
+        clips = librosa.effects.split(audio, frame_length=8000, top_db=10) ## setting frame length 8000 and topdb=10 gave desirable results
         wav_data = []
         for c in clips:
             data = audio[c[0]: c[1]]
@@ -91,8 +91,11 @@ class ModelForApp:
         x = self.speech_file_to_array_fn(path)
         # Generate overlapping frames
         frames = [np.asarray(x[i:i+window_size]).astype('float32') for i in range(0, len(x) - window_size + 1, hop_size)]
-        print(f"Length of frames: {len(frames)}")
-        print(frames)
+        # print(f"Length of frames: {len(frames)}")
+        # print(frames)
+        if len(frames) == 0:
+            print("Error! Invalid Audio file, please check the audio again..")
+            return None
         if len(frames[-1]) < 100:
             print(f"Last element has small length of {len(frames[-1])} while it shall be {len(frames[0])}, Dropping!")
             frames.pop()
@@ -118,6 +121,8 @@ class ModelForApp:
         # ipd.display(ipd.Audio(data=np.asarray(speech), autoplay=True, rate=target_sampling_rate))
         out = self.predictOneAudio(path)
         out["original_sr"] = sr 
-        out["original_audio"] = orig_audio
-        out["silence_removed_audio"] = speech
+        out["original_audio"] = orig_audio.numpy()[0].tolist()
+        out["silence_removed_audio"] = np.array(speech).tolist()
+        # print(f"{type(orig_audio.numpy())} -> {orig_audio.numpy()}")
+        # print(f"{type(np.array(speech)) } -> {np.array(speech)}")
         return out

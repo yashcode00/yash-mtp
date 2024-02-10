@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Record Audio
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Record Audio</h1>
+        <p>Click the button below to start recording:</p>
+        <button class="btn btn-primary" id="recordButton">Start Recording</button>
+        <button class="btn btn-danger" id="stopButton" style="display: none;">Stop Recording</button>
+        <hr>
+        <audio controls id="audioPlayer" style="display: none;"></audio>
+        <form action="/record" method="post" enctype="multipart/form-data" id="recordForm" style="display: none;">
+            <input type="hidden" id="audioData" name="audioData">
+            <select id="languageSelection" name="languageSelection">
+                <option value="asm">Assamese</option>
+                <option value="ben">Bengali</option>
+                <option value="eng">English</option>
+                <option value="guj">Gujarati</option>
+                <option value="hin">Hindi</option>
+                <option value="kan">Kannada</option>
+                <option value="mal">Malayalam</option>
+                <option value="mar">Marathi</option>
+                <option value="odi">Odia</option>
+                <option value="pun">Punjabi</option>
+                <option value="tam">Tamil</option>
+                <option value="tel">Telugu</option>
+            </select>
+            <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let audioChunks = [];
+        let stream;
+        let mediaRecorder;
+
+        const recordButton = document.getElementById('recordButton');
+        const stopButton = document.getElementById('stopButton');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const recordForm = document.getElementById('recordForm');
+        const languageSelection = document.getElementById('languageSelection');
+        const submitButton = document.getElementById('submitButton');
+        const audioDataField = document.getElementById('audioData');
+
+        recordButton.addEventListener('click', startRecording);
+        stopButton.addEventListener('click', stopRecording);
+
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function(str) {
+                stream = str;
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.style.display = 'block';
+                    audioPlayer.play();
+
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        audioDataField.value = reader.result;
+                    };
+                    reader.readAsDataURL(audioBlob);
+
+                    languageSelection.style.display = 'block';
+                    submitButton.style.display = 'block';
+                };
+
+                recordButton.style.display = 'none';
+                stopButton.style.display = 'block';
+                recordForm.style.display = 'block';
+
+                mediaRecorder.start();
+            })
+            .catch(function(err) {
+                console.error('Error recording audio:', err);
+            });
+        }
+
+        function stopRecording() {
+            if (mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                stream.getTracks().forEach(track => track.stop());
+                recordButton.style.display = 'block';
+                stopButton.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}

@@ -17,7 +17,7 @@ Thumbs.db
 /datasets/
 /models/
 /wandb/
-/uploads/
+/Users/yash/Desktop/yash-mtp/static/uploads/
 
 # Ignore large files
 *.zip
