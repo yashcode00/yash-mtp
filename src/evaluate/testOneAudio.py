@@ -50,7 +50,7 @@ id2lang = {0: 'asm', 1: 'ben', 2: 'eng', 3: 'guj', 4: 'hin', 5: 'kan', 6: 'mal',
 input_column = 'path'
 output_column = 'true_label'
 default_path = "dummy-save-folder"
-window_size = 48000  #### window size of 3 seconds
+window_size = 16000  #### window size of 3 seconds
 hop_length_seconds = 0.5
 # Calculate the hop size in samples
 hop_size = int(hop_length_seconds * target_sampling_rate)  # Adjust 'sample_rate' as needed
