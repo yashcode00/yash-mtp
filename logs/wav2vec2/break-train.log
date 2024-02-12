@@ -1,0 +1,26 @@
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond
+  0%|          | 0/12 [00:00<?, ?it/s]  8%|▊         | 1/12 [03:25<37:39, 205.45s/it] 17%|█▋        | 2/12 [06:53<34:27, 206.75s/it] 25%|██▌       | 3/12 [10:03<29:55, 199.47s/it] 33%|███▎      | 4/12 [13:14<26:07, 195.93s/it] 42%|████▏     | 5/12 [16:49<23:39, 202.78s/it] 50%|█████     | 6/12 [19:49<19:29, 194.97s/it] 58%|█████▊    | 7/12 [23:08<16:21, 196.36s/it] 67%|██████▋   | 8/12 [26:20<13:00, 195.10s/it] 75%|███████▌  | 9/12 [29:23<09:33, 191.26s/it] 83%|████████▎ | 10/12 [32:15<06:10, 185.25s/it] 92%|█████████▏| 11/12 [35:07<03:01, 181.12s/it]100%|██████████| 12/12 [38:10<00:00, 181.86s/it]100%|██████████| 12/12 [38:10<00:00, 190.91s/it]
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/hin
+Total 6232 samples loaded and saved after silence removal and 2sec duration each of hin language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/mar
+Total 6194 samples loaded and saved after silence removal and 2sec duration each of mar language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/ben
+Total 6345 samples loaded and saved after silence removal and 2sec duration each of ben language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/mal
+Total 6526 samples loaded and saved after silence removal and 2sec duration each of mal language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/asm
+Total 7260 samples loaded and saved after silence removal and 2sec duration each of asm language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/guj
+Total 6010 samples loaded and saved after silence removal and 2sec duration each of guj language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/tel
+Total 6429 samples loaded and saved after silence removal and 2sec duration each of tel language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/odi
+Total 6351 samples loaded and saved after silence removal and 2sec duration each of odi language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/kan
+Total 5960 samples loaded and saved after silence removal and 2sec duration each of kan language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/pun
+Total 5182 samples loaded and saved after silence removal and 2sec duration each of pun language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/tam
+Total 5033 samples loaded and saved after silence removal and 2sec duration each of tam language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/eng
+Total 5738 samples loaded and saved after silence removal and 2sec duration each of eng language dataset

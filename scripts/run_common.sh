@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #SBATCH -N 1
 #SBATCH --partition=nltmp
-#SBATCH --job-name=save2disk
+#SBATCH --job-name=save
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/output.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/error.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/"
-output_main="${log_dir}saveToDisk.log"
+output_main="${log_dir}break-final-save2disk.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 

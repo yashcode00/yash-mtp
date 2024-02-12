@@ -16,10 +16,10 @@ def CreateIfNot(parent, path):
     return os.path.join(parent,path)
 
 # loading the autdio dataset from the directory
-directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/rest"
+directory  = "/nlsasfs/home/nltm-st/sujitk/Data/16k_data/test"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets"
 # FolderName
-folderName = "rest-resampled_data_SilenceRemovedData"
+folderName = "test_resampled_data_SilenceRemovedData"
 # check if directory exist
 newDirectory = CreateIfNot(root, folderName)
 # newDirectory = os.path.join(root, folderName)
@@ -33,25 +33,24 @@ for path in tqdm(os.listdir(directory)):
     count = 0;
     if not path.startswith('.'):
         for subFoldlers in os.listdir(pathHere):
-            if subFoldlers.startswith('Audio'):
-                pathHere2 = os.path.join(pathHere,subFoldlers);
-                NewPathHere2 = CreateIfNot(NewPathHere, subFoldlers);
-                ## Now expploring all the available audio files inside 
-                ## and if not corrupted storing then in dataframe 
-                for audioSamples in os.listdir(pathHere2):
-                    ## extracto all req info
-                    # name = audioSamples.split(".")[0]
-                    finalPath = os.path.join(pathHere2, audioSamples);
-                    AudioPath = os.path.join(NewPathHere2, audioSamples);
-                    try:
-                        # Try if there are some broken files
-                        speech, sr = torchaudio.load(finalPath)
-                        silencedAudio = RemoveSilence(finalPath, AudioPath)
-                        count = count +1;
-                    except Exception as e:
-                        print(str(path), e)
-                        pass
-        print(f'Total {count} samples loaded and saved after silence removal of {path} langueage dataset')
+            pathHere2 = os.path.join(pathHere,subFoldlers);
+            NewPathHere2 = CreateIfNot(NewPathHere, subFoldlers);
+            ## Now expploring all the available audio files inside 
+            ## and if not corrupted storing then in dataframe 
+            for audioSamples in os.listdir(pathHere2):
+                ## extracto all req info
+                # name = audioSamples.split(".")[0]
+                finalPath = os.path.join(pathHere2, audioSamples);
+                AudioPath = os.path.join(NewPathHere2, audioSamples);
+                try:
+                    # Try if there are some broken files
+                    speech, sr = torchaudio.load(finalPath)
+                    silencedAudio = RemoveSilence(finalPath, AudioPath)
+                    count = count +1;
+                except Exception as e:
+                    print(str(path), e)
+                    pass
+        print(f'Total {count} samples loaded and saved after silence removal of {path} language dataset')
 
 
 ## below code works if there is only one level of nesting 

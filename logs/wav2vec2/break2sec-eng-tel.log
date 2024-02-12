@@ -1,0 +1,32 @@
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [01:27<13:04, 87.22s/it] 20%|██        | 2/10 [03:33<14:39, 109.98s/it] 30%|███       | 3/10 [05:09<12:07, 103.87s/it] 40%|████      | 4/10 [05:37<07:23, 73.99s/it]  50%|█████     | 5/10 [07:25<07:10, 86.03s/it] 60%|██████    | 6/10 [07:30<03:54, 58.52s/it] 70%|███████   | 7/10 [07:37<02:05, 41.69s/it] 80%|████████  | 8/10 [09:48<02:20, 70.19s/it] 90%|█████████ | 9/10 [11:54<01:27, 87.55s/it]100%|██████████| 10/10 [13:40<00:00, 93.20s/it]100%|██████████| 10/10 [13:40<00:00, 82.03s/it]
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/odi
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/odi
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Odia_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/hin
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/hin
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Hindi_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/guj
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/guj
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Gujarati_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/kan
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/kan
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Kannada_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/asm
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/asm
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Assamese_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/mar
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/mar
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Marathi_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/mal
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/mal
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Malayalam_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/tam
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/tam
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Tamil_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/ben
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/ben
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Bengali_R1 language dataset
+Created new directory /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/pun
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilencedAndTwoSecondData/pun
+Total 101 samples loaded and saved after silence removal and 2sec duration each of SPRING_INX_Punjabi_R1 language dataset

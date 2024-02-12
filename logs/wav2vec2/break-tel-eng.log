@@ -1,0 +1,7 @@
+Current dir:  combined-resampled_data_SilenceAndTwoSecond
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond
+  0%|          | 0/2 [00:00<?, ?it/s] 50%|█████     | 1/2 [00:14<00:14, 14.20s/it]100%|██████████| 2/2 [00:25<00:00, 12.64s/it]100%|██████████| 2/2 [00:25<00:00, 12.87s/it]
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/tel
+Total 301 samples loaded and saved after silence removal and 2sec duration each of tel language dataset
+Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/eng
+Total 301 samples loaded and saved after silence removal and 2sec duration each of eng language dataset
