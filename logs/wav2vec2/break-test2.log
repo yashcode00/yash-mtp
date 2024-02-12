@@ -1,27 +1,0 @@
-Current dir:  /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/test_resampled_data_SilenceRemovedData
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond
-  0%|          | 0/12 [00:00<?, ?it/s]  8%|▊         | 1/12 [00:53<09:45, 53.19s/it] 17%|█▋        | 2/12 [01:46<08:55, 53.52s/it] 25%|██▌       | 3/12 [02:40<08:00, 53.41s/it] 33%|███▎      | 4/12 [03:33<07:06, 53.27s/it] 42%|████▏     | 5/12 [04:37<06:39, 57.04s/it] 50%|█████     | 6/12 [05:25<05:24, 54.13s/it] 58%|█████▊    | 7/12 [06:18<04:29, 53.88s/it] 67%|██████▋   | 8/12 [07:10<03:32, 53.02s/it] 75%|███████▌  | 9/12 [07:58<02:35, 51.69s/it] 83%|████████▎ | 10/12 [08:44<01:39, 49.76s/it] 92%|█████████▏| 11/12 [09:27<00:47, 47.82s/it]100%|██████████| 12/12 [10:16<00:00, 48.17s/it]100%|██████████| 12/12 [10:16<00:00, 51.39s/it]
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/hin
-Total 1573 samples loaded and saved after silence removal and 2sec duration each of hin language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/mar
-Total 1566 samples loaded and saved after silence removal and 2sec duration each of mar language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/ben
-Total 1603 samples loaded and saved after silence removal and 2sec duration each of ben language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/mal
-Total 1649 samples loaded and saved after silence removal and 2sec duration each of mal language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/asm
-Total 1840 samples loaded and saved after silence removal and 2sec duration each of asm language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/guj
-Total 1521 samples loaded and saved after silence removal and 2sec duration each of guj language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/tel
-Total 1628 samples loaded and saved after silence removal and 2sec duration each of tel language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/odi
-Total 1607 samples loaded and saved after silence removal and 2sec duration each of odi language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/kan
-Total 1504 samples loaded and saved after silence removal and 2sec duration each of kan language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/pun
-Total 1310 samples loaded and saved after silence removal and 2sec duration each of pun language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/tam
-Total 1271 samples loaded and saved after silence removal and 2sec duration each of tam language dataset
-Directory already exist namely /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond/eng
-Total 1455 samples loaded and saved after silence removal and 2sec duration each of eng language dataset

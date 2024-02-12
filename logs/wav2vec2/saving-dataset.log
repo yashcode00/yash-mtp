@@ -1,44 +1,0 @@
-Loading the data from the disk.. wait
-['hin', 'mar', 'ben', 'mal', 'asm', 'guj', 'tel', 'odi', 'kan', 'pun', 'tam', 'eng']
-  0%|          | 0/12 [00:00<?, ?it/s]  8%|▊         | 1/12 [35:34<6:31:23, 2134.84s/it] 17%|█▋        | 2/12 [1:09:56<5:48:37, 2091.73s/it] 25%|██▌       | 3/12 [1:35:29<4:35:31, 1836.85s/it] 33%|███▎      | 4/12 [2:02:27<3:53:23, 1750.41s/it] 42%|████▏     | 5/12 [2:28:17<3:15:45, 1677.95s/it] 50%|█████     | 6/12 [2:52:23<2:39:54, 1599.14s/it] 58%|█████▊    | 7/12 [3:20:45<2:16:03, 1632.73s/it] 67%|██████▋   | 8/12 [3:49:25<1:50:41, 1660.45s/it] 75%|███████▌  | 9/12 [4:15:45<1:21:46, 1635.38s/it] 83%|████████▎ | 10/12 [4:15:45<37:41, 1130.55s/it]  92%|█████████▏| 11/12 [4:39:03<20:12, 1212.33s/it]100%|██████████| 12/12 [5:06:04<00:00, 1336.80s/it]100%|██████████| 12/12 [5:06:05<00:00, 1530.43s/it]
-Total 71402 samples loaded of hin langueage dataset
-Total 68779 samples loaded of mar langueage dataset
-Total 64904 samples loaded of ben langueage dataset
-Total 61957 samples loaded of mal langueage dataset
-Total 66788 samples loaded of asm langueage dataset
-Total 59177 samples loaded of guj langueage dataset
-Total 67008 samples loaded of tel langueage dataset
-Total 62395 samples loaded of odi langueage dataset
-Total 64861 samples loaded of kan langueage dataset
-Total 65272 samples loaded of tam langueage dataset
-Total 61396 samples loaded of eng langueage dataset
-Total length of the Dataset:  713939
-                         name  ... language
-0     96_Puliyabaazi_Ep_46_13  ...      hin
-1   5_30_Puliyabaazi_Ep_47_10  ...      hin
-2   2_100_Puliyabaazi_Ep_24_4  ...      hin
-3      20_Puliyabaazi_Ep_24_9  ...      hin
-4  16_96_Puliyabaazi_Ep_24_14  ...      hin
-
-[5 rows x 4 columns]
-name                                       96_Puliyabaazi_Ep_46_13
-path             /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets...
-sampling_rate                                                16000
-language                                                       hin
-Name: 0, dtype: object
-Labels:  ['hin' 'mar' 'ben' 'mal' 'asm' 'guj' 'tel' 'odi' 'kan' 'tam' 'eng']
-
-Train df is  (571151, 4)
-Validation df is  (114230, 4)
-Test df is  (28558, 4)
-Downloading and preparing dataset csv/default to /nlsasfs/home/nltm-st/sujitk/.cache/huggingface/datasets/csv/default-236cb25bf116f22a/0.0.0/6954658bab30a358235fa864b05cf819af0e179325c740e4bc853bcc7ec513e1...
-Downloading data files:   0%|          | 0/3 [00:00<?, ?it/s]Downloading data files: 100%|██████████| 3/3 [00:00<00:00, 12064.15it/s]
-Extracting data files:   0%|          | 0/3 [00:00<?, ?it/s]Extracting data files: 100%|██████████| 3/3 [00:00<00:00, 36.40it/s]
-Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 10000 examples [00:01, 7954.18 examples/s]Generating train split: 60000 examples [00:01, 56820.51 examples/s]Generating train split: 110000 examples [00:01, 108996.83 examples/s]Generating train split: 160000 examples [00:01, 162253.02 examples/s]Generating train split: 210000 examples [00:01, 211106.88 examples/s]Generating train split: 270000 examples [00:01, 263352.23 examples/s]Generating train split: 330000 examples [00:02, 305885.95 examples/s]Generating train split: 390000 examples [00:02, 337470.22 examples/s]Generating train split: 450000 examples [00:02, 358725.77 examples/s]Generating train split: 510000 examples [00:02, 374326.95 examples/s]Generating train split: 570000 examples [00:02, 385949.57 examples/s]                                                                     Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 50000 examples [00:00, 391229.78 examples/s]Generating validation split: 90000 examples [00:00, 388339.09 examples/s]                                                                         Generating test split: 0 examples [00:00, ? examples/s]                                                       Dataset csv downloaded and prepared to /nlsasfs/home/nltm-st/sujitk/.cache/huggingface/datasets/csv/default-236cb25bf116f22a/0.0.0/6954658bab30a358235fa864b05cf819af0e179325c740e4bc853bcc7ec513e1. Subsequent calls will reuse this data.
-  0%|          | 0/3 [00:00<?, ?it/s]100%|██████████| 3/3 [00:00<00:00, 30.06it/s]
-Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 571151
-})
-Saving the dataset to be further use at  /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/saved_dataset.hf
-Saving the dataset (0/1 shards):   0%|          | 0/571151 [00:00<?, ? examples/s]Saving the dataset (0/1 shards):  22%|██▏       | 125000/571151 [00:01<00:04, 89805.85 examples/s]Saving the dataset (0/1 shards):  69%|██████▊   | 392000/571151 [00:01<00:00, 329894.72 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 571151/571151 [00:01<00:00, 329894.72 examples/s]                                                                                                   Saving the dataset (0/1 shards):   0%|          | 0/114230 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 114230/114230 [00:00<00:00, 2503698.97 examples/s]                                                                                                    Saving the dataset (0/1 shards):   0%|          | 0/28558 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 28558/28558 [00:00<00:00, 2043833.97 examples/s]                                                                                                  Work done mate
