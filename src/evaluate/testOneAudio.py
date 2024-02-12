@@ -4,7 +4,7 @@
 #####################################################
 
 import sys
-sys.path.append("/Users/yash/Desktop/yash-mtp/src/common")
+sys.path.append("/app/src/common")
 from Model import *
 import os
 from SilenceRemover import *
