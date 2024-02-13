@@ -2,6 +2,8 @@
 # Silence removed Data
 
 ## loading important libraries
+import sys
+sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common")
 from tqdm import tqdm
 import torchaudio
 import os
@@ -16,7 +18,7 @@ def CreateIfNot(parent, path):
     return os.path.join(parent,path)
 
 # loading the autdio dataset from the directory
-directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge"
 # FolderName
 folderName = "Displace2024_dev_audio_supervised_SilenceRemovedData"
@@ -29,12 +31,12 @@ for path in tqdm(os.listdir(directory)):
     #  path is actually the audio language
     pathHere = os.path.join(directory, path);
     # create new path 
-    NewPathHere = CreateIfNot(newDirectory, path);
+    NewPathHere = newDirectory;
     count = 0;
-    if not path.startswith('.'):
+    if path.startswith('A'):
         for subFoldlers in os.listdir(pathHere):
             pathHere2 = os.path.join(pathHere,subFoldlers);
-            NewPathHere2 = CreateIfNot(NewPathHere, subFoldlers);
+            NewPathHere2 = NewPathHere
             ## Now expploring all the available audio files inside 
             ## and if not corrupted storing then in dataframe 
             for audioSamples in os.listdir(pathHere2):

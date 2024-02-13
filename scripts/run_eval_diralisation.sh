@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 #SBATCH -N 1
 #SBATCH --partition=nltmp
-#SBATCH --gres=gpu:2
-#SBATCH --job-name=eval-LD
+#SBATCH --job-name=terminator
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/out.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/err.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/"
-output_main="${log_dir}evaluate-LD.log"
+output_main="${log_dir}terminator.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 
@@ -32,7 +31,7 @@ bg_pid=$!
 echo "Job is running in the background with PID $bg_pid."
 
 # Deactivate the Conda environment (optional)
-# conda deactivate
+# conda deactivate  # SBATCH --gres=gpu:2
 
 # Wait for the background job to complete
 wait $bg_pid

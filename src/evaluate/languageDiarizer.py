@@ -41,6 +41,7 @@ from gaussianSmooth import *
 torch.cuda.empty_cache()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 print(f"Device: {device}")
 batch_size = 100  # Set your desired batch size
 nc = 11 # Number of language classes 
@@ -49,18 +50,18 @@ look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
 path = "/Users/yash/Desktop/MTP-2k23-24"
 xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults/modelEpoch0_xVector.pth"
-outputFolderRTTM = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/predicted-rttm"
-resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
+outputFolderRTTM = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/displace-predicted-rttm-old-300M-wave2vec2-11-lang"
+resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/displace-predicted-rttm-old-300M-wave2vec2-11-lang"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised_SilenceRemovedData"
+ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 silencedAndOneSecondAudio_size = 16000
 window_size = 16000
-hop_length_seconds = 0.25  # Desired hop length in seconds
+hop_length_seconds = 0.5  # Desired hop length in seconds
 ## parameters for gaussian smoothing 
 gauss_window_size = 21  # A good starting value for the window size
 sigma = 0.003*21  # A reasonable starting value for sigma
 audio_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale/HECodemixedFemale1.wav"
-ref_rttm = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm/rttm_HECodemixedFemale1.wav"
+# ref_rttm = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm/rttm_HECodemixedFemale1.wav"
 derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
 
 ### Intializing models
@@ -83,6 +84,15 @@ loss_lang = torch.nn.CrossEntropyLoss()  # cross entropy loss function for the s
 manual_seed = random.randint(1,10000) #randomly seeding
 random.seed(manual_seed)
 torch.manual_seed(manual_seed)
+
+
+def create_output_folder(folder_path):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+        print(f"Folder '{folder_path}' created successfully.")
+    else:
+        print(f"Folder '{folder_path}' already exists.")
+create_output_folder(outputFolderRTTM)
 
 try:
     ## only use map location for non cuda devices
@@ -229,13 +239,13 @@ def generate_rttm_file(name,cp, predicted_labels, total_time):
     rttm_content = ""
     # Add the start time at 0
     start_time = 0
-    tolang = {0:"English",1:"Hindi"}
+    tolang = {0:"L1",1:"L2"}
     for i in range(len(cp)):
         end_time = cp[i]
         # Calculate duration for each segment
         duration = end_time - start_time
         # Generate RTTM content
-        rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
         # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
 
         # Update start time for the next segment
@@ -245,8 +255,8 @@ def generate_rttm_file(name,cp, predicted_labels, total_time):
     duration = total_time - start_time
     i = len(cp)
     # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
-    rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
-    output_rttm_filename = f"Predicted_{name}.rttm"
+    rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+    output_rttm_filename = f"{name}_LANGUAGE_sys.rttm"
     targetPath = os.path.join(outputFolderRTTM,output_rttm_filename)
 
     # Export RTTM file
@@ -297,7 +307,7 @@ def predictOne(audioPath):
 
 def helper(batch):
     generated_rttms = [predictOne(path) for path in batch["audio_path"]]
-    batch["ref_rttm"] = generated_rttms
+    batch["sys_rttm"] = generated_rttms
     return batch
 
 if __name__ == '__main__':
@@ -306,8 +316,9 @@ if __name__ == '__main__':
     torch.set_num_threads(1)  ## imp
     # mp.set_start_method('spawn')
     ## ground truth rttms
-    sys_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
-    sys_rttm = sorted(sys_rttm, key=numeric_part)
+    ref_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
+    ref_rttm = sorted(ref_rttm, key=numeric_part)
+    print(f"The refernce/ground truth rttm file: \n{ref_rttm}")
     paths = [os.path.join(audioPath,audio) for audio in os.listdir(audioPath)]
 
     # Create a dataset using Hugging Face datasets library
@@ -318,14 +329,15 @@ if __name__ == '__main__':
     dataset = dataset.map(
         helper,
         batched=True,
-        batch_size=16,
-        num_proc=4)
+        batch_size=1,
+        # num_proc=2
+        )
     
     # print(f"After proceseing dataset: \n{dataset}")
     # print(f"One entry: {dataset[0]}")
-    ref_rttm = dataset["ref_rttm"]
-    ref_rttm = sorted(ref_rttm, key=numeric_part)
-    # print(ref_rttm)
+    sys_rttm = dataset["sys_rttm"]
+    sys_rttm = sorted(sys_rttm, key=numeric_part)
+    print(f"System generated rttm files: \n{sys_rttm}")
     # print("The true and predicted rttm files are: \n")
 
     # for audio in tqdm(os.listdir(audioPath)):
@@ -350,32 +362,32 @@ if __name__ == '__main__':
     # ref_rttm = sorted(ref_rttm, key=numeric_part)
     # # print("The true and predicted rttm files are: \n")
 
-    # print(sys_rttm)
+    # print(ref_rttm)
     # print(ref_rttm)
     ## joining
-    # sys_rttm = " ".join(sys_rttm)
+    # ref_rttm = " ".join(ref_rttm)
     # ref_rttm = " ".join(ref_rttm)
 
-    # print(sys_rttm)
     # print(ref_rttm)
-    total_batches = math.ceil(float(len(sys_rttm)*1.0)/float(batch_size))
+    # print(ref_rttm)
+    total_batches = math.ceil(float(len(ref_rttm)*1.0)/float(batch_size))
     start_idx = 0
     for batches in tqdm(range(total_batches)):
-        end_idx = min(start_idx+batch_size, len(sys_rttm))
+        end_idx = min(start_idx+batch_size, len(ref_rttm))
         ## finding files
-        temp_ref_rttm = ref_rttm[start_idx:end_idx]
         temp_sys_rttm = sys_rttm[start_idx:end_idx]
-        temp_ref_rttm = " ".join(temp_ref_rttm)
+        temp_ref_rttm = ref_rttm[start_idx:end_idx]
         temp_sys_rttm = " ".join(temp_sys_rttm)
+        temp_ref_rttm = " ".join(temp_ref_rttm)
         # Finding the DER
-        command = f'python {derScriptPath} -r {temp_sys_rttm} -s {temp_ref_rttm}'
+        command = f'python {derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
         # Run the command
         output = run_command(command)
         # print("Command ran: ",command)
-        der_filename  = os.path.join(resultDERPath,f"eval-der-metrics-old-model-29Jan2024-{batches}.txt")
+        der_filename  = os.path.join(resultDERPath,f"displace-der-metrics-13Feb2024-{batches}.txt")
         with open(der_filename, 'w') as f_out:
             f_out.write(output)
-        if end_idx == len(sys_rttm):
+        if end_idx == len(ref_rttm):
             break
         start_idx = end_idx +1
     
