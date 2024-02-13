@@ -1,32 +1,24 @@
 import os
-import zipfile
+import pyzipper
 
-source_directory = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/eng'  
-target_directory = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/rest/eng'  
+zip_file_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/Displace2024_dev_audio_supervised.zip'
+target_directory = '/nlsasfs/home/nltm-st/sujitk/yash-mtp'
+password = "O61^X1f#>G]y"
 
-def unzip_spring_files():
-    global target_directory
-    global source_directory
+def unzip_with_pyzipper(zip_file_path, target_directory, password):
+    # Create the target directory if it doesn't exist
+    os.makedirs(target_directory, exist_ok=True)
 
-    # List all files in the source directory
-    files = os.listdir(source_directory)
+    # Extract the file name from the file path
+    file_name = os.path.basename(zip_file_path)
 
-    # Filter files ending with ".zip"
-    spring_files = [file for file in files if file.endswith('.zip')]
+    # Open the zip file with pyzipper
+    with pyzipper.AESZipFile(zip_file_path, 'r') as zip_ref:
+        # Extract all contents to the target directory with the provided password
+        zip_ref.extractall(target_directory, pwd=str.encode(password))
 
-    if not spring_files:
-        print("No ZIP files found.")
-        return
-
-    for spring_file in spring_files:
-        filename = os.path.splitext(spring_file)[0]  # Remove the '.zip' extension
-        file_path = os.path.join(source_directory, spring_file)
-        target_path = os.path.join(target_directory, filename)
-
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
-            zip_ref.extractall(target_path)
-
-        print(f"Successfully extracted {spring_file} to {target_path}")
+    print(f"File extracted to: {target_directory}")
 
 if __name__ == "__main__":
-    unzip_spring_files()
+    unzip_with_pyzipper(zip_file_path, target_directory, password)
+
