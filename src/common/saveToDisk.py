@@ -16,7 +16,7 @@ final_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2"
 ## loading data from disk
 print("Loading the data from the disk.. wait")
 # # loading the autdio dataset from the directory
-directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/combined-resampled_data_SilenceAndTwoSecond"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/displace-finetuneTwoSecondSilencedData"
 print(f"Current directory {directory}")
 print(os.listdir(directory))
 data = []
@@ -24,7 +24,7 @@ data = []
 for path in tqdm(os.listdir(directory)):
     # now eplore the inner folder ,
     #  path is actually the audio language
-    if path in ['eng', 'tel' ,'mar' ,'odi' ,'asm' ,'guj' ,'hin' ,'tam', 'kan' ,'mal', 'ben','pun']:
+    if path in ['eng', 'tel' ,'mar' ,'odi' ,'asm' ,'guj' ,'hin' ,'tam', 'kan' ,'mal', 'ben','pun','not-eng']:
         print(f"Processing {path}")
         pathHere = os.path.join(directory, path);
         count = 0
@@ -100,7 +100,7 @@ print(train_dataset)
 print(eval_dataset)
 # print(test_dataset)
 
-final_path= os.path.join(final_path,"combined-saved-dataset.hf")
+final_path= os.path.join(final_path,"displace-saved-dataset.hf")
 print("Saving the dataset to be further use at ",final_path)
 dataset.save_to_disk(final_path)
 

@@ -67,8 +67,8 @@ repo_url = "facebook/wav2vec2-xls-r-300m"
 processor_tokenizer_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 model_name_or_path = repo_url
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-wandb_run_name = f"combined-Wave2vec2-300M_Training_{timestamp}"
-save_model_path = f"combined-300M-saved-model-{timestamp}"
+wandb_run_name = f"displace-Wave2vec2-300M_Training_{timestamp}"
+save_model_path = f"displace-300M-saved-model-{timestamp}"
 save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
 chkpt_path = f"{save_model_path}/chkpt"
 pth_path = f"{save_model_path}/pthFiles"
@@ -81,13 +81,13 @@ if not os.path.exists(save_model_path):
     os.makedirs(eval_path)
     logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
-dataset_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
+dataset_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-saved-dataset.hf"
 
 # We need to specify the input and output column
 input_column = "path"
 output_column = "language"
-label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
-model_out_dir = os.path.join(cache_dir, "wav2vec2-large-xls-r-300m-indian-language-classification")
+label_names = ['eng', 'not-eng']
+model_out_dir = os.path.join(cache_dir, "wav2vec2-large-xls-r-300m-indian-language-classification-displace")
 
 num_epochs = 300
 ## this batch size is not used , please refer to batch size per device in training args as this 

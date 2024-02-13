@@ -35,7 +35,7 @@ from typing import Any, Dict, Union, Tuple
 from torch import optim
 import random
 from torch.autograd import Variable
-import concurrent.futures
+import torch.distributed
 from gaussianSmooth import *
 
 torch.cuda.empty_cache()
@@ -44,6 +44,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(f"Device: {device}")
 batch_size = 100  # Set your desired batch size
+max_batch_size = 156
 nc = 11 # Number of language classes 
 n_epoch = 200 # Number of epochs
 look_back1 = 21 # range
@@ -52,15 +53,16 @@ path = "/Users/yash/Desktop/MTP-2k23-24"
 xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults/modelEpoch0_xVector.pth"
 outputFolderRTTM = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/displace-predicted-rttm-old-300M-wave2vec2-11-lang"
 resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/displace-predicted-rttm-old-300M-wave2vec2-11-lang"
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised_SilenceRemovedData"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised_SilenceRemovedData"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 silencedAndOneSecondAudio_size = 16000
-window_size = 16000
+window_size = 32000
 hop_length_seconds = 0.5  # Desired hop length in seconds
 ## parameters for gaussian smoothing 
 gauss_window_size = 21  # A good starting value for the window size
 sigma = 0.003*21  # A reasonable starting value for sigma
-audio_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale/HECodemixedFemale1.wav"
+# audio_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale/HECodemixedFemale1.wav"
 # ref_rttm = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm/rttm_HECodemixedFemale1.wav"
 derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
 
@@ -206,34 +208,44 @@ def extractHE(input_array):
     softmax_result = np.apply_along_axis(lambda x: np.exp(x - np.max(x)) / np.sum(np.exp(x - np.max(x))), axis=1, arr=selected_columns)
     return softmax_result
 
-def pipeline(path):
-    ## Step 1: preprocees the audio by removing silence
+def pipeline(path, max_batch_frames=max_batch_size):
+    ## Step 1: preprocess the audio by removing silence
     x = preProcessSpeech(path)
-    ## Now, we will just bbreak this audio into multiple overlapping windows 
+    
+    ## Now, we will just break this audio into multiple overlapping windows 
     # Calculate the hop size in samples
     hop_size = int(hop_length_seconds * target_sampling_rate)  # Adjust 'sample_rate' as needed
 
     # Generate overlapping frames
     frames = [x[i:i+window_size] for i in range(0, len(x) - window_size + 1, hop_size)]
-    if len(frames[-1])<100:
+    if len(frames[-1]) < 100:
         print(f"Last element has small length of {len(frames[-1])} while it shall be {len(frames[0])}, Dropping!")
         frames.pop()
-    ## Step 2: get the hidden featrue for the processed output / here #frames acts as batch size
-    x = getHiddenFeatures(frames).cpu().numpy() ### returns something like of shape (#frames, 49,1024)
-    # print(f"Shape of hidden features of all the frames: {x.shape}")
+    
+    ## Step 2: get the hidden feature for the processed output / here #frames acts as batch size
+    results = []
+    end = len(frames)  # Initialize end index to the total number of frames
+    for i in range(0, end, max_batch_frames):
+        batch_frames = frames[i:min(i+max_batch_frames, end)]  # Adjust end index
+        hidden_features = getHiddenFeatures(batch_frames).cpu().numpy()
+        print(f"size of hidden features: {hidden_features.shape}")
+        results.append(hidden_features)
+
+    ## Concatenate results of all minibatches
+    x = np.concatenate(results, axis=0)
+    print(f"Final shape of hidden features concatenated: {x.shape}")
+
     ## Step 3: get the output of TDNN for both eng and hindi
     X_val = torch.from_numpy(np.vectorize(inputTDNN, signature='(n,m)->(p,q)')(x))  ## returns (#frames, 28, 21504)
-    # print(f"shape of XX_val: {X_val.shape}")
     X_val = Variable(X_val, requires_grad=False)
     model_xVector.eval()  # Set the model to evaluation mode
-    val_lang_op =model_xVector.forward(X_val)
+    val_lang_op = model_xVector.forward(X_val)
     val_lang_op = val_lang_op.detach().cpu().numpy()
-    # print(f"shape of val_lang_op: {val_lang_op.shape}")
-    val_lang_op = np.vectorize(extractHE,signature='(n,m)->(n,p)')(val_lang_op)
-    # print(f"Predicted language for this window is: ",y)
-    ## Step 4: mask the output for all languauge except eng and hindi
-    # print(val_lang_op)
+    val_lang_op = np.vectorize(extractHE, signature='(n,m)->(n,p)')(val_lang_op)
+    
+    ## Step 4: mask the output for all language except eng and hindi
     return val_lang_op[:,0], val_lang_op[:,1]
+
 
 def generate_rttm_file(name,cp, predicted_labels, total_time):
     rttm_content = ""
@@ -255,7 +267,7 @@ def generate_rttm_file(name,cp, predicted_labels, total_time):
     duration = total_time - start_time
     i = len(cp)
     # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
-    rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+    rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
     output_rttm_filename = f"{name}_LANGUAGE_sys.rttm"
     targetPath = os.path.join(outputFolderRTTM,output_rttm_filename)
 
@@ -321,55 +333,40 @@ if __name__ == '__main__':
     print(f"The refernce/ground truth rttm file: \n{ref_rttm}")
     paths = [os.path.join(audioPath,audio) for audio in os.listdir(audioPath)]
 
+    # Set the local_rank to a specific value for testing
+    local_rank = local_rank = int(os.environ["LOCAL_RANK"])
+
     # Create a dataset using Hugging Face datasets library
     dataset = Dataset.from_dict({"audio_path": paths})
     # print(f"The generated datasset is:\n {dataset}")
     # print(f"One entry: {dataset[0]}")
 
+    # Set up distributed training across 4 GPUs
+    torch.distributed.init_process_group(backend='nccl', init_method='env://')
+    local_rank = torch.distributed.get_rank()
+    print(f"Local rank - {local_rank}")
+    torch.cuda.set_device(local_rank)
+
+    if local_rank > 0:
+        print("Waiting for main process to perform the mapping")
+        torch.distributed.barrier()
+
     dataset = dataset.map(
         helper,
         batched=True,
-        batch_size=1,
-        # num_proc=2
+        batch_size=56,
+        num_proc=6
         )
+    
+    if local_rank == 0:
+        print("Loading results from main process")
+        torch.distributed.barrier()  # Ensure all processes have finished mapping before continuing
     
     # print(f"After proceseing dataset: \n{dataset}")
     # print(f"One entry: {dataset[0]}")
     sys_rttm = dataset["sys_rttm"]
     sys_rttm = sorted(sys_rttm, key=numeric_part)
     print(f"System generated rttm files: \n{sys_rttm}")
-    # print("The true and predicted rttm files are: \n")
-
-    # for audio in tqdm(os.listdir(audioPath)):
-    #     actualPath = os.path.join(audioPath,audio)
-    #     name = audio.split(".")[0]
-    #     S0, S1 = pipeline(actualPath)
-    #     # print(S0)
-    #     # print(S1)
-    #     # print("English/ S0 shape: ", S0.shape)
-    #     # print("Hindi/ S1 shape: ", S1.shape)
-    #     x, lang_labels = diarize(S0, S1)
-    #     # print(x)
-    #     # print(lang_labels)
-    #     x = (x[0]*hop_length_seconds)+0.5
-    #     ## now generating rttm for this
-    #     # Load the audio file using torchaudio
-    #     waveform, sample_rate = torchaudio.load(actualPath)
-    #     # Get the duration in seconds
-    #     duration_in_seconds = waveform.size(1) / sample_rate
-    #     ref_rttm.append(generate_rttm_file(name, x,lang_labels, duration_in_seconds))
-    # # ref_rttm = [os.path.join(outputFolderRTTM,filename) for filename in os.listdir(outputFolderRTTM)]
-    # ref_rttm = sorted(ref_rttm, key=numeric_part)
-    # # print("The true and predicted rttm files are: \n")
-
-    # print(ref_rttm)
-    # print(ref_rttm)
-    ## joining
-    # ref_rttm = " ".join(ref_rttm)
-    # ref_rttm = " ".join(ref_rttm)
-
-    # print(ref_rttm)
-    # print(ref_rttm)
     total_batches = math.ceil(float(len(ref_rttm)*1.0)/float(batch_size))
     start_idx = 0
     for batches in tqdm(range(total_batches)):

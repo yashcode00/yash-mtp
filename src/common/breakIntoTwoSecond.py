@@ -16,11 +16,10 @@ from pydub import AudioSegment
 
 directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/test_resampled_data_SilenceRemovedData"
 directory =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/test_resampled_data_SilenceRemovedData"
-## directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/rest-resampled_data_SilenceRemovedData"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/rest-resampled_data_SilenceRemovedData"
 ###directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/spring-labs-resampled_data_SilenceRemovedData"
-root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets"
-newDirectory = "test-combined-resampled_data_SilencedAndTwoSecondData"
-newDirectory = "combined-resampled_data_SilenceAndTwoSecond"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge"
+newDirectory = "displace-finetuneTwoSecondSilencedData"
 
 print("Current dir: ",directory)
 
@@ -61,7 +60,7 @@ for path in tqdm(os.listdir(directory)):
     ###NewPathHere = CreateIfNot(newDirectory, mapping_words[path]);
     NewPathHere = CreateIfNot(newDirectory, path);
     count = 0;
-    if not path.startswith('.'):
+    if path.startswith('e'):
         for subFoldlers in os.listdir(pathHere):
             if not subFoldlers.startswith('.'):
                 # print("Inside ",subFoldlers)
@@ -85,7 +84,7 @@ for path in tqdm(os.listdir(directory)):
                             f = audioFile.split(".")[0]
                             for i, chunk in enumerate(chunks):
                                 chunk.export(f"{NewPathHere2}/{f}_{i+1}.wav", format="wav")  # Export each chunk to a separate file
-                            count = count +1;
+                            count = count + len(chunks);
                         except Exception as e:
                             print(str(path), e)
         print(f'Total {count} samples loaded and saved after silence removal and 2sec duration each of {path} language dataset')

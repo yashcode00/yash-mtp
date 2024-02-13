@@ -2,6 +2,7 @@
 #SBATCH -N 1
 #SBATCH --partition=nltmp
 #SBATCH --job-name=terminator
+#SBATCH --gres=gpu:6
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/out.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/err.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
@@ -22,7 +23,7 @@ export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 
 # Run Python script in the background and save the output to the log file
-python /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py &> "$output_main" &
+python -m torch.distributed.run /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py &> "$output_main" &
 
 # Save the background job's process ID (PID)
 bg_pid=$!
@@ -31,7 +32,7 @@ bg_pid=$!
 echo "Job is running in the background with PID $bg_pid."
 
 # Deactivate the Conda environment (optional)
-# conda deactivate  # SBATCH --gres=gpu:2
+# conda deactivate  
 
 # Wait for the background job to complete
 wait $bg_pid
