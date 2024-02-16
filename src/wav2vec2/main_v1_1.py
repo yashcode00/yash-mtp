@@ -33,7 +33,6 @@ from dotenv import load_dotenv
 
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-# Create a logging
 
 # disable_caching()
 
@@ -51,9 +50,13 @@ def print_gpu_info():
         device_capability = torch.cuda.get_device_capability(current_device)
         gpu_info = f"Number of GPUs: {device_count}\nCurrent GPU: {current_device}\nGPU Name: {device_name}\nGPU Compute Capability: {device_capability}"
         print(gpu_info)
+        for i in range(device_count):
+            print(f"GPU {i} Memory Usage:")
+            print(torch.cuda.memory_summary(i))
     else:
         print("No GPU available.")
     print("-"*20)
+
 print_gpu_info()
 
 
@@ -67,8 +70,8 @@ repo_url = "facebook/wav2vec2-xls-r-300m"
 processor_tokenizer_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 model_name_or_path = repo_url
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-wandb_run_name = f"displace-Wave2vec2-300M_Training_{timestamp}"
-save_model_path = f"displace-300M-saved-model-{timestamp}"
+wandb_run_name = f"displace-2sec-Wave2vec2-300M_Training_{timestamp}"
+save_model_path = f"displace-2sec-300M-saved-model-{timestamp}"
 save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
 chkpt_path = f"{save_model_path}/chkpt"
 pth_path = f"{save_model_path}/pthFiles"
@@ -94,6 +97,7 @@ num_epochs = 300
 ## is a distributed training.
 batch_size = 256  ## not used 
 proxy_url = "http://proxy-10g.10g.siddhi.param:9090"
+chunk_size = 32000 ## the audio chunk size that is used for finetuinng like in this case a  :i.e. 32000 -> 2 sec chunks samplec at 16kHz
 
 ##################################################################################################
 ##################################################################################################
@@ -185,7 +189,7 @@ def preprocess_function(examples):
     speech_list = [speech_file_to_array_fn(path) for path in examples[input_column]]
     target_list = [label_to_id(label, label_list) for label in examples[output_column]]
     inputs = feature_extractor(
-        speech_list, sampling_rate=feature_extractor.sampling_rate, max_length=16000, truncation=True
+        speech_list, sampling_rate=feature_extractor.sampling_rate, max_length=chunk_size, truncation=True
     )
     inputs["labels"] = list(target_list)
     return inputs
@@ -210,7 +214,7 @@ eval_dataset = eval_dataset.map(
 
 logging.info(f"The final processed dataset is as below: ")
 print(train_dataset)
-# logging.info(f"One entry looks like: {str(train_dataset[0])}")
+print(f"Size of input values shall be {chunk_size} smaples which is here : {len(train_dataset[0]['input_values'])}")
     
 label2id={label: i for i, label in enumerate(label_list)}
 id2label={i: label for i, label in enumerate(label_list)}
@@ -330,6 +334,7 @@ except Exception as err:
 
 num_training_steps = num_epochs * len(train_dataloader)
 i=0
+shallPrintGpuUsage = 0
 progress_bar = tqdm(range(num_training_steps))
 # Now we train the model
 for epoch in range(num_epochs):
@@ -350,6 +355,9 @@ for epoch in range(num_epochs):
         optimizer.step()
         lr_scheduler.step()
         optimizer.zero_grad()
+        if shallPrintGpuUsage%100 ==0:
+            print_gpu_info()
+        shallPrintGpuUsage +=1 
     final_train_loss = sum(train_loss)/len(train_loss)
 
     ### chekpointing the model

@@ -3,10 +3,11 @@
 ## @email: yashuvats.42@gmail.com
 #####################################################
 
-
 ################## used Library  ############################################################
 import torch
-import torch.nn as nn
+import sys
+sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common")
+from dotenv import load_dotenv
 import os 
 import torch.nn.functional as F
 import numpy as np
@@ -22,36 +23,76 @@ from sklearn.model_selection import train_test_split
 import wandb
 from Model import *
 from sklearn.metrics import classification_report, accuracy_score
+import logging
+from datetime import datetime
 
+# Configure the logging
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("Device is: ",device)
 
-############ number of class and all #####################
-nc = 11 # Number of language classes 
+def print_gpu_info():
+    print("-"*20)
+    if torch.cuda.is_available():
+        device_count = torch.cuda.device_count()
+        current_device = torch.cuda.current_device()
+        device_name = torch.cuda.get_device_name(current_device)
+        device_capability = torch.cuda.get_device_capability(current_device)
+        gpu_info = f"Number of GPUs: {device_count}\nCurrent GPU: {current_device}\nGPU Name: {device_name}\nGPU Compute Capability: {device_capability}"
+        print(gpu_info)
+        for i in range(device_count):
+            print(f"GPU {i} Memory Usage:")
+            print(torch.cuda.memory_summary(i))
+    else:
+        print("No GPU available.")
+    print("-"*20)
+
+print_gpu_info()
+
+##################################################################################################
+## Important Intializations
+##################################################################################################
+
+isOneSecond = False ## chunk size is 16000
+frames = 49 if isOneSecond else 99
+chunk_size = 16000 if isOneSecond else 32000
+nc = 2 # Number of language classes 
 n_epoch = 10 # Number of epochs
 look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
-# path = "/Users/yash/Desktop/MTP-2k23-24"
-path = "/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/"
-model_path = os.path.join(path,"model_xVector.pth")
+hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/tdnn"
+hiddenFeatures_givenName = "displace-2sec-HiddenFeatures_full_fast"
 trigger_times = 0
 patience = 6
 batch_size = 64
+label_names = ['eng','not-eng']
+label2id={'eng': 0, 'not-eng': 1}
+id2label={0: 'eng', 1: 'not-eng'}
+print(f"label2id mapping: {label2id}")
+print(f"id2label mapping: {id2label}")
+### making output save folders 
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+wandb_run_name = f"xVector-2sec_Training_{timestamp}"
+save_model_path = f"xVector-2sec-saved-model-{timestamp}"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn"
+save_model_path = os.path.join(root,save_model_path)
+chkpt_path = f"{save_model_path}/chkpt"
+pth_path = f"{save_model_path}/pthFiles"
+eval_path = f"{save_model_path}/evaluations"
+# Create the folder if it doesn't exist
+if not os.path.exists(save_model_path):
+    os.makedirs(save_model_path)
+    os.makedirs(chkpt_path)
+    os.makedirs(pth_path)
+    os.makedirs(eval_path)
+    logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 
-label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
-##########################################
-
-lang2id = {'asm': 0, 'ben': 1, 'eng': 2, 'guj': 3, 'hin': 4, 'kan': 5, 'mal': 6, 'mar': 7, 'odi': 8, 'tam': 9, 'tel': 10}
-id2lang = {0: 'asm', 1: 'ben', 2: 'eng', 3: 'guj', 4: 'hin', 5: 'kan', 6: 'mal', 7: 'mar', 8: 'odi', 9: 'tam', 10: 'tel'}
-
-train_path  = "/nlsasfs/home/nltm-st/sujitk/yash/datasets/HiddenFeatures_full_fast"
-result_path = '/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/xVectorResults/checkpointsBatched'
+train_path  = os.path.join(hiddenFeaturesPath,hiddenFeatures_givenName)
+result_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn'
 
 ######################## X_vector ####################
 model = X_vector(IP_dim, nc).to(device)
-# model.cuda()
-
 optimizer =  optim.Adam(model.parameters(), lr=0.0001, weight_decay=5e-5, betas=(0.9, 0.98), eps=1e-9)
 loss_lang = torch.nn.CrossEntropyLoss()  # cross entropy loss function for the softmax output
 
@@ -59,8 +100,9 @@ loss_lang = torch.nn.CrossEntropyLoss()  # cross entropy loss function for the s
 manual_seed = random.randint(1,10000) #randomly seeding
 random.seed(manual_seed)
 torch.manual_seed(manual_seed)
-#######################################################
 
+##################################################################################################
+##################################################################################################
 
 #### Function to return data (vector) and target label of a csv (MFCC features) file
 def lstm_data(f):
@@ -68,14 +110,14 @@ def lstm_data(f):
     dt = df.astype(np.float32)
     X = np.array(dt).reshape(-1,1024)
     # print("Input shape: ",X.shape) ### (49,1024)
-    if X.shape[1] != 1024 or X.shape[0] != 49:
+    if X.shape[1] != 1024 or X.shape[0] != frames:
         print("Invalid shape, skipping")
         return None, None
     Xdata1 = []
     f1 = os.path.split(f)[1]     
     lang = f1.split('_')[0] 
     ### target label (output)
-    Y1 = np.array([lang2id[lang]])
+    Y1 = np.array([label2id[lang]])
 
     for i in range(0,len(X)-look_back1,1):    #High resolution low context        
         a = X[i:(i+look_back1),:]  
@@ -112,7 +154,7 @@ def getBatch(s, isVal : bool= False):
 
 #### Get the list of all csv files ####
 files_list= []
-for lang in lang2id.keys():
+for lang in label2id.keys():
     for f in glob.glob(os.path.join(train_path,lang) + '/*.csv'):
         files_list.append(f)
 #### Total number of training files
@@ -129,17 +171,26 @@ print("Training Set: ", len(train_df))
 print("Validation Set: ", len(val_df))
 
 #### Actual training
-p = "/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/xVectorResults/modelEpoch0_xVector.pth"
-model.load_state_dict(torch.load(p), strict=False)
-print(f"Saved Model loaded from {p}")
+# p = "/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/xVectorResults/modelEpoch0_xVector.pth"
+# model.load_state_dict(torch.load(p), strict=False)
+# print(f"Saved Model loaded from {p}")
 
-if "model_xVector.pth" in os.listdir(path):
-    model.load_state_dict(torch.load(model_path), strict=False)
+if "model_xVector.pth" in os.listdir(root):
+    model.load_state_dict(torch.load(os.path.join(root,"model_xVector.pth")), strict=False)
 else:
-    ### connecting to wandb
-    # Initialize Wandb with your API key
-    wandb.login(key="690a936311e63ff7c923d0a2992105f537cd7c59")
-    run = wandb.init(name = "LastHopeXVectorTraining", project="huggingface")
+    ## logging into the huggingface to push to the hub and wandb
+    ## loading env variables
+    load_dotenv()
+    secret_value_1 = os.getenv("wandb")
+
+    if secret_value_1 is None:
+        logging.error(f"Please set Environment Variables properly for wandb login. Exiting.")
+        sys.exit(1)
+    else:
+        # Initialize Wandb with your API keywandb
+        wandb.login(key=secret_value_1)
+        wandb.init(name = wandb_run_name, project="huggingface")
+        logging.info("Login to wandb succesfull!")
 
     # Define n_epoch and initialize lists for tracking loss and accuracy
     train_loss_list = []
@@ -249,10 +300,11 @@ else:
             result = classification_report(validation_full_preds, validation_full_gts, target_names=label_names)
             # print(result)
             # Additional information to include with the report
-            additional_info = f"/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/xVectorResults/evaluationsBatched/eval_epoch{e}.txt"
+            filename_chkpt = f"eval_epoch{e}.txt"
             # Save the report with additional information to a text file
-            with open(additional_info, 'w') as f:
+            with open(os.path.join(eval_path,filename_chkpt), 'w') as f:
                 f.write(result)
+            logging.info(f"Evaluated metrics saved at {os.path.join(eval_path,filename_chkpt)}")
         except:
             print("Error in evaluate metric compute: ",Exception)
 
@@ -261,30 +313,13 @@ else:
 
         #####################################################
         #### Saving the results and model of each epoch    
-        torch.save(model.state_dict(),os.path.join(result_path, f"modelEpoch{e%50}_xVector.pth")) # saving the model parameters 
-        print("Checkpointed.. ")
-        print("Model saved at ",os.path.join(result_path, f"modelEpoch{e%50}_xVector.pth"))
+        modelTempName =  f"modelEpoch{e%25}_xVector.pth"
+        torch.save(model.state_dict(),os.path.join(pth_path, modelTempName)) # saving the model parameters 
+        logging.info(f"Checkpointed model at {os.path.join(pth_path,modelTempName)}")
         ###############################################################
-
-
-        ### Early stopping
-        # if len(validation_loss_list)>1 and validation_loss_list[-1] > validation_loss_list[-2]:
-        #     trigger_times += 1
-        #     print('Trigger Times:', trigger_times)
-
-        #     if trigger_times >= patience:
-        #         print('Early stopping!')
-        #         break
-        # else:
-        #     print('trigger times: 0')
-        #     trigger_times = 0
-        
-        # if len(train_loss_list) >1 and  abs(train_loss_list[-1] - train_loss_list[-2]) < 1e5:
-        #     print("Early stopping")
-        #     break
 
     # artifact = wandb.Artifact('model', type='model')
     # artifact.add_file(model_path)
     # run.log_artifact(artifact)
     # run.finish()
-    print("Training Complete and model is saved at: ", os.path.join(result_path, f"modelEpoch{n_epoch}_xVector.pth"))
+    logging.info(f"Xvector training for chunksize {chunk_size} is done!")

@@ -35,7 +35,7 @@ from typing import Any, Dict, Union, Tuple
 from torch import optim
 import random
 from torch.autograd import Variable
-# import torch.distributed
+import torch.distributed
 from gaussianSmooth import *
 import logging
 from datetime import datetime
@@ -53,33 +53,37 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logging.info(f"Device: {device}")
 
 wantDER = False
-batch_size = 64 # Set your desired batch size
+batch_size = 128 # Set your desired batch size
 max_batch_size = 512
-nc = 2 # Number of language classes 
+nc = 11 # Number of language classes 
 look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
-window_size = 64000
-hop_length_seconds = 0.25  # Desired hop length in seconds
-## parameters for gaussian smoothing 
-gauss_window_size = 21  # A good starting value for the window size
-sigma = 0.003*21  # A reasonable starting value for sigma
-xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-1sec-saved-model-20240215_112425/pthFiles/modelEpoch0_xVector.pth"
+path = "/Users/yash/Desktop/MTP-2k23-24"
+xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults/modelEpoch0_xVector.pth"
 resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-eval-predicted-rttm-{nc}-lang-{window_size}"
+resultFolderGivenName = "displace-eval-predicted-rttm-old-11-lang"
 resultDERPath = os.path.join(resultDERPath, resultFolderGivenName) 
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised_SilenceRemovedData"
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-der_metric_txt_name = "displace-der-metrics-16Feb2024"
+der_metric_txt_name = "displace-der-metrics-13Feb2024"
+silencedAndOneSecondAudio_size = 16000
+window_size = 32000
+hop_length_seconds = 0.5  # Desired hop length in seconds
+## parameters for gaussian smoothing 
+gauss_window_size = 21  # A good starting value for the window size
+sigma = 0.003*21  # A reasonable starting value for sigma
+# audio_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale/HECodemixedFemale1.wav"
+# ref_rttm = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm/rttm_HECodemixedFemale1.wav"
 derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
 
 ### Intializing models
 ## for wave2vec2
 model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-1sec-300M-saved-model-20240213_215511/pthFiles/model_epoch_1"
 config = AutoConfig.from_pretrained(model_name_or_path)
 processor = Wav2Vec2Processor.from_pretrained(model_name_or_path)
-model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(offline_model_path).to(device)
+model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(model_name_or_path).to(device)
 target_sampling_rate = processor.feature_extractor.sampling_rate
 
 processor.feature_extractor.return_attention_mask = True
@@ -95,11 +99,12 @@ manual_seed = random.randint(1,10000) #randomly seeding
 random.seed(manual_seed)
 torch.manual_seed(manual_seed)
 
-label_names = ['eng','not-eng']
-label2id={'eng': 0, 'not-eng': 1}
-id2label={0: 'eng', 1: 'not-eng'}
-print(f"label2id mapping: {label2id}")
-print(f"id2label mapping: {id2label}")
+label_list  = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
+lang2id = {'asm': 0, 'ben': 1, 'eng': 2, 'guj': 3, 'hin': 4, 'kan': 5, 'mal': 6, 'mar': 7, 'odi': 8, 'tam': 9, 'tel': 10}
+id2lang = {0: 'asm', 1: 'ben', 2: 'eng', 3: 'guj', 4: 'hin', 5: 'kan', 6: 'mal', 7: 'mar', 8: 'odi', 9: 'tam', 10: 'tel'}
+### defining mask for the hindi and english language
+mask = np.array([0,0,1,0,1,0,0,0,0,0,0])
+# print("Mask for binary (Hin/Eng) classification: ",mask)
 
 ##################################################################################################
 ##################################################################################################
@@ -118,8 +123,7 @@ try:
     model_xVector.load_state_dict(torch.load(xVectormodel_path, map_location=torch.device(device)), strict=False)
 except Exception as err:
     print("Error is: ",err)
-    logging.error("No, valid/corrupted TDNN saved model found, Aborting!")
-    sys.exit(0)
+    print("No, valid/corrupted TDNN saved model found, Aborting!")
 
 def run_command(command):
     try:
@@ -212,7 +216,7 @@ def inputTDNN(hidden_features):
 
 def extractHE(input_array):
     # Select columns eng and hindi
-    selected_columns = input_array[:, [0, 1]]
+    selected_columns = input_array[:, [2, 4]]
     # Apply softmax along the second axis (axis=1)
     softmax_result = np.apply_along_axis(lambda x: np.exp(x - np.max(x)) / np.sum(np.exp(x - np.max(x))), axis=1, arr=selected_columns)
     return softmax_result
@@ -311,7 +315,7 @@ def findCumulativeDER():
         avg_der = total_der / total_files
         return avg_der
     else:
-        logging.error("No DER files found or unable to calculate average DER.")
+        print("No DER files found or unable to calculate average DER.")
     
 def predictOne(audioPath):
     name = audioPath.split("/")[-1].split(".")[0]
@@ -323,6 +327,7 @@ def predictOne(audioPath):
     waveform, sample_rate = torchaudio.load(audioPath)
     # Get the duration in seconds
     duration_in_seconds = waveform.size(1) / sample_rate
+    
     return generate_rttm_file(name, x,lang_labels, duration_in_seconds)
 
 def helper(batch):
@@ -332,7 +337,13 @@ def helper(batch):
 
 if __name__ == '__main__':
     torch.cuda.empty_cache()
+    set_start_method("spawn")
+    torch.set_num_threads(1)  ## imp
+    # mp.set_start_method('spawn')
     ## ground truth rttms
+    ref_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
+    ref_rttm = sorted(ref_rttm, key=numeric_part)
+    print(f"The refernce/ground truth rttm file: \n{ref_rttm}")
     paths = [os.path.join(audioPath,audio) for audio in os.listdir(audioPath)]
 
     # Create a dataset using Hugging Face datasets library
@@ -348,35 +359,30 @@ if __name__ == '__main__':
     sys_rttm = dataset["sys_rttm"]
     sys_rttm = sorted(sys_rttm, key=numeric_part)
     print(f"System generated rttm files: \n{sys_rttm}")
-    logging.info(f"Want DER variable set to  {wantDER}")
-    if wantDER:
-        ref_rttm = [os.path.join(ref_rttmPath,filename) for filename in os.listdir(ref_rttmPath)]
-        ref_rttm = sorted(ref_rttm, key=numeric_part)
-        print(f"The refernce/ground truth rttm file: \n{ref_rttm}")
-        total_batches = math.ceil(float(len(ref_rttm)*1.0)/float(batch_size))
-        start_idx = 0
-        for batches in tqdm(range(total_batches)):
-            end_idx = min(start_idx+batch_size, len(ref_rttm))
-            ## finding files
-            temp_sys_rttm = sys_rttm[start_idx:end_idx]
-            temp_ref_rttm = ref_rttm[start_idx:end_idx]
-            temp_sys_rttm = " ".join(temp_sys_rttm)
-            temp_ref_rttm = " ".join(temp_ref_rttm)
-            # Finding the DER
-            command = f'python {derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
-            # Run the command
-            output = run_command(command)
-            # print("Command ran: ",command)
-            der_filename  = os.path.join(resultDERPath,f"{der_metric_txt_name}-{batches}.txt")
-            with open(der_filename, 'w') as f_out:
-                f_out.write(output)
-            if end_idx == len(ref_rttm):
-                break
-            start_idx = end_idx +1
-        
-        der  = findCumulativeDER()
-        logging.info(f"The average DER is: {der}")
+    total_batches = math.ceil(float(len(ref_rttm)*1.0)/float(batch_size))
+    start_idx = 0
+    for batches in tqdm(range(total_batches)):
+        end_idx = min(start_idx+batch_size, len(ref_rttm))
+        ## finding files
+        temp_sys_rttm = sys_rttm[start_idx:end_idx]
+        temp_ref_rttm = ref_rttm[start_idx:end_idx]
+        temp_sys_rttm = " ".join(temp_sys_rttm)
+        temp_ref_rttm = " ".join(temp_ref_rttm)
+        # Finding the DER
+        command = f'python {derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
+        # Run the command
+        output = run_command(command)
+        # print("Command ran: ",command)
+        der_filename  = os.path.join(resultDERPath,f"{der_metric_txt_name}-{batches}.txt")
+        with open(der_filename, 'w') as f_out:
+            f_out.write(output)
+        if end_idx == len(ref_rttm):
+            break
+        start_idx = end_idx +1
+    
+    der  = findCumulativeDER()
+    logging.info(f"The average DER is: {der}")
     logging.info("Evaluation Completed Succesfully!")
-    logging.info(f"Please check {resultDERPath} for system generated rttm.")
+
 
 
