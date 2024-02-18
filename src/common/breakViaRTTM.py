@@ -22,9 +22,9 @@ def split_audio(audio_file, segments, output_dir):
 
 # Main function
 def main():
-    audio_dir = "/Users/yash/Downloads/audios"
-    rttm_dir = "/Users/yash/Downloads/rttm"
-    output_dir = "/Users/yash/Desktop/yash-mtp/datasets/displace-audioFromRTTM"
+    audio_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+    rttm_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+    output_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/displace-audioFromRTTM"
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)

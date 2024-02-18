@@ -1,28 +1,34 @@
 #!/usr/bin/env bash
 #SBATCH -N 1
 #SBATCH --partition=nltmp
-#SBATCH --job-name=displace
+#SBATCH --job-name=break
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/output.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/error.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/"
-output_main="${log_dir}extract.log"
+output_main="${log_dir}breakViarttm.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 
 # Activate the Conda environment
 conda activate wave2vec
 
-# # Set proxy environment variables
-export HTTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
-export HTTPS_PROXY='http://proxy-10g.10g.siddhi.param:9090'
-export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
-export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
+# # # Set proxy environment variables
+# export HTTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
+# export HTTPS_PROXY='http://proxy-10g.10g.siddhi.param:9090'
+# export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
+# export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
+
+# Remove proxy environment variables (optional if not needed)
+unset HTTP_PROXY
+unset HTTPS_PROXY
+unset FTP_PROXY
+unset ALL_PROXY
 
 # Run Python script in the background and save the output to the log file
-python /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common/extractAll.py &> "$output_main" &
+python /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common/breakViaRTTM.py &> "$output_main" &
 
 # Save the background job's process ID (PID)
 bg_pid=$!

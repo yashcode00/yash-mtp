@@ -67,11 +67,12 @@ print_gpu_info()
 base_directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/"
 repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 repo_url = "facebook/wav2vec2-xls-r-300m"
+repo_url = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/combined-300M-saved-model-20240211_025645/pthFiles/model_epoch_5"
 processor_tokenizer_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 model_name_or_path = repo_url
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-wandb_run_name = f"displace-2sec-Wave2vec2-300M_Training_{timestamp}"
-save_model_path = f"displace-2sec-300M-saved-model-{timestamp}"
+wandb_run_name = f"combined2-300M-saved-model_{timestamp}"
+save_model_path = f"combined2-300M-saved-model_{timestamp}"
 save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
 chkpt_path = f"{save_model_path}/chkpt"
 pth_path = f"{save_model_path}/pthFiles"
@@ -92,7 +93,7 @@ output_column = "language"
 label_names = ['eng', 'not-eng']
 model_out_dir = os.path.join(cache_dir, "wav2vec2-large-xls-r-300m-indian-language-classification-displace")
 
-num_epochs = 300
+num_epochs = 10
 ## this batch size is not used , please refer to batch size per device in training args as this 
 ## is a distributed training.
 batch_size = 256  ## not used 
