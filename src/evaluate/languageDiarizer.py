@@ -53,8 +53,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logging.info(f"Device: {device}")
 
 wantDER = False
-batch_size = 64 # Set your desired batch size
-max_batch_size = 512
+batch_size = 128 # Set your desired batch size
+max_batch_size = 256
 nc = 2 # Number of language classes 
 look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
@@ -250,8 +250,10 @@ def pipeline(path, max_batch_frames=max_batch_size):
     model_xVector.eval()  # Set the model to evaluation mode
     val_lang_op = model_xVector.forward(X_val)
     val_lang_op = val_lang_op.detach().cpu().numpy()
+    print(f"Before {val_lang_op}")
     val_lang_op = np.vectorize(extractHE, signature='(n,m)->(n,p)')(val_lang_op)
-    
+    print(f"After {val_lang_op}")
+    sys.exit(0)
     ## Step 4: mask the output for all language except eng and hindi
     return val_lang_op[:,0], val_lang_op[:,1]
 

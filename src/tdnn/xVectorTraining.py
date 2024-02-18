@@ -111,7 +111,7 @@ def lstm_data(f):
     X = np.array(dt).reshape(-1,1024)
     # print("Input shape: ",X.shape) ### (49,1024)
     if X.shape[1] != 1024 or X.shape[0] != frames:
-        print("Invalid shape, skipping")
+        logging.error("Invalid shape of hiddn features csv, skipping")
         return None, None
     Xdata1 = []
     f1 = os.path.split(f)[1]     

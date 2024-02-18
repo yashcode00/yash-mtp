@@ -9,7 +9,7 @@
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/"
-output_main="${log_dir}eval-1sec-2-lang-64000.log"
+output_main="${log_dir}test.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 
@@ -23,7 +23,7 @@ export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 
 # Run Python script in the background and save the output to the log file
-python -m torch.distributed.run /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py &> "$output_main" &
+python /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer.py &> "$output_main" &
 
 # Save the background job's process ID (PID)
 bg_pid=$!

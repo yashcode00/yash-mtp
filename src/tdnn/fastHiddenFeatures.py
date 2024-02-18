@@ -81,7 +81,7 @@ hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/tdnn"
 hiddenFeatures_givenName = "displace-2sec-hiddenFeatures.hf"
 givenName = "displace-2sec-HiddenFeatures_full_fast"
 frames = 49 if isOneSecond else 99
-cols = np.arange(0,frames,1)
+cols = np.arange(0,1024,1)
 chunk_size = 16000 if isOneSecond else 32000
 processed_dataset_givenName = "displace-2sec-processed.hf"
 processed_dataset_path  = os.path.join(hiddenFeaturesPath,processed_dataset_givenName)
@@ -146,12 +146,12 @@ def hiddenFeatures(batch):
         hidden_features = model.extract_hidden_states(input_values)
         # print(f"Size: {hidden_features.shape}") Size: torch.Size([1024, 49, 1024]) for 1 sec
         # print(f"Size: {hidden_features.shape}") Size: torch.Size([512, 99, 1024]) for 2 sec
-    batch["hidden_features"] = hidden_features.reshape(-1,1024,frames)
+    batch["hidden_features"] = hidden_features
     # hFeatures = np.array(batch["hidden_features"]).reshape(1024,-1)
     for lang,name, hFeature in zip(batch['language'], batch['name'], batch['hidden_features']):
         tPath = os.path.join(targetDirectory,lang)
         fileName = lang + "_" + name.split(".")[0] + ".csv"
-        if hFeature.shape[1] == chunk_size:
+        if hFeature.shape[1] == 1024:
             df = pd.DataFrame(hFeature.cpu(),columns=cols)
             df.to_csv(os.path.join(tPath,fileName), encoding="utf-8", index=False)
     return batch
@@ -169,6 +169,18 @@ torch.set_num_threads(1)  ## imp
 
 # print(train_dataset)
 if __name__ == "__main__": 
+    targetDirectory = os.path.join(hiddenFeaturesPath,givenName)
+    if os.path.exists(targetDirectory) and os.path.isdir(targetDirectory):
+        shutil.rmtree(targetDirectory)
+
+     ### Creating folder for saving hidden featrues as csv files
+    if givenName not in os.listdir(hiddenFeaturesPath):
+        os.makedirs(targetDirectory)
+        ##  first lets crewat all the subdirectories
+        for lang in label_list:
+            new_path = CreateIfNot(targetDirectory, lang)
+    else:
+        print(f"{os.path.join(hiddenFeaturesPath,givenName)}: Folder already exists!")
     print(f"A classification problem with {num_labels} classes: {label_list}")
     if os.path.exists(processed_dataset_path):
         logging.info("Filtered and processed dataset detected, skipping preprocessing.")
@@ -217,19 +229,6 @@ if __name__ == "__main__":
             logging.info(f"Saved proceesed dataset to {os.path.join(hiddenFeaturesPath,processed_dataset_givenName)}")
         except:
             logging.error("Unable to save to the disk: ", Exception)
-
-    targetDirectory = os.path.join(hiddenFeaturesPath,givenName)
-    if os.path.exists(targetDirectory) and os.path.isdir(targetDirectory):
-        shutil.rmtree(targetDirectory)
-
-    ### Creating folder for saving hidden featrues as csv files
-    if givenName not in os.listdir(hiddenFeaturesPath):
-        os.makedirs(targetDirectory)
-        ##  first lets crewat all the subdirectories
-        for lang in label_list:
-            new_path = CreateIfNot(targetDirectory, lang)
-    else:
-        print(f"{os.path.join(hiddenFeaturesPath,givenName)}: Folder already exists!")
 
     train_dataset = train_dataset.map(
         hiddenFeatures,
