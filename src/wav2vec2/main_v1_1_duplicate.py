@@ -67,12 +67,12 @@ print_gpu_info()
 base_directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/"
 repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 repo_url = "facebook/wav2vec2-xls-r-300m"
-model_offline_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/combined-300M-saved-model-20240211_025645/pthFiles/model_epoch_5"
+model_offline_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-2sec-300M-saved-model-20240214_193154/pthFiles/model_epoch_0"
 processor_tokenizer_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 model_name_or_path = repo_url
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-wandb_run_name = f"combined2-300M-saved-model_{timestamp}"
-save_model_path = f"combined2-300M-saved-model_{timestamp}"
+wandb_run_name = f"displce-2sec-finetunedOndev-300M-saved-model_{timestamp}"
+save_model_path = f"displce-2sec-finetunedOndev-300M-saved-model_{timestamp}"
 save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
 chkpt_path = f"{save_model_path}/chkpt"
 pth_path = f"{save_model_path}/pthFiles"
@@ -85,7 +85,7 @@ if not os.path.exists(save_model_path):
     os.makedirs(eval_path)
     logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
-dataset_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
+dataset_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf"
 
 # We need to specify the input and output column
 input_column = "path"
@@ -213,6 +213,9 @@ eval_dataset = eval_dataset.map(
     # keep_in_memory=True
 )
 
+print(f"Size of inputs is fixed this time:")
+for i in range(5):
+    print(f"length of {i}: {len(train_dataset[i]['input_values'])}")
 logging.info(f"The final processed dataset is as below: ")
 print(train_dataset)
 print(f"Size of input values shall be {chunk_size} smaples which is here : {len(train_dataset[0]['input_values'])}")
@@ -367,7 +370,7 @@ for epoch in range(num_epochs):
         logging.info("Saving Model..")
         accelerator.save_state(chkpt_path)
         # Save the model after every epoch
-        model.save_pretrained(os.path.join(pth_path,f"model_epoch_{epoch%6}"))
+        model.save_pretrained(os.path.join(pth_path,f"model_epoch_{epoch%10}"))
     except Exception as err:
         logging.error("Some exception occured while saving the model: ",err)
 

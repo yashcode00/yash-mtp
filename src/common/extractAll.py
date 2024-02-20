@@ -1,9 +1,10 @@
 import os
 import pyzipper
 
-zip_file_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised.zip'
+zip_file_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_unsupervised_part2.zip'
 target_directory = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge'
-password = "902efWI+MelU"
+password = "8Yv+Kv9H7C96" 
+
 
 def unzip_with_pyzipper(zip_file_path, target_directory, password):
     # Create the target directory if it doesn't exist
@@ -21,4 +22,5 @@ def unzip_with_pyzipper(zip_file_path, target_directory, password):
 
 if __name__ == "__main__":
     unzip_with_pyzipper(zip_file_path, target_directory, password)
+
 

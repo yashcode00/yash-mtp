@@ -46,6 +46,7 @@ import multiprocess.context as ctx
 ctx._force_start_method('spawn')
 from Model import *
 
+
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 def print_gpu_info():
@@ -74,17 +75,20 @@ torch.multiprocessing.set_start_method('spawn')# good solution !!!!
 
 isOneSecond = False
 repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-2sec-300M-saved-model-20240214_193154/pthFiles/model_epoch_0"
+model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/combined2-300M-saved-model_20240219_133424/pthFiles/model_epoch_0"
 cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
-final_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-saved-dataset.hf"
-hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/tdnn"
-hiddenFeatures_givenName = "displace-2sec-hiddenFeatures.hf"
-givenName = "displace-2sec-HiddenFeatures_full_fast"
+final_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
+hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/"
+hiddenFeatures_givenName = "combined-saved-dataset-12lang-new.hf"
+givenName = "combined-saved-dataset-12lang-new-2sec-HiddenFeatures_full_fast"
 frames = 49 if isOneSecond else 99
 cols = np.arange(0,1024,1)
 chunk_size = 16000 if isOneSecond else 32000
-processed_dataset_givenName = "displace-2sec-processed.hf"
+processed_dataset_givenName = "combined-saved-dataset-12lang-new-2sec-processed.hf"
 processed_dataset_path  = os.path.join(hiddenFeaturesPath,processed_dataset_givenName)
+# label_list = ['eng', 'not-eng']
+label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+
 
 # We need to specify the input and output column
 input_column = "path"
@@ -94,6 +98,9 @@ output_column = "language"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device: {device}")
 
+if device=='cuda':
+    torch.cuda.empty_cache()
+
 config = AutoConfig.from_pretrained(repo_url)
 processor = Wav2Vec2Processor.from_pretrained(repo_url)
 model = Wav2Vec2ForSpeechClassification.from_pretrained(model_name_or_path).to(device)
@@ -102,14 +109,15 @@ target_sampling_rate = processor.feature_extractor.sampling_rate
 processor.feature_extractor.return_attention_mask = True ## to return the attention masks
 
 # we need to distinguish the unique labels in our SER dataset
-label_list = ['eng', 'not-eng']
 label_list.sort()  # Let's sort it for determinism
 num_labels = len(label_list)
 print("target sampling rate: ", target_sampling_rate)
-label2id={'eng': 0, 'not-eng': 1}
-id2label={0: 'eng', 1: 'not-eng'}
+label2id={label: i for i, label in enumerate(label_list)}
+id2label={i: label for i, label in enumerate(label_list)}
+
 print(f"label2id mapping: {label2id}")
 print(f"id2label mapping: {id2label}")
+
 
 
 ##################################################################################################
@@ -181,6 +189,7 @@ if __name__ == "__main__":
             new_path = CreateIfNot(targetDirectory, lang)
     else:
         print(f"{os.path.join(hiddenFeaturesPath,givenName)}: Folder already exists!")
+        
     print(f"A classification problem with {num_labels} classes: {label_list}")
     if os.path.exists(processed_dataset_path):
         logging.info("Filtered and processed dataset detected, skipping preprocessing.")
@@ -200,7 +209,7 @@ if __name__ == "__main__":
         train_dataset = concatenate_datasets([train_dataset ,eval_dataset])
         train_dataset = train_dataset.map(
                             preprocess_function,
-                            batch_size=1024,
+                            batch_size=512,
                             batched=True,
                             num_proc=400,
                             # keep_in_memory=True

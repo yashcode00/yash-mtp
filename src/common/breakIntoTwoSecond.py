@@ -18,8 +18,9 @@ directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/test_resampled_data
 directory =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/test_resampled_data_SilenceRemovedData"
 directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/rest-resampled_data_SilenceRemovedData"
 ###directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/spring-labs-resampled_data_SilenceRemovedData"
+directory = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_unsupervised/AUDIO_unsupervised"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge"
-newDirectory = "displace-finetuneTwoSecondSilencedData"
+newDirectory = "pretrain-dataset-unsup"
 
 print("Current dir: ",directory)
 

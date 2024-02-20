@@ -16,7 +16,7 @@ final_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2"
 ## loading data from disk
 print("Loading the data from the disk.. wait")
 # # loading the autdio dataset from the directory
-directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/displace-finetuneTwoSecondSilencedData"
+directory  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/displace-audioFromRTTM"
 print(f"Current directory {directory}")
 print(os.listdir(directory))
 data = []
@@ -64,7 +64,7 @@ df.groupby("language").count()[["path"]]
 # cache_dir = "/kaggle/working"
 
 # Split the data into train, eval, and test sets
-train_df, eval_df = train_test_split(df, test_size=0.2, random_state=101, stratify=df["language"])
+train_df, eval_df = train_test_split(df, test_size=0.15, random_state=101, stratify=df["language"])
 
 # Reset the index for all dataframes
 train_df = train_df.reset_index(drop=True)
@@ -100,7 +100,7 @@ print(train_dataset)
 print(eval_dataset)
 # print(test_dataset)
 
-final_path= os.path.join(final_path,"displace-saved-dataset.hf")
+final_path= os.path.join(final_path,"displace-fromRttm-saved-dataset.hf")
 print("Saving the dataset to be further use at ",final_path)
 dataset.save_to_disk(final_path)
 

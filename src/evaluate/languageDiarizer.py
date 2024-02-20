@@ -58,25 +58,25 @@ max_batch_size = 256
 nc = 2 # Number of language classes 
 look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
-window_size = 64000
+window_size = 48000
 hop_length_seconds = 0.25  # Desired hop length in seconds
 ## parameters for gaussian smoothing 
 gauss_window_size = 21  # A good starting value for the window size
 sigma = 0.003*21  # A reasonable starting value for sigma
-xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-1sec-saved-model-20240215_112425/pthFiles/modelEpoch0_xVector.pth"
+xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
 resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-eval-predicted-rttm-{nc}-lang-{window_size}"
+resultFolderGivenName = f"displace-dev-finetuned-ondev-predicted-rttm-{nc}-lang-{window_size}"
 resultDERPath = os.path.join(resultDERPath, resultFolderGivenName) 
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-der_metric_txt_name = "displace-der-metrics-16Feb2024"
+der_metric_txt_name = "displace-der-metrics-20Feb2024"
 derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
 
 ### Intializing models
 ## for wave2vec2
 model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-1sec-300M-saved-model-20240213_215511/pthFiles/model_epoch_1"
+offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
 config = AutoConfig.from_pretrained(model_name_or_path)
 processor = Wav2Vec2Processor.from_pretrained(model_name_or_path)
 model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(offline_model_path).to(device)
@@ -250,10 +250,9 @@ def pipeline(path, max_batch_frames=max_batch_size):
     model_xVector.eval()  # Set the model to evaluation mode
     val_lang_op = model_xVector.forward(X_val)
     val_lang_op = val_lang_op.detach().cpu().numpy()
-    print(f"Before {val_lang_op}")
+    # print(f"Before {val_lang_op}")
     val_lang_op = np.vectorize(extractHE, signature='(n,m)->(n,p)')(val_lang_op)
-    print(f"After {val_lang_op}")
-    sys.exit(0)
+    # print(f"After {val_lang_op}")
     ## Step 4: mask the output for all language except eng and hindi
     return val_lang_op[:,0], val_lang_op[:,1]
 

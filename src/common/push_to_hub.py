@@ -43,12 +43,12 @@ else:
 givenName = "yashcode00/wave2vec2-1sec-2lang-finetuned-300m-xlsr"
 
 model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-1sec-300M-saved-model-20240213_215511/pthFiles/model_epoch_1/pytorch_model.bin"
+offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9/pytorch_model.bin"
 # config = AutoConfig.from_pretrained(model_name_or_path)
 # processor = Wav2Vec2Processor.from_pretrained(model_name_or_path)
 # model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(offline_model_path)
 
-run =  wandb.init(name = "model-displace-wave2vec2-1sec", project="huggingface")
+run =  wandb.init(name = "model-displace-dev-finetuned-wave2vec2-1sec", project="huggingface")
 artifact = wandb.Artifact('model', type='model')
 artifact.add_file(local_path=offline_model_path)
 run.log_artifact(artifact)
@@ -57,11 +57,11 @@ print("Finished uploading the artifact. 1")
 print("Succesfully pushed")
 
 
-offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-2sec-300M-saved-model-20240214_193154/pthFiles/model_epoch_0/pytorch_model.bin"
-run =  wandb.init(name = "model-displace-wave2vec2-2sec", project="huggingface")
-artifact = wandb.Artifact('model', type='model')
-artifact.add_file(local_path=offline_model_path)
-run.log_artifact(artifact)
-run.finish()
-print("Finished uploading the artifact. 2")
-print("Succesfully pushed")
+# offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-2sec-300M-saved-model-20240214_193154/pthFiles/model_epoch_0/pytorch_model.bin"
+# run =  wandb.init(name = "model-displace-wave2vec2-2sec", project="huggingface")
+# artifact = wandb.Artifact('model', type='model')
+# artifact.add_file(local_path=offline_model_path)
+# run.log_artifact(artifact)
+# run.finish()
+# print("Finished uploading the artifact. 2")
+# print("Succesfully pushed")

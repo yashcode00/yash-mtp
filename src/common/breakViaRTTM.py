@@ -11,14 +11,21 @@ def parse_rttm(rttm_file):
                 segments.append((float(parts[3]), float(parts[4]), parts[7]))
     return segments
 
-# Function to split audio based on segments
+# Function to split audio based on segments into chunks of max length 2 seconds
 def split_audio(audio_file, segments, output_dir):
     audio = AudioSegment.from_wav(audio_file)
     for start, duration, lang in segments:
         lang_dir = os.path.join(output_dir, "eng" if lang=="L1" else "not-eng")
         os.makedirs(lang_dir, exist_ok=True)
-        segment_audio = audio[int(start * 1000):int((start + duration) * 1000)]
-        segment_audio.export(os.path.join(lang_dir, f"{os.path.basename(audio_file).split('.')[0]}_{start}_{duration}.wav"), format="wav")
+        start_ms = int(start * 1000)
+        end_ms = int((start + duration) * 1000)
+        segment_audio = audio[start_ms:end_ms]
+        
+        # Split segment_audio into chunks of max length 2 seconds
+        chunk_size_ms = 2000  # 2 seconds
+        for i in range(0, len(segment_audio), chunk_size_ms):
+            chunk = segment_audio[i:i+chunk_size_ms]
+            chunk.export(os.path.join(lang_dir, f"{os.path.basename(audio_file).split('.')[0]}_{start}_{duration}_{i//chunk_size_ms}.wav"), format="wav")
 
 # Main function
 def main():
