@@ -9,7 +9,7 @@
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/"
-output_main="${log_dir}combined-finetune-300m-continue.log"
+output_main="${log_dir}displaced-pretrained-finetunON2lang-300m-on-dev-audioFromRTTM.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 

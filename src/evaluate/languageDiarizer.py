@@ -10,7 +10,6 @@ sys.path.append("/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/common")
 from Model import *
 from SilenceRemover import *
 from datasets import Dataset
-from multiprocess import set_start_method
 import numpy as np
 import pandas as pd
 import subprocess
@@ -65,12 +64,12 @@ gauss_window_size = 21  # A good starting value for the window size
 sigma = 0.003*21  # A reasonable starting value for sigma
 xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
 resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-dev-finetuned-ondev-predicted-rttm-{nc}-lang-{window_size}"
+resultFolderGivenName = f"displace-test-dev-finetuned-oneval-predicted-rttm-{nc}-lang-{window_size}"
 resultDERPath = os.path.join(resultDERPath, resultFolderGivenName) 
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-der_metric_txt_name = "displace-der-metrics-20Feb2024"
+der_metric_txt_name = "displace-der-metrics-21Feb2024"
 derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
 
 ### Intializing models
@@ -129,51 +128,73 @@ def run_command(command):
         print(f"Error running command: {e}")
         return None
 
-def diarize(S0,S1):
-    ## Step 1: gaussian smooth all the input 
-    S0  = np.array(gauss_smoothen(S0, sigma, gauss_window_size))
-    S1 = np.array(gauss_smoothen(S1, sigma, gauss_window_size))
+def diarize(S0, S1):
+    # Step 1: Gaussian smooth all the input
+    S0_smoothed = gauss_smoothen(S0, sigma, gauss_window_size)
+    S1_smoothed = gauss_smoothen(S1, sigma, gauss_window_size)
 
-    ## Step 2: take signum of signed differece 
-    # print(f"S0-S1: {S0-S1}")
-    x = np.sign(S0 - S1)
-    # print(f"2. After signum: {x}")
-    x1 = []
-    ## Step 3: take first order difference
-    for i in range(1,len(x)-1):
-        x1.append(x[i+1] - x[i])
-    x1.append(x[len(x)-1])
-    x1 = np.array(x1)
-    # print(f"2. After firstorder difference:{x1}")
-    x = x1
-    ## Step 4: Find final cp's and the language labels
-    x = 0.50*x
-    # print(f"3. After 0.5*x: {x}")
-    x = np.abs(x)
-    # print(f"4. After abs: {x}")
-    x = np.where(x == 1)
-    # print("Change points are: ", x)
-    SL = []
-    for i in range(0, len(S0)):
-        if S0[i]>S1[i]:
-            SL.append(0)
-        else:
-            SL.append(1)
-    if len(x[0]) == 0:
-        ## dummy lang labels
-        lang_labels = np.zeros((len(x[0])+1,), dtype=int)
-        return x, lang_labels
-    try: 
-        lang_labels = [np.argmax(np.bincount(SL[:math.ceil(x[0][0])]))]
+    # Step 2: Take the sign of the signed difference
+    x = np.sign(S0_smoothed - S1_smoothed)
+
+    # Step 3: Take the first-order difference
+    x_diff = np.diff(x)
+
+    # Step 4: Find final change points and language labels
+    x_abs = np.abs(x_diff)
+    change_points = np.where(x_abs == 1)[0]
+    lang_labels = np.where(S0 > S1, 0, 1)  # Assuming S0 represents language 0 and S1 represents language 1
+
+    if len(change_points) == 0:
+        # Dummy language labels
+        lang_labels = np.zeros((len(change_points) + 1,), dtype=int)
+        return change_points, lang_labels
+
+    try:
+        # Extract language labels based on change points
+        lang_labels = [np.argmax(np.bincount(lang_labels[:math.ceil(change_points[0])]))]
     except Exception as e:
-        print("Lang lable extraction error: ",SL,"\n",e)
-        lang_labels = np.zeros((len(x[0])+1,), dtype=int)
-        return x, lang_labels
-    for i in range(1,len(x[0])+1):
-        lang_labels.append(1-lang_labels[i-1])
-    # print("Segment Labels are: ", SL)
-    # lang_labels = np.zeros(len(x)+1)
-    return x, lang_labels
+        print("Language label extraction error:", e)
+        lang_labels = np.zeros((len(change_points) + 1,), dtype=int)
+        return change_points, lang_labels
+
+    for i in range(1, len(change_points) + 1):
+        lang_labels.append(1 - lang_labels[i - 1])
+
+    return change_points, lang_labels
+
+
+# def diarize(S0,S1):
+#     ## Step 1: gaussian smooth all the input 
+#     S0  = np.array(gauss_smoothen(S0, sigma, gauss_window_size))
+#     S1 = np.array(gauss_smoothen(S1, sigma, gauss_window_size))
+
+#     ## Step 2: take signum of signed differece 
+#     x = np.sign(S0 - S1)
+#     ## Step 3: take first order difference
+#     x = np.diff(x)
+#     ## Step 4: Find final cp's and the language labels
+#     x = 0.50*x
+#     x = np.abs(x)
+#     x = np.where(x == 1)
+#     SL = []
+#     for i in range(0, len(S0)):
+#         if S0[i]>S1[i]:
+#             SL.append(0)
+#         else:
+#             SL.append(1)
+#     if len(x[0]) == 0:
+#         ## dummy lang labels
+#         lang_labels = np.zeros((len(x[0])+1,), dtype=int)
+#         return x, lang_labels
+#     try: 
+#         lang_labels = [np.argmax(np.bincount(SL[:math.ceil(x[0][0])]))]
+#     except Exception as e:
+#         print("Lang lable extraction error: ",SL,"\n",e)
+#         lang_labels = np.zeros((len(x[0])+1,), dtype=int)
+#         return x, lang_labels
+#     for i in range(1,len(x[0])+1):
+#         lang_labels.append(1-lang_labels[i-1])
+#     return x, lang_labels
 
 def preProcessSpeech(path):
     speech_array, sampling_rate = torchaudio.load(path)
@@ -188,18 +209,15 @@ def getHiddenFeatures(frames):
     input_values = features.input_values.to(device)
     attention_mask  = features.attention_mask.to(device)
     try:
+        # Pass attention_mask to the model to prevent attending to padded values
         with torch.no_grad():
-            # Pass attention_mask to the model to prevent attending to padded values
             hidden_features = model_wave2vec2.extract_hidden_states(input_values, attention_mask=attention_mask)
-            # logits = model_wave2vec2(input_values, attention_mask=attention_mask).logits 
-            # print("Predictions from wave2vec2: ",id2lang[torch.argmax(logits, dim=-1).detach().cpu().numpy()[0]], end=",")
     except Exception as err:
         print(f"Error -> {err} \nSKIPPED! Input Length was: {len(frames[-1])} and features len was : {input_values.shape}")
     return hidden_features
 
 def inputTDNN(hidden_features):
     #### Function to return data (vector) and target label of a csv (MFCC features) file
-    # print("Shape of individual hidden features: ",hidden_features.shape)
     X = hidden_features.reshape(-1,1024)
     Xdata1 = []
     for i in range(0,len(X)-look_back1,1):    #High resolution low context        
@@ -217,44 +235,42 @@ def extractHE(input_array):
     softmax_result = np.apply_along_axis(lambda x: np.exp(x - np.max(x)) / np.sum(np.exp(x - np.max(x))), axis=1, arr=selected_columns)
     return softmax_result
 
+# Additional function for model inference
+def modelInference(x):
+    X_val = torch.from_numpy(np.vectorize(inputTDNN, signature='(n,m)->(p,q)')(x))  # Returns (#frames, 28, 21504)
+    X_val = Variable(X_val, requires_grad=False)
+    model_xVector.eval()  # Set the model to evaluation mode
+    val_lang_op = model_xVector.forward(X_val)
+    val_lang_op = val_lang_op.detach().cpu().numpy()
+    val_lang_op = np.vectorize(extractHE, signature='(n,m)->(n,p)')(val_lang_op)
+    return val_lang_op
+
 def pipeline(path, max_batch_frames=max_batch_size):
-    ## Step 1: preprocess the audio by removing silence
+    # Step 1: Preprocess the audio by removing silence
     x = preProcessSpeech(path)
     
-    ## Now, we will just break this audio into multiple overlapping windows 
-    # Calculate the hop size in samples
-    hop_size = int(hop_length_seconds * target_sampling_rate)  # Adjust 'sample_rate' as needed
-
-    # Generate overlapping frames
+    # Step 2: Generate overlapping frames
+    hop_size = int(hop_length_seconds * target_sampling_rate)
     frames = [x[i:i+window_size] for i in range(0, len(x) - window_size + 1, hop_size)]
     if len(frames[-1]) < 100:
         print(f"Last element has small length of {len(frames[-1])} while it shall be {len(frames[0])}, Dropping!")
         frames.pop()
     
-    ## Step 2: get the hidden feature for the processed output / here #frames acts as batch size
+    # Step 3: Batch processing for feature extraction
     results = []
-    end = len(frames)  # Initialize end index to the total number of frames
-    for i in range(0, end, max_batch_frames):
-        batch_frames = frames[i:min(i+max_batch_frames, end)]  # Adjust end index
-        hidden_features = getHiddenFeatures(batch_frames).cpu().numpy()
-        # print(f"size of hidden features: {hidden_features.shape}")
-        results.append(hidden_features)
-
-    ## Concatenate results of all minibatches
+    for i in range(0, len(frames), max_batch_frames):
+        batch_frames = frames[i:i+max_batch_frames]
+        batch_hidden_features = getHiddenFeatures(batch_frames).cpu().numpy()
+        results.append(batch_hidden_features)
+    
+    # Concatenate results of all minibatches
     x = np.concatenate(results, axis=0)
-    # print(f"Final shape of hidden features concatenated: {x.shape}")
 
-    ## Step 3: get the output of TDNN for both eng and hindi
-    X_val = torch.from_numpy(np.vectorize(inputTDNN, signature='(n,m)->(p,q)')(x))  ## returns (#frames, 28, 21504)
-    X_val = Variable(X_val, requires_grad=False)
-    model_xVector.eval()  # Set the model to evaluation mode
-    val_lang_op = model_xVector.forward(X_val)
-    val_lang_op = val_lang_op.detach().cpu().numpy()
-    # print(f"Before {val_lang_op}")
-    val_lang_op = np.vectorize(extractHE, signature='(n,m)->(n,p)')(val_lang_op)
-    # print(f"After {val_lang_op}")
-    ## Step 4: mask the output for all language except eng and hindi
-    return val_lang_op[:,0], val_lang_op[:,1]
+    # Step 4: Model inference and output processing
+    ## Feeds the hidden features to tdnn and gets the output
+    val_lang_op = modelInference(x)
+
+    return val_lang_op[:, 0], val_lang_op[:, 1]
 
 
 def generate_rttm_file(name,cp, predicted_labels, total_time):
@@ -342,7 +358,7 @@ if __name__ == '__main__':
     dataset = dataset.map(
         helper,
         batched=True,
-        batch_size=128,
+        batch_size=1,
         # num_proc=6
         )
     

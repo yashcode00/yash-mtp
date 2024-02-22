@@ -209,7 +209,7 @@ if __name__ == "__main__":
         train_dataset = concatenate_datasets([train_dataset ,eval_dataset])
         train_dataset = train_dataset.map(
                             preprocess_function,
-                            batch_size=512,
+                            batch_size=256,
                             batched=True,
                             num_proc=400,
                             # keep_in_memory=True
