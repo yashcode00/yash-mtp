@@ -128,17 +128,15 @@ class HiddenFeatureExtractor:
         return batch
 
     def helper(self):
-        print(self.data)
-        for rows in enumerate(self.data):
-            print(rows[0])
-            print(rows[1])
+        for idx, batch in enumerate(self.data):
+            print(f"ID: {idx} and batch : {batch}")
+            break
         sys.exit(0)
     
     def run(self):
         logging.info(f"Finding hidden features of the dataset on gpu {self.gpu_id}")
         res = self.helper()
         logging.info(f"Task completed on gpu {self.gpu_id} with result as follow\n {res}")
-        print("#-#"*100)
         return res
 
 def prepare_dataloader(dataset: Dataset, batch_size: int):
@@ -162,6 +160,7 @@ def main(rank: int, world_size: int):
     print(f"The dataset is : {dataset}")
     ngpus_per_node = torch.cuda.device_count() 
     batch_size = int(len(dataset) / ngpus_per_node)
+    batch_size = 3
     dataset.set_format("torch")
     ## Loading the paths of the audios into a torch dataset
     logging.info(f"The batch size per gpu will be {batch_size}")
