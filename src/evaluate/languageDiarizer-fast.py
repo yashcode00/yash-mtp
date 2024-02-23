@@ -46,7 +46,6 @@ from datetime import datetime
 
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-
 torch.cuda.empty_cache()
 
 
@@ -54,9 +53,14 @@ torch.cuda.empty_cache()
 ## Important Intializations
 ##################################################################################################
 audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# logging.info(f"Device: {device}")
+### supervised dev dataset
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+wantDER = True
+ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
+resultFolderGivenName = f"displace-finetunedonDEV-dev-predicted-rttm-lang-fast"
+sys_rttmPath = os.path.join(root,resultFolderGivenName)
+outDERFileName = "displace-dev-finetuneOndev-2lang"
 
 class AudioPathDataset(Dataset):
     def __init__(self, file_paths):
@@ -82,10 +86,9 @@ def ddp_setup(rank, world_size):
 
 class LanguageDiarizer:
     def __init__(self, test_data: DataLoader, gpu_id: int) -> None:
-        global audioPath
+        global audioPath, sys_rttmPath
         self.test_data = test_data
         self.gpu_id = gpu_id
-        self.wantDER = False
         self.max_batch_size = 256
         self.nc = 2
         self.look_back1 = 21
@@ -95,13 +98,8 @@ class LanguageDiarizer:
         self.gauss_window_size = 21
         self.sigma = 0.003 * 21
         self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
-        self.resultDERPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-        self.resultFolderGivenName = f"displace-dev-finetuned-oneval-predicted-rttm-{self.nc}-lang-{self.window_size}-fast"
-        self.resultDERPath = os.path.join(self.resultDERPath, self.resultFolderGivenName) 
         self.audioPath = audioPath
-        self.ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-        self.der_metric_txt_name = "displace-der-metrics-21Feb2024"
-        self.derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
+        self.resultDERPath = sys_rttmPath
         self.model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
         self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
         self.config = AutoConfig.from_pretrained(self.model_name_or_path)
@@ -385,3 +383,11 @@ if __name__ == '__main__':
     print(f"world size detected is {world_size}")
     mp.spawn(main, args=(world_size,), nprocs=world_size)
     logging.info("All test audio successfully evaluated!")
+    if wantDER:
+        logging.info("finding DER as flag wantDER is {wantDER}")
+        subprocess.run(["python", "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findCumulativeDERfromFiles.py", 
+                "--ref_rttm_folder_path", ref_rttmPath,
+                "--sys_rttm_folder_path", sys_rttmPath ,
+                "--out", outDERFileName])
+        logging.info(f"DER files are saved at {os.path.join(root,outDERFileName)}")
+    
