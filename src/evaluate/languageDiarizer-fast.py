@@ -18,14 +18,7 @@ from tqdm import tqdm
 import torchaudio
 import os
 import sys
-import librosa
-import IPython.display as ipd
-import matplotlib.pyplot as plt
-from pydub import AudioSegment
-from datasets import load_dataset, Audio
 from dataclasses import dataclass
-from datasets import load_dataset, load_metric, load_from_disk, disable_caching
-from transformers.file_utils import ModelOutput
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 from torch.utils.data import Dataset, DataLoader
 import torch.multiprocessing as mp
@@ -54,16 +47,15 @@ torch.cuda.empty_cache()
 ##################################################################################################
 audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-wantDER = True
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+wantDER = False
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-finetunedonDEV-dev-predicted-rttm-lang-fast"
+resultFolderGivenName = f"displace-2lang-finetunedonDEV-eval-32000-0.25-predicted-rttm-lang-fast"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
-outDERFileName = "displace-dev-finetuneOndev-2lang"
 
 class AudioPathDataset(Dataset):
-    def __init__(self, file_paths):
+    def __init__(self, file_paths): 
         self.file_paths = file_paths
 
     def __len__(self):
@@ -89,13 +81,13 @@ class LanguageDiarizer:
         global audioPath, sys_rttmPath
         self.test_data = test_data
         self.gpu_id = gpu_id
-        self.max_batch_size = 256
         self.nc = 2
         self.look_back1 = 21
         self.IP_dim = 1024 * self.look_back1
-        self.window_size = 48000
+        self.window_size = 32000
         self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
+        self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
         self.sigma = 0.003 * 21
         self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
         self.audioPath = audioPath
@@ -139,6 +131,7 @@ class LanguageDiarizer:
         except subprocess.CalledProcessError as e:
             print(f"Error running command: {e}")
             return None
+        
     def diarize(self,S0,S1):
         ## Step 1: gaussian smooth all the input 
         S0  = np.array(gauss_smoothen(S0, self.sigma, self.gauss_window_size))
@@ -183,44 +176,6 @@ class LanguageDiarizer:
         # print("Segment Labels are: ", SL)
         # lang_labels = np.zeros(len(x)+1)
         return x, lang_labels
-
-    # def diarize(self, S0, S1):
-    #     # Step 1: Gaussian smooth all the input
-    #     S0_smoothed = gauss_smoothen(S0, self.sigma, self.gauss_window_size)
-    #     S1_smoothed = gauss_smoothen(S1, self.sigma, self.gauss_window_size)
-
-    #     # Convert lists to numpy arrays
-    #     S0_smoothed = np.array(S0_smoothed)
-    #     S1_smoothed = np.array(S1_smoothed)
-
-    #     # Step 2: Take the sign of the signed difference
-    #     x = np.sign(S0_smoothed - S1_smoothed)
-
-    #     # Step 3: Take the first-order difference
-    #     x_diff = np.diff(x)
-
-    #     # Step 4: Find final change points and language labels
-    #     x_abs = np.abs(x_diff)
-    #     change_points = np.where(x_abs == 1)[0]
-    #     lang_labels = np.where(S0 > S1, 0, 1)  # Assuming S0 represents language 0 and S1 represents language 1
-
-    #     if len(change_points) == 0:
-    #         # Dummy language labels
-    #         lang_labels = np.zeros((len(change_points) + 1,), dtype=int)
-    #         return change_points, lang_labels
-
-    #     try:
-    #         # Extract language labels based on change points
-    #         lang_labels = [np.argmax(np.bincount(lang_labels[:math.ceil(change_points[0])]))]
-    #     except Exception as e:
-    #         print("Language label extraction error:", e)
-    #         lang_labels = np.zeros((len(change_points) + 1,), dtype=int)
-    #         return change_points, lang_labels
-
-    #     for i in range(1, len(change_points) + 1):
-    #         lang_labels.append(1 - lang_labels[i - 1])
-
-    #     return change_points, lang_labels
 
     def preProcessSpeech(self, path):
         speech_array, sampling_rate = torchaudio.load(path)
@@ -291,13 +246,13 @@ class LanguageDiarizer:
             print(f"Intermedidate shape {self.gpu_id}: {batch_hidden_features.shape}")
             batch_predictions = self.modelInference(batch_hidden_features)
             predictions.append(batch_predictions)
-        print(f"Finall concatenated predictipns: len={len(predictions)}, \n {predictions}")
+        # print(f"Finall concatenated predictipns: len={len(predictions)}, \n {predictions}")
 
         print(f"Processed all the frames of given audio {path}!")
         # Concatenate the predictions from all minibatches
         S0 = np.concatenate([p[:, 0] for p in predictions])
         S1 = np.concatenate([p[:, 1] for p in predictions])
-        print(f"Shape of S0: {S0.shape} and S1: {S1.shape}")
+        # print(f"Shape of S0: {S0.shape} and S1: {S1.shape}")
         return S0, S1
 
 
@@ -334,7 +289,7 @@ class LanguageDiarizer:
         name = audioPath.split("/")[-1].split(".")[0]
         S0, S1 = self.pipeline(audioPath)
         x, lang_labels = self.diarize(S0, S1)
-        x = (x[0]*self.hop_length_seconds)+0.5
+        x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
         ## now generating rttm for this
         # Load the audio file using torchaudio
         waveform, sample_rate = torchaudio.load(audioPath)
@@ -384,10 +339,10 @@ if __name__ == '__main__':
     mp.spawn(main, args=(world_size,), nprocs=world_size)
     logging.info("All test audio successfully evaluated!")
     if wantDER:
-        logging.info("finding DER as flag wantDER is {wantDER}")
+        logging.info(f"finding DER as flag wantDER is {wantDER}")
         subprocess.run(["python", "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findCumulativeDERfromFiles.py", 
                 "--ref_rttm_folder_path", ref_rttmPath,
                 "--sys_rttm_folder_path", sys_rttmPath ,
-                "--out", outDERFileName])
-        logging.info(f"DER files are saved at {os.path.join(root,outDERFileName)}")
+                "--out", sys_rttmPath])
+        logging.info(f"DER files are saved at {sys_rttmPath}")
     

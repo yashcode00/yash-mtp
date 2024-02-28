@@ -15,7 +15,6 @@ class DERCalculator:
         self.derScriptPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findDER.py"
         self.batch_size = 128
         self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-        self.resultDERPath = os.path.join(self.root, self.resultDERPath)
         os.makedirs(self.resultDERPath,exist_ok=True)
 
     def numeric_part(self, filename):
