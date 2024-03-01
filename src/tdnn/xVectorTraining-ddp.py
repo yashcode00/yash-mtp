@@ -42,23 +42,24 @@ accelerator = Accelerator(kwargs_handlers=[DistributedDataParallelKwargs(find_un
 isOneSecond = False ## chunk size is 16000
 frames = 49 if isOneSecond else 99
 chunk_size = 16000 if isOneSecond else 32000
-nc = 12 # Number of language classes 
-n_epoch = 20 # Number of epochs
+nc = 2 # Number of language classes 
+n_epoch = 1 # Number of epochs
 look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
 trigger_times = 0
 patience = 6
 batch_size = 128
-label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+# label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+label_names = ['eng', 'not-eng']
 label2id={label: i for i, label in enumerate(label_names)}
 id2label={i: label for i, label in enumerate(label_names)}
-load_model_from_path= None
+load_model_from_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
 
 if accelerator.is_main_process:
     ### making output save folders 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    wandb_run_name = f"combined_12lang_2sec-300M_xVector_{timestamp}"
-    save_model_path = f"combined_12lang_2sec-300M_xVector_saved-model-{timestamp}"
+    wandb_run_name = f"displace-terminator-300M_xVector_{timestamp}"
+    save_model_path = f"displace-terminator-300M_xVector_saved-model-{timestamp}"
     root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn"
     save_model_path = os.path.join(root,save_model_path)
     pth_path = f"{save_model_path}/pthFiles"
@@ -73,7 +74,7 @@ if accelerator.is_main_process:
         os.makedirs(chkpt_path)
         logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 
-train_path  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-new12lang-2sec-HiddenFeatures_full_fast"
+train_path  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-terminator-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
 result_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn'
 
 ######################## X_vector ####################

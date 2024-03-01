@@ -77,17 +77,12 @@ class X_vector(nn.Module):
         tdnn2_out = self.tdnn2(tdnn1_out)
         tdnn3_out = self.tdnn3(tdnn2_out)
         tdnn4_out = self.tdnn4(tdnn3_out)
-        tdnn5_out = self.tdnn5(tdnn4_out)
-
-        ### Stat Pooling
-        mean = torch.mean(tdnn4_out, 1)
-        std = torch.var(tdnn4_out, 1)
-        stat_pooling = torch.cat((mean, std), 1)
+        ### Stat Pooling        
+        mean = torch.mean(tdnn4_out,1)
+        std = torch.var(tdnn4_out,1,)
+        stat_pooling = torch.cat((mean,std),1)
         segment6_out = self.segment6(stat_pooling)
-        segment6_out1 = segment6_out[-1]
-        segment6_out1 = torch.unsqueeze(segment6_out1, 0)
-        x_vec = self.segment7(segment6_out1)
-
+        x_vec = self.segment7(segment6_out)
         return x_vec
 
 
@@ -267,6 +262,91 @@ def compute_metrics(p: EvalPrediction):
         return {"mse": ((preds - p.label_ids) ** 2).mean().item()}
     else:
         return {"accuracy": (preds == p.label_ids).astype(np.float32).mean().item()}
+    
+
+##########################################################################################################
+##########################################################################################################
+    # U-vector architecture code
+##########################################################################################################
+##########################################################################################################
+
+class LSTMNet(torch.nn.Module):
+    def __init__(self, e_dim: int = 128*2):
+        super(LSTMNet, self).__init__()
+        self.e_dim = e_dim
+        self.lstm1 = nn.LSTM(1024, 256,bidirectional=True)
+        self.lstm2 = nn.LSTM(2*256, 128,bidirectional=True)
+        #self.linear = nn.Linear(2*64,e_dim)
+               
+        self.fc_ha=nn.Linear(self.e_dim,100) 
+        self.fc_1= nn.Linear(100,1)           
+        self.sftmax = torch.nn.Softmax(dim=1)
+
+    def forward(self, x):
+        x1, _ = self.lstm1(x) 
+        x2, _ = self.lstm2(x1)
+        ht = x2[-1]
+        ht = torch.unsqueeze(ht, 0) 
+        #ht = torch.tanh(self.linear(ht))      
+        ha = torch.tanh(self.fc_ha(ht))
+        alp = self.fc_1(ha)
+        al = self.sftmax(alp) 
+        
+       
+        T = list(ht.shape)[1]  
+        batch_size = list(ht.shape)[0]
+        D = list(ht.shape)[2]
+        c = torch.bmm(al.view(batch_size, 1, T),ht.view(batch_size,T,D))        
+        c = torch.squeeze(c,0)        
+        return (c)
+
+
+class CCSL_Net(nn.Module):
+    def __init__(self, model1,model2, nc: int, e_dim: int = 128*2):
+        super(CCSL_Net, self).__init__()
+        self.model1 = model1
+        self.model2 = model2
+        self.e_dim = e_dim
+        self.nc = nc
+
+        self.att_fc = nn.Linear(e_dim,e_dim)
+        #self.cla_fc = nn.Linear(e_dim,e_dim)
+        
+        self.sftmx = torch.nn.Softmax(dim=1)
+
+        self.lang_classifier = nn.Linear(self.e_dim, self.nc, bias = True)
+        self.adv_classifier = nn.Linear(self.e_dim, self.nc, bias = True) 
+        
+        
+    def attention(self, att, cla):
+        epsilon = 1e-7
+        att = torch.clamp(att, epsilon, 1. - epsilon)
+        norm_att = att / torch.sum(att, dim=1)[:, None, :]
+
+        u_LID = torch.sum(norm_att * cla, dim=1)  # Disentagle LID-specific and channel-specific u-vectors
+        u_ch = torch.sum(1-norm_att * cla, dim=1)
+        
+        return u_LID, u_ch   
+        
+        
+    def forward(self, x1,x2):
+        e1 = self.model1(x1)
+        e2 = self.model2(x2) 
+        
+        att_input = torch.cat((e1,e2), dim=0)
+        att_input = torch.unsqueeze(att_input, 0)
+        
+        att = torch.sigmoid(self.att_fc(att_input))
+        cla = att_input # No additional layer 
+        u_lid, u_ch = self.attention(att, cla) # Get LID-specific and channel-specific u-vectors.
+
+        lang_output = self.lang_classifier(u_lid)      # Restitute the u_lid  
+        lang_output = self.sftmx(lang_output) # Langue prediction from language classifier
+        
+        return (lang_output)
+
+
+
 
     # if is_apex_available():
 #     from apex import amp

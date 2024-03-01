@@ -32,6 +32,7 @@ import torch.multiprocessing as mp
 from torch.utils.data.distributed import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
+import random
 
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -48,8 +49,8 @@ def ddp_setup(rank, world_size):
     torch.cuda.set_device(rank)
 
 ## This path takes a huggingface datasets library type saved directory of all the languages
-saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
-logging.info(f"Using dataset presetn at location: {saved_dataset_path}")
+saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf"
+logging.info(f"Using dataset present at location: {saved_dataset_path}")
 
 class HiddenFeatureExtractor:
     def __init__(self, data: DataLoader, gpu_id: int) -> None:
@@ -62,18 +63,19 @@ class HiddenFeatureExtractor:
         self.max_batch_size = 512
         self.isOneSecond = False
         self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-        self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/combined2-300M-saved-model_20240219_133424/pthFiles/model_epoch_2"
+        # self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
+        self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
         self.hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/"
         # self.hiddenFeatures_givenName = "combined-saved-dataset-12lang-new.hf"
-        self.givenName = "combined-new12lang-2sec-HiddenFeatures_full_fast"
+        self.givenName = "displace-terminator-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
         self.frames = 49 if self.isOneSecond else 99
         self.cols = np.arange(0,1024,1)
         self.chunk_size = 16000 if self.isOneSecond else 32000
         # self.processed_dataset_givenName = "combined-saved-dataset-12lang-new-2sec-processed.hf"
         # self.processed_dataset_path  = os.path.join(self.hiddenFeaturesPath,self.processed_dataset_givenName)
-        self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
-        # self.label_list = ['eng', 'not-eng']
+        # self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+        self.label_list = ['eng', 'not-eng']
         self.label2id={label: i for i, label in enumerate(self.label_list)}
         self.id2label={i: label for i, label in enumerate(self.label_list)}
         self.input_column = "path"
@@ -176,13 +178,23 @@ def prepare_dataloader(dataset: Dataset, batch_size: int):
 
 
 def main(rank: int, world_size: int):
-    global saved_dataset_path
+    global saved_dataset_path, num_indices
     ddp_setup(rank, world_size)
      ## loading the dataset from saved dataset
     dataset = load_from_disk(saved_dataset_path)
     logging.info(f"Datasets loaded succesfully from location {saved_dataset_path}")
     dataset = concatenate_datasets([dataset["train"] ,dataset["validation"]])
-    print(f"The dataset is : {dataset}")
+    print(f"The provided saved dataset is : {dataset}")
+
+    # # Generate random indices
+    # all_indices = list(range(len(dataset)))
+    # logging.info(f"Length of present dataset is: {len(all_indices)}")
+    # selected_indices = random.sample(all_indices, num_indices)
+    
+    # # Select subset of the dataset based on random indices
+    # dataset = dataset.select(selected_indices)
+    # print(f"The selected dataset has {len(dataset)} samples.")
+
     ngpus_per_node = torch.cuda.device_count() 
     batch_size = int(len(dataset) / ngpus_per_node)
     dataset.set_format("torch")

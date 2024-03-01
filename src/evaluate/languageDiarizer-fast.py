@@ -48,10 +48,12 @@ torch.cuda.empty_cache()
 audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-wantDER = False
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
+wantDER = True
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-2lang-finetunedonDEV-eval-32000-0.25-predicted-rttm-lang-fast"
+resultFolderGivenName = f"displace-2lang-eval-32000-0.25-predicted-rttm-lang-fast-syntheticdata"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -89,11 +91,21 @@ class LanguageDiarizer:
         self.gauss_window_size = 21
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
         self.sigma = 0.003 * 21
+        ## displace 2 lang model trinined on 2sec
         self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
+        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
+
+        ### 12 lang finetuned model 2sec
+        # self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/combined_12lang_2sec-300M_xVector_saved-model-20240226_221808/pthFiles/modelEpoch0_xVector.pth"
+        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/combined2-300M-saved-model_20240219_133424/pthFiles/model_epoch_2"
+
+        ## olde 11 lang finetuned on 1 sec
+        # self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults/modelEpoch0_xVector.pth"
+        # self.offline_model_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
+
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
         self.model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
         self.config = AutoConfig.from_pretrained(self.model_name_or_path)
         self.processor = Wav2Vec2Processor.from_pretrained(self.model_name_or_path)
 
@@ -112,8 +124,10 @@ class LanguageDiarizer:
         random.seed(self.manual_seed)
         torch.manual_seed(self.manual_seed)
         self.label_names = ['eng','not-eng']
+        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
+        self.indices_to_extract =  [0, 1]
         os.makedirs(self.resultDERPath, exist_ok=True)
 
         try:
@@ -209,10 +223,13 @@ class LanguageDiarizer:
         return Xdata1
 
     def extractHE(self,input_array):
+        print(f"Input array is {input_array}")
         # Select columns eng and hindi
-        selected_columns = input_array[:, [0, 1]]
+        selected_columns = input_array[:,self.indices_to_extract]
+        print(f"Input extracted array is {selected_columns}")
         # Apply softmax along the second axis (axis=1)
         softmax_result = np.apply_along_axis(lambda x: np.exp(x - np.max(x)) / np.sum(np.exp(x - np.max(x))), axis=1, arr=selected_columns)
+        print(f"Input array is {softmax_result}")
         return softmax_result
 
     # Additional function for model inference
