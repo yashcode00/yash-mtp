@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH --partition=nltmp
 #SBATCH --job-name=xvec
-#SBATCH --gres=gpu:8
+#SBATCH --gres=gpu:6
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/out.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/err.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)

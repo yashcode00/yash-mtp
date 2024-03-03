@@ -145,9 +145,8 @@ class uVectorTrain:
         self.n_epochs = 200
 
         ## intializing all the models now
-        self.model_lstm1 = DDP(LSTMNet(self.e_dim).to(self.gpu_id), device_ids=[gpu_id])
-        self.model_lstm2 = DDP(LSTMNet(self.e_dim).to(self.gpu_id), device_ids=[gpu_id])
-        self.model = DDP(CCSL_Net(self.model_lstm1, self.model_lstm2, self.nc, self.e_dim).to(self.gpu_id), device_ids=[gpu_id])
+        self.path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining__saved-model-20240302_160117/pthFiles/allModels_epoch_1"
+        self.model_lstm1, self.model_lstm2, self.model = self.load_models(self.path)
 
         self.optimizer = optim.SGD(self.model.module.parameters(),lr = 0.001, momentum= 0.9)
         self.loss_lang = torch.nn.CrossEntropyLoss(reduction='mean')
@@ -156,8 +155,8 @@ class uVectorTrain:
         ### making output save folders 
         if gpu_id == 0:
             self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.wandb_run_name = f"displace_2lang-uVectorTraining_{self.timestamp}"
-            self.save_model_path = f"displace_2lang-uVectorTraining__saved-model-{self.timestamp}"
+            self.wandb_run_name = f"displace_2lang2-uVectorTraining_{self.timestamp}"
+            self.save_model_path = f"displace_2lang-uVectorTraining2__saved-model-{self.timestamp}"
             self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector"
             self.save_model_path = os.path.join(self.root,self.save_model_path)
             self.pth_path = f"{self.save_model_path}/pthFiles"
@@ -194,6 +193,25 @@ class uVectorTrain:
         }
         torch.save(snapshot, os.path.join(self.pth_path,f"allModels_epoch_{epoch%6}"))
         logging.info(f"Snapshot checkpointed successfully at location {self.pth_path} with number {epoch%6}")
+    
+    def load_models(self, path :str):
+        # Load the saved models' state dictionaries
+        snapshot = torch.load(path)
+        model1 = LSTMNet(self.e_dim).to(self.gpu_id)
+        model2 = LSTMNet(self.e_dim).to(self.gpu_id)
+        model3 = CCSL_Net(model1, model2, self.nc, self.e_dim).to(self.gpu_id)
+
+        model1 = DDP(model1, device_ids=[self.gpu_id])
+        model2 = DDP(model2, device_ids=[self.gpu_id])
+        model3 = DDP(model3, device_ids=[self.gpu_id])
+
+        if path is not None:
+            model1.module.load_state_dict(snapshot["lstm_model1"], strict=False)
+            model2.module.load_state_dict(snapshot["lstm_model2"], strict=False)
+            model3.module.load_state_dict(snapshot["main_model"], strict=False)
+            logging.info("Models loaded successfully from the saved path.")
+
+        return model1, model2, model3
 
 
     def run_epoch(self, epoch: int):
@@ -208,7 +226,7 @@ class uVectorTrain:
         self.model_lstm1.train()
         self.model_lstm2.train()
 
-        for i, (X1, X2, Y1) in tqdm(enumerate(self.train_dl)):
+        for i, (X1, X2, Y1) in (enumerate(self.train_dl)):
             X1 = X1[0].to(self.gpu_id)
             X2 = X2[0].to(self.gpu_id)
             Y1 = Y1[0].to(self.gpu_id)
@@ -262,7 +280,7 @@ class uVectorTrain:
             val_mean_loss = val_cost / len(self.val_dl)
 
         # Print combined training and validation stats
-        print('Epoch {}: Training Loss {:.5f}, Training Accuracy {:.5f} | Validation Loss {:.5f}, Validation Accuracy {:.5f}'.format(epoch, mean_loss, mean_acc, val_mean_loss, val_mean_acc))
+        logging.info('Epoch {}: Training Loss {:.5f}, Training Accuracy {:.5f} | Validation Loss {:.5f}, Validation Accuracy {:.5f}'.format(epoch, mean_loss, mean_acc, val_mean_loss, val_mean_acc))
 
     def train(self):
         logging.info("Starting the training!")

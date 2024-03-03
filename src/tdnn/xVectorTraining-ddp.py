@@ -96,10 +96,21 @@ class MyDataset(Dataset):
         self.file_paths= []
         for lang in label2id.keys():
             for f in glob.glob(os.path.join(train_path,lang) + '/*.csv'):
-                self.file_paths.append(f)
+                if self.isFit(f):
+                    self.file_paths.append(f)
+                else:
+                    print(f"skipped Unfit smaple: {f} ")
 
     def __len__(self):
         return len(self.file_paths)
+    
+    def isFit(self, path: str):
+        df = pd.read_csv(path)
+        dt = df.astype(np.float32)
+        X = np.array(dt).reshape(-1,1024)
+        if X.shape[0] == frames and X.shape[1]==1024:
+            return True
+        return False
 
     def __getitem__(self, idx):
         file_path = self.file_paths[idx]
@@ -112,9 +123,6 @@ class MyDataset(Dataset):
         df = pd.read_csv(path)
         dt = df.astype(np.float32)
         X = np.array(dt).reshape(-1,1024)
-        if X.shape[1] != 1024:
-            logging.error("Invalid shape of hidden features (need to be 1024) csv, skipping")
-            return None, None
         Xdata1 = []
         f1 = os.path.split(path)[1]     
         lang = f1.split('_')[0] 

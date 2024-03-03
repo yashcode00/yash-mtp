@@ -73,7 +73,7 @@ class x_Vector_extractor:
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
         self.hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/x-vector-embeddings"
         # self.hiddenFeatures_givenName = "combined-saved-dataset-12lang-new.hf"
-        self.givenName = "displace-2lang-2sec-xVector-embeddings_full_fast"
+        self.givenName = "displace-2lang-2sec-xVector-embeddings_full_fast-onefile"
         self.cols = np.arange(0,512,1)
         # self.processed_dataset_givenName = "combined-saved-dataset-12lang-new-2sec-processed.hf"
         # self.processed_dataset_path  = os.path.join(self.hiddenFeaturesPath,self.processed_dataset_givenName)
@@ -161,9 +161,9 @@ class MyDataset(Dataset):
         for lang in self.label2id.keys():
             for f in glob.glob(os.path.join(saved_dataset_path,lang) + '/*.csv'):
                 self.file_paths.append(f)
-        # Select a random shuffled subset of tuples
-        self.file_paths = random.sample(self.file_paths, min(len(self.file_paths), num_indices))
-        logging.info(f"Datasets loaded succesfully from location {saved_dataset_path}")
+        # # Select a random shuffled subset of tuples
+        # self.file_paths = random.sample(self.file_paths, min(len(self.file_paths), num_indices))
+        # logging.info(f"Datasets loaded succesfully from location {saved_dataset_path}")
 
 
     def __len__(self):

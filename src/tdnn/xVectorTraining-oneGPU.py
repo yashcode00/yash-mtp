@@ -58,11 +58,9 @@ isOneSecond = False ## chunk size is 16000
 frames = 49 if isOneSecond else 99
 chunk_size = 16000 if isOneSecond else 32000
 nc = 2 # Number of language classes 
-n_epoch = 10 # Number of epochs
+n_epoch = 20 # Number of epochs
 look_back1 = 21 # range
 IP_dim = 1024*look_back1 # number of input dimension
-hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/tdnn"
-hiddenFeatures_givenName = "displace-2sec-HiddenFeatures_full_fast"
 trigger_times = 0
 patience = 6
 batch_size = 64
@@ -73,8 +71,8 @@ print(f"label2id mapping: {label2id}")
 print(f"id2label mapping: {id2label}")
 ### making output save folders 
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-wandb_run_name = f"xVector-2sec_Training_{timestamp}"
-save_model_path = f"xVector-2sec-saved-model-{timestamp}"
+wandb_run_name = f"displace-terminator-300M_xVector_{timestamp}"
+save_model_path = f"displace-terminator-300M_xVector-{timestamp}"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn"
 save_model_path = os.path.join(root,save_model_path)
 chkpt_path = f"{save_model_path}/chkpt"
@@ -88,7 +86,7 @@ if not os.path.exists(save_model_path):
     os.makedirs(eval_path)
     logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
 
-train_path  = os.path.join(hiddenFeaturesPath,hiddenFeatures_givenName)
+train_path  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-terminator-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
 result_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn'
 
 ######################## X_vector ####################
@@ -159,10 +157,13 @@ for lang in label2id.keys():
         files_list.append(f)
 #### Total number of training files
 l = len(files_list)
+# Shuffle the files_list
+random.shuffle(files_list)
+files_list = files_list[:int(0.8*l)]
 print('Total Training files: {}\n'.format(l))
 
 # Split the files_list into training and validation sets
-train_df , val_df = train_test_split(files_list, test_size=0.2, random_state=42)
+train_df , val_df = train_test_split(files_list, test_size=0.15, random_state=42)
 
 # train_df = train_df
 # val_df = val_df
@@ -174,6 +175,10 @@ print("Validation Set: ", len(val_df))
 # p = "/nlsasfs/home/nltm-st/sujitk/yash/Wav2vec-codes/xVectorResults/modelEpoch0_xVector.pth"
 # model.load_state_dict(torch.load(p), strict=False)
 # print(f"Saved Model loaded from {p}")
+
+load_model_from_path= "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
+model.load_state_dict(torch.load(load_model_from_path), strict=False)
+logging.info(f"Loaded model from {load_model_from_path}")
 
 if "model_xVector.pth" in os.listdir(root):
     model.load_state_dict(torch.load(os.path.join(root,"model_xVector.pth")), strict=False)
@@ -313,7 +318,7 @@ else:
 
         #####################################################
         #### Saving the results and model of each epoch    
-        modelTempName =  f"modelEpoch{e%25}_xVector.pth"
+        modelTempName =  f"modelEpoch{e%10}_xVector.pth"
         torch.save(model.state_dict(),os.path.join(pth_path, modelTempName)) # saving the model parameters 
         logging.info(f"Checkpointed model at {os.path.join(pth_path,modelTempName)}")
         ###############################################################

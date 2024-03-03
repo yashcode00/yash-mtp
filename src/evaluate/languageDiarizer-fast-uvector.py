@@ -48,12 +48,12 @@ torch.cuda.empty_cache()
 audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-wantDER = True
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
+wantDER = False
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
-root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-2lang-eval-32000-0.25-predicted-rttm-lang-fast-syntheticdata"
+# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector"
+resultFolderGivenName = f"displace-terminator-2lang-eval-32000-0.25-predicted-rttm-lang-fast"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -74,7 +74,7 @@ def ddp_setup(rank, world_size):
         world_size: Total number of processes
     """
     os.environ["MASTER_ADDR"] = "localhost"
-    os.environ["MASTER_PORT"] = "12355"
+    os.environ["MASTER_PORT"] = "30000"
     init_process_group(backend="nccl", rank=rank, world_size=world_size)
     torch.cuda.set_device(rank)
 
@@ -83,26 +83,19 @@ class LanguageDiarizer:
         global audioPath, sys_rttmPath
         self.test_data = test_data
         self.gpu_id = gpu_id
+        self.e_dim = 128*2
         self.nc = 2
-        self.look_back1 = 21
-        self.IP_dim = 1024 * self.look_back1
+        self.look_back1= 8
+        self.look_back2  = 16
         self.window_size = 32000
         self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
+        print(f"the batch size for evaluation (max) is {self.max_batch_size}")
         self.sigma = 0.003 * 21
-        ## displace 2 lang model trinined on 2sec
-        self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
-        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
 
-        ### 12 lang finetuned model 2sec
-        # self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/combined_12lang_2sec-300M_xVector_saved-model-20240226_221808/pthFiles/modelEpoch0_xVector.pth"
-        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/combined2-300M-saved-model_20240219_133424/pthFiles/model_epoch_2"
-
-        ## olde 11 lang finetuned on 1 sec
-        # self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults/modelEpoch0_xVector.pth"
-        # self.offline_model_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-
+        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining__saved-model-20240302_160117/pthFiles/allModels_epoch_1"
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
         self.model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
@@ -111,18 +104,20 @@ class LanguageDiarizer:
 
 
         logging.info(f"On GPU {self.gpu_id}")
+        ## loading all the models into memory
+        ### wave2vec2
         self.model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(self.offline_model_path).to(gpu_id)
         self.model_wave2vec2 = DDP(self.model_wave2vec2, device_ids=[gpu_id])
+
+        ## the u-vector model
+        self.model_lstm1, self.model_lstm2, self.model_uVector = self.load_models(self.uvector_model_path)
+        self.optimizer = optim.SGD(self.model_uVector.module.parameters(),lr = 0.001, momentum= 0.9)
+        self.loss_lang = torch.nn.CrossEntropyLoss(reduction='mean')
 
 
         self.target_sampling_rate = self.processor.feature_extractor.sampling_rate
         self.processor.feature_extractor.return_attention_mask = True
-        self.model_xVector = X_vector(self.IP_dim, self.nc).to(gpu_id)
-        self.optimizer =  optim.Adam(self.model_xVector.parameters(), lr=0.0001, weight_decay=5e-5, betas=(0.9, 0.98), eps=1e-9)
-        self.loss_lang = torch.nn.CrossEntropyLoss()
-        self.manual_seed = random.randint(1,10000)
-        random.seed(self.manual_seed)
-        torch.manual_seed(self.manual_seed)
+
         self.label_names = ['eng','not-eng']
         # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
@@ -130,13 +125,26 @@ class LanguageDiarizer:
         self.indices_to_extract =  [0, 1]
         os.makedirs(self.resultDERPath, exist_ok=True)
 
-        try:
-            self.model_xVector.load_state_dict(torch.load(self.xVectormodel_path, map_location=torch.device(gpu_id)), strict=False)
-            self.model_xVector = DDP(self.model_xVector, device_ids=[gpu_id])
-        except Exception as err:
-            print("Error is: ",err)
-            logging.error("No, valid/corrupted TDNN saved model found, Aborting!")
-            sys.exit(0)
+    def load_models(self, path :str):
+        # Load the saved models' state dictionaries
+        snapshot = torch.load(path)
+        model1 = LSTMNet(self.e_dim).to(self.gpu_id)
+        model2 = LSTMNet(self.e_dim).to(self.gpu_id)
+        model3 = CCSL_Net(model1, model2, self.nc, self.e_dim).to(self.gpu_id)
+
+        model1 = DDP(model1, device_ids=[self.gpu_id])
+        model2 = DDP(model2, device_ids=[self.gpu_id])
+        model3 = DDP(model3, device_ids=[self.gpu_id])
+
+        if path is not None:
+            model1.module.load_state_dict(snapshot["lstm_model1"], strict=False)
+            model2.module.load_state_dict(snapshot["lstm_model2"], strict=False)
+            model3.module.load_state_dict(snapshot["main_model"], strict=False)
+            logging.info("Models loaded successfully from the saved path.")
+        else:
+            logging.error("NO saved model dict found for u-vector!!")
+
+        return model1, model2, model3
 
     def run_command(self, command):
         try:
@@ -210,40 +218,70 @@ class LanguageDiarizer:
             print(f"Error -> {err} \nSKIPPED! Input Length was: {len(frames[-1])} and features len was : {input_values.shape}")
         return hidden_features
 
-    def inputTDNN(self,hidden_features):
-        #### Function to return data (vector) and target label of a csv (MFCC features) file
+    ## This funct reads the hidden features as given by HiddenFeatrues csv and 
+    ## prepares it for input to the network
+    def inputUvector(self,hidden_features):
         X = hidden_features.reshape(-1,1024)
-        Xdata1 = []
+
+        Xdata1=[]
+        Xdata2=[] 
+        
+        mu = X.mean(axis=0)
+        std = X.std(axis=0)
+        np.place(std, std == 0, 1)
+        X = (X - mu) / std   
+        
         for i in range(0,len(X)-self.look_back1,1):    #High resolution low context        
-            a = X[i:(i+self.look_back1),:]  
-            b = [k for l in a for k in l]      #unpacking nested list(list of list) to list
-            Xdata1.append(b)
-        Xdata1 = np.array(Xdata1)    
-        Xdata1 = torch.from_numpy(Xdata1).float() 
-        return Xdata1
+            a=X[i:(i+self.look_back1),:]        
+            Xdata1.append(a)
+        Xdata1=np.array(Xdata1)
+
+        for i in range(0,len(X)-self.look_back2,2):     #Low resolution long context       
+            b=X[i+1:(i+self.look_back2):3,:]        
+            Xdata2.append(b)
+        Xdata2=np.array(Xdata2)
+        
+        Xdata1 = torch.from_numpy(Xdata1).float()
+        Xdata2 = torch.from_numpy(Xdata2).float()   
+        
+        return Xdata1,Xdata2
 
     def extractHE(self,input_array):
-        print(f"Input array is {input_array}")
         # Select columns eng and hindi
         selected_columns = input_array[:,self.indices_to_extract]
-        print(f"Input extracted array is {selected_columns}")
         # Apply softmax along the second axis (axis=1)
         softmax_result = np.apply_along_axis(lambda x: np.exp(x - np.max(x)) / np.sum(np.exp(x - np.max(x))), axis=1, arr=selected_columns)
-        print(f"Input array is {softmax_result}")
         return softmax_result
 
     # Additional function for model inference
     def modelInference(self, x):
-        X_val = torch.from_numpy(np.vectorize(self.inputTDNN, signature='(n,m)->(p,q)')(x)).to(self.gpu_id)  # Returns (#frames, 28, 21504)
-        X_val = Variable(X_val, requires_grad=False)
-        # Set the model to evaluation mode
-        self.model_xVector.eval()
-        # Forward pass through the model
-        with torch.no_grad():
-            val_lang_op = self.model_xVector.module.forward(X_val)  # Access module attribute for DDP-wrapped model
-            val_lang_op = val_lang_op.detach().cpu().numpy()
-        val_lang_op = np.vectorize(self.extractHE, signature='(n,m)->(n,p)')(val_lang_op)
-        return val_lang_op
+        # Vectorize the input data
+        X1, X2 = np.vectorize(self.inputUvector, signature='(n,m)->(p,q,m),(a,s,m)')(x)
+        batch_size = x.shape[0]
+        outputs = []
+        for i in range(batch_size):
+            X1_i = Variable(torch.from_numpy(X1[i]).to(self.gpu_id), requires_grad=False)
+            X2_i = Variable(torch.from_numpy(X2[i]).to(self.gpu_id), requires_grad=False)
+
+            print(f"Shape of processed input for uvector: X1: {X1_i.shape} and X2: {X2_i.shape}")
+
+            # Set the model to evaluation mode
+            self.model_uVector.eval()
+
+            # Forward pass through the model
+            with torch.no_grad():
+                val_lang_op = self.model_uVector.module.forward(X1_i, X2_i)  # Access module attribute for DDP-wrapped model
+                val_lang_op = val_lang_op.detach().cpu().numpy()
+
+            print(f"Model Output: shape: {val_lang_op.shape} and \n {val_lang_op}")
+            outputs.append(val_lang_op)
+
+        outputs = np.concatenate(outputs, axis=0)  # Combine outputs for all elements in the batch
+        # Vectorize the outputs
+        outputs = np.vectorize(self.extractHE, signature='(n,m)->(n,p)')(outputs)
+        print(f"uvector model final output: shape: {outputs.shape} and \n {outputs}")
+        return outputs
+
 
     def pipeline(self, path):
         # Step 1: Preprocess the audio by removing silence
@@ -260,7 +298,7 @@ class LanguageDiarizer:
         for i in tqdm(range(0, len(frames), self.max_batch_size)):
             batch_frames = frames[i:i+self.max_batch_size]
             batch_hidden_features = self.getHiddenFeatures(batch_frames).cpu().numpy()
-            print(f"Intermedidate shape {self.gpu_id}: {batch_hidden_features.shape}")
+            # print(f"Intermedidate shape {self.gpu_id}: {batch_hidden_features.shape}")
             batch_predictions = self.modelInference(batch_hidden_features)
             predictions.append(batch_predictions)
         # print(f"Finall concatenated predictipns: len={len(predictions)}, \n {predictions}")
@@ -285,7 +323,6 @@ class LanguageDiarizer:
             # Generate RTTM content
             rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
             # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
-
             # Update start time for the next segment
             start_time = end_time
         
