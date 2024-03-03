@@ -85,8 +85,8 @@ class LanguageDiarizer:
         self.gpu_id = gpu_id
         self.e_dim = 128*2
         self.nc = 2
-        self.look_back1= 8
-        self.look_back2  = 16
+        self.look_back1= 4
+        self.look_back2  = 8
         self.window_size = 32000
         self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
