@@ -46,17 +46,18 @@ class DERCalculator:
             result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True, text=True)
             return result.stdout.strip()
         except subprocess.CalledProcessError as e:
+            print("*"*10)
             print(f"Error running command: {e}")
             return None
 
     def calculateDER(self):
         sys_rttm_files = [os.path.join(self.sys_rttm_folder_path,file) for file in os.listdir(self.sys_rttm_folder_path) if file.endswith(".rttm")]
         sys_rttm = sorted(sys_rttm_files, key=self.numeric_part)
-        logging.info(f"System generated rttm files: \n{sys_rttm}")
+        # logging.info(f"System generated rttm files: \n{sys_rttm}")
         
         ref_rttm_files = [os.path.join(self.ref_rttm_folder_path,file) for file in os.listdir(self.ref_rttm_folder_path) if file.endswith(".rttm")]
         ref_rttm = sorted(ref_rttm_files, key=self.numeric_part)
-        logging.info(f"The reference/ground truth rttm file: \n{ref_rttm}")
+        # logging.info(f"The reference/ground truth rttm file: \n{ref_rttm}")
         total_batches = math.ceil(float(len(ref_rttm) * 1.0) / float(self.batch_size))
         start_idx = 0
         
@@ -66,10 +67,11 @@ class DERCalculator:
             temp_ref_rttm = ref_rttm[start_idx:end_idx]
             temp_sys_rttm = " ".join(temp_sys_rttm)
             temp_ref_rttm = " ".join(temp_ref_rttm)
-            command = f'python {self.derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
+            command = f'python3 {self.derScriptPath} -r {temp_ref_rttm} -s {temp_sys_rttm}'
             output = self.run_command(command)
             der_filename = os.path.join(self.resultDERPath, f"{self.der_metric_txt_name}-{batches}.txt")
-            
+            print("*"*100)
+            print(output)
             with open(der_filename, 'w') as f_out:
                 f_out.write(output)
             
@@ -96,3 +98,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# python3 src/evaluate/findCumulativeDERfromFiles.py --ref_rttm_folder_path evaluationResults/u-Vector/displace-terminator-2lang-dev-16000-0.25-predicted-rttm-lang-4-8-fast --sys_rttm_folder_path

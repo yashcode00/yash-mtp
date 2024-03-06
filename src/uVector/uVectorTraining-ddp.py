@@ -25,9 +25,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 import torch
-from transformers import AutoFeatureExtractor, TrainingArguments, AutoConfig, Wav2Vec2Processor, Wav2Vec2FeatureExtractor, EvalPrediction, Trainer
 import numpy as np
-from typing import Any, Dict, Union, Tuple
 from torch import optim
 import glob
 from torch.autograd import Variable
@@ -39,10 +37,6 @@ from sklearn.metrics import accuracy_score
 import random
 import wandb
 
-
-manual_seed = random.randint(1,10000)
-random.seed(manual_seed)
-torch.manual_seed(manual_seed)
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
@@ -52,26 +46,15 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 hiddenfeaturesPath  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
 batch_size = 1
 
-def ddp_setup(rank, world_size):
-    """
-    Args:
-        rank: Unique identifier of each process
-        world_size: Total number of processes
-    """
-    os.environ["MASTER_ADDR"] = "localhost"
-    os.environ["MASTER_PORT"] = "12355"
-    init_process_group(backend="nccl", rank=rank, world_size=world_size)
-    torch.cuda.set_device(rank)
-
 class MyDataset(Dataset):
-    def __init__(self, num_samples = 4):
+    def __init__(self):
         global hiddenfeaturesPath
         self.file_paths= []
         self.label_names = ['eng','not-eng']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
-        self.look_back1 = 4
-        self.look_back2  = 8
+        self.look_back1 = 20
+        self.look_back2  = 50
 
         for lang in self.label2id.keys():
             for f in glob.glob(os.path.join(hiddenfeaturesPath,lang) + '/*.csv'):
@@ -134,29 +117,36 @@ class MyDataset(Dataset):
         return Xdata1,Xdata2,Ydata1
 
 class uVectorTrain:
-    def __init__(self,train_dl:  DataLoader, val_dl: DataLoader, gpu_id: int ) -> None:
+    def __init__(self,train_dl:  DataLoader, val_dl: DataLoader) -> None:
         self.train_dl = train_dl
         self.val_dl = val_dl
-        self.gpu_id  = gpu_id
+        self.gpu_id  = int(os.environ['RANK'])
+        self.local_rank = int(os.environ['LOCAL_RANK'])
+        logging.info(f"On GPU {self.gpu_id} having local rank of {self.local_rank}")
+
+        assert self.local_rank != -1, "LOCAL_RANK environment variable not set"
+        assert self.gpu_id != -1, "RANK environment variable not set"
+
         self.e_dim = 128*2
         self.nc = 2
-        self.look_back1= 4
-        self.look_back2  = 8
-        self.n_epochs = 200
+        self.look_back1= 20
+        self.look_back2  = 50
+        self.n_epochs = 100
 
         ## intializing all the models now
-        self.path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining__saved-model-20240302_160117/pthFiles/allModels_epoch_1"
-        self.model_lstm1, self.model_lstm2, self.model = self.load_models(self.path)
+        ## load from chekp path
+        self.load_path = None
+        self.model_lstm1, self.model_lstm2, self.model = self.load_models(self.load_path)
 
         self.optimizer = optim.SGD(self.model.module.parameters(),lr = 0.001, momentum= 0.9)
         self.loss_lang = torch.nn.CrossEntropyLoss(reduction='mean')
 
         ### making directorues to save checkpoints, evaluations etc
         ### making output save folders 
-        if gpu_id == 0:
+        if self.gpu_id == 0:
             self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.wandb_run_name = f"displace_2lang2-uVectorTraining_{self.timestamp}"
-            self.save_model_path = f"displace_2lang-uVectorTraining2__saved-model-{self.timestamp}"
+            self.wandb_run_name = f"displace_2lang-uVectorTraining_{self.timestamp}"
+            self.save_model_path = f"displace_2lang-uVectorTraining_saved-model-{self.timestamp}"
             self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector"
             self.save_model_path = os.path.join(self.root,self.save_model_path)
             self.pth_path = f"{self.save_model_path}/pthFiles"
@@ -169,7 +159,6 @@ class uVectorTrain:
                 os.makedirs(self.chkpt_path)
                 os.makedirs(self.eval_path)
                 logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{self.save_model_path}'.")
-
             # ## signing in to wanddb
             # load_dotenv()
             # secret_value_1 = os.getenv("wandb")
@@ -180,7 +169,7 @@ class uVectorTrain:
             # else:
             #     # Initialize Wandb with your API keywandb
             #     wandb.login(key=secret_value_1)
-            #     run = wandb.init(name = self.wandb_run_name, project="huggingface")
+            #     self.run = wandb.init(name = self.wandb_run_name, project="huggingface")
             #     logging.info("Login to wandb succesfull!")
     
     def save_model(self, epoch:int):
@@ -196,7 +185,6 @@ class uVectorTrain:
     
     def load_models(self, path :str):
         # Load the saved models' state dictionaries
-        snapshot = torch.load(path)
         model1 = LSTMNet(self.e_dim).to(self.gpu_id)
         model2 = LSTMNet(self.e_dim).to(self.gpu_id)
         model3 = CCSL_Net(model1, model2, self.nc, self.e_dim).to(self.gpu_id)
@@ -206,6 +194,7 @@ class uVectorTrain:
         model3 = DDP(model3, device_ids=[self.gpu_id])
 
         if path is not None:
+            snapshot = torch.load(path)
             model1.module.load_state_dict(snapshot["lstm_model1"], strict=False)
             model2.module.load_state_dict(snapshot["lstm_model2"], strict=False)
             model3.module.load_state_dict(snapshot["main_model"], strict=False)
@@ -226,7 +215,12 @@ class uVectorTrain:
         self.model_lstm1.train()
         self.model_lstm2.train()
 
-        for i, (X1, X2, Y1) in (enumerate(self.train_dl)):
+        # Disable tqdm on all nodes except the rank 0 GPU on each server
+        batch_iterator = tqdm(self.train_dl, desc=f"Processing Epoch {epoch} on local rank: {self.local_rank}", disable=self.gpu_id != 0)
+
+        for X1, X2, Y1 in batch_iterator:
+            torch.cuda.empty_cache()
+
             X1 = X1[0].to(self.gpu_id)
             X2 = X2[0].to(self.gpu_id)
             Y1 = Y1[0].to(self.gpu_id)
@@ -243,9 +237,6 @@ class uVectorTrain:
             train_preds.extend(predictions)
             train_gts.extend(Y1.cpu().numpy())
 
-            # Print loss per batch
-            # print("u-vector_den_base: Epoch = ", epoch, "  completed files  "+str(i)+"/"+str(len(self.train_dl))+" Train Loss= %.5f"%(train_cost/(i+1)), end='\r')
-
         # Calculate mean accuracy and loss after the epoch
         mean_acc = accuracy_score(train_gts, train_preds)
         mean_loss = train_cost / len(self.train_dl)
@@ -258,7 +249,7 @@ class uVectorTrain:
         self.model.eval()
         self.model_lstm1.eval()
         self.model_lstm2.eval()
-        logging.info("Evaluating now.")
+        logging.info(f"GPU {self.gpu_id}, Evaluating now...")
 
         with torch.no_grad():
             for i, (X1, X2, Y1) in enumerate(self.val_dl):
@@ -280,7 +271,8 @@ class uVectorTrain:
             val_mean_loss = val_cost / len(self.val_dl)
 
         # Print combined training and validation stats
-        logging.info('Epoch {}: Training Loss {:.5f}, Training Accuracy {:.5f} | Validation Loss {:.5f}, Validation Accuracy {:.5f}'.format(epoch, mean_loss, mean_acc, val_mean_loss, val_mean_acc))
+        if self.gpu_id == 0:
+            logging.info('(GPU {}) Epoch {}: Training Loss {:.5f}, Training Accuracy {:.5f} | Validation Loss {:.5f}, Validation Accuracy {:.5f}'.format(self.gpu_id, epoch, mean_loss, mean_acc, val_mean_loss, val_mean_acc))
 
     def train(self):
         logging.info("Starting the training!")
@@ -301,14 +293,15 @@ def prepare_dataloader(dataset: Dataset):
         dataset,
         drop_last=False,
         batch_size=batch_size,
-        pin_memory=True,
         shuffle=False,
-        sampler=DistributedSampler(dataset)
+        sampler=DistributedSampler(dataset, shuffle=True)
     )
 
-def main(rank: int, world_size: int):
+def main():
     global saved_dataset_path, num_indices, batch_size
-    ddp_setup(rank, world_size)
+    # Define the device
+    assert torch.cuda.is_available(), "Training on CPU is not supported"
+
      ## loading the dataset from saved dataset
     df = MyDataset()
 
@@ -318,20 +311,21 @@ def main(rank: int, world_size: int):
     train_dataset, val_dataset = torch.utils.data.random_split(df, [train_size, test_size])
     logging.info(f"The train dataset len is {len(train_dataset)}")
     logging.info(f"The validataion dataset len is {len(val_dataset)}")
-    # ngpus_per_node = torch.cuda.device_count() 
-    # batch_size = int(len(train_dataset) / ngpus_per_node)
-    ## Loading the paths of the audios into a torch dataset
-    logging.info(f"The batch size per gpu will be {batch_size}")
+
     train_dataloader = prepare_dataloader(train_dataset)
     val_dataloader = prepare_dataloader(val_dataset)
-    uvector = uVectorTrain(train_dataloader, val_dataloader, rank)
-    res = uvector.run()
-    print(f"Result from {rank} is \n{res}")
-    destroy_process_group()
+    uvector = uVectorTrain(train_dataloader, val_dataloader)
+    ## train
+    uvector.run()
+    
+    return
 
 if __name__ == '__main__':
-    torch.cuda.empty_cache()
-    world_size = torch.cuda.device_count()
-    print(f"world size detected is {world_size}")
-    mp.spawn(main, args=(world_size,), nprocs=world_size)
-    logging.info("Training completed successfully!!")
+    # Setup distributed training
+    init_process_group(backend='nccl')
+
+    # Train the model
+    main()
+
+    # Clean up distributed training
+    destroy_process_group()

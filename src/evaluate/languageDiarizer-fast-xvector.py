@@ -45,15 +45,15 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-wantDER = False
+wantDER = True
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
-root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults"
-resultFolderGivenName = f"displace-terminator-2lang-eval-48000-0.15-predicted-rttm-lang-fast"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/x-Vector"
+resultFolderGivenName = f"displace-terminator-2lang-dev-16000-0.25-predicted-rttm-lang-fast"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -86,13 +86,13 @@ class LanguageDiarizer:
         self.nc = 2
         self.look_back1 = 21
         self.IP_dim = 1024 * self.look_back1
-        self.window_size = 48000
-        self.hop_length_seconds = 0.15
+        self.window_size =  16000
+        self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
         self.sigma = 0.003 * 21
         ## displace 2 lang model trinined on 2sec
-        self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
+        # self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVector-2sec-saved-model-20240218_123206/pthFiles/modelEpoch0_xVector.pth"
         # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
 
         ### 12 lang finetuned model 2sec
@@ -104,8 +104,8 @@ class LanguageDiarizer:
         # self.offline_model_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 
         ### for terminator last model
-        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
-        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_4"
+        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/displace-terminator-300M_xVector-20240302_160526/pthFiles/modelEpoch0_xVector.pth"
 
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
@@ -361,7 +361,7 @@ if __name__ == '__main__':
     logging.info("All test audio successfully evaluated!")
     if wantDER:
         logging.info(f"finding DER as flag wantDER is {wantDER}")
-        subprocess.run(["python", "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findCumulativeDERfromFiles.py", 
+        subprocess.run(["python3", "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findCumulativeDERfromFiles.py", 
                 "--ref_rttm_folder_path", ref_rttmPath,
                 "--sys_rttm_folder_path", sys_rttmPath ,
                 "--out", sys_rttmPath])

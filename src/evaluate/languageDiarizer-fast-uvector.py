@@ -53,7 +53,7 @@ wantDER = False
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector"
-resultFolderGivenName = f"displace-terminator-2lang-eval-32000-0.25-predicted-rttm-lang-fast"
+resultFolderGivenName = f"displace-terminator-2lang-eval-48000-0.25-predicted-rttm-lang-20-50-fast"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -74,7 +74,7 @@ def ddp_setup(rank, world_size):
         world_size: Total number of processes
     """
     os.environ["MASTER_ADDR"] = "localhost"
-    os.environ["MASTER_PORT"] = "30000"
+    os.environ["MASTER_PORT"] = "30100"
     init_process_group(backend="nccl", rank=rank, world_size=world_size)
     torch.cuda.set_device(rank)
 
@@ -85,9 +85,9 @@ class LanguageDiarizer:
         self.gpu_id = gpu_id
         self.e_dim = 128*2
         self.nc = 2
-        self.look_back1= 4
-        self.look_back2  = 8
-        self.window_size = 32000
+        self.look_back1= 20
+        self.look_back2  = 50
+        self.window_size = 48000
         self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
@@ -95,7 +95,7 @@ class LanguageDiarizer:
         self.sigma = 0.003 * 21
 
         self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
-        self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining__saved-model-20240302_160117/pthFiles/allModels_epoch_1"
+        self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining_saved-model-20240305_182126/pthFiles/allModels_epoch_3"
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
         self.model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
@@ -394,7 +394,7 @@ if __name__ == '__main__':
     logging.info("All test audio successfully evaluated!")
     if wantDER:
         logging.info(f"finding DER as flag wantDER is {wantDER}")
-        subprocess.run(["python", "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findCumulativeDERfromFiles.py", 
+        subprocess.run(["python3", "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/findCumulativeDERfromFiles.py", 
                 "--ref_rttm_folder_path", ref_rttmPath,
                 "--sys_rttm_folder_path", sys_rttmPath ,
                 "--out", sys_rttmPath])
