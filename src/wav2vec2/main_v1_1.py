@@ -146,17 +146,17 @@ class wave2vec2Finetune():
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             self.wandb_run_name = f"wave2vec2-12lang-300M-saved-model_{timestamp}"
             self.save_model_path = f"wave2vec2-12lang-300M-saved-model_{timestamp}"
-            self.save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",save_model_path)
-            self.chkpt_path = f"{save_model_path}/chkpt"
-            self.pth_path = f"{save_model_path}/pthFiles"
-            self.eval_path = f"{save_model_path}/evaluations"
+            self.save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",self.save_model_path)
+            self.chkpt_path = f"{self.save_model_path}/chkpt"
+            self.pth_path = f"{self.save_model_path}/pthFiles"
+            self.eval_path = f"{self.save_model_path}/evaluations"
             # Create the folder if it doesn't exist
-            if not os.path.exists(save_model_path):
-                os.makedirs(save_model_path)
-                os.makedirs(chkpt_path)
-                os.makedirs(pth_path)
-                os.makedirs(eval_path)
-                logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{save_model_path}'.")
+            if not os.path.exists(self.save_model_path):
+                os.makedirs(self.save_model_path)
+                os.makedirs(self.chkpt_path)
+                os.makedirs(self.pth_path)
+                os.makedirs(self.eval_path)
+                logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{self.save_model_path}'.")
             
             ## for huggingface and wandb sync  
             load_dotenv()
