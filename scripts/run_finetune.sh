@@ -23,7 +23,7 @@ export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 
 # Run Python script in the background and save the output to the log file
-accelerate launch /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py &> "$output_main" &
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 -m torch.distributed.launch --nproc_per_node=8 /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py &> "$output_main" &
 
 # Save the background job's process ID (PID)
 bg_pid=$!

@@ -45,14 +45,14 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/NNDL"
 ### supervised dev dataset
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
 wantDER = False
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
-saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-eval-xvectorembeddings"
+saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/NNDL"
 
 class AudioPathDataset(Dataset):
     def __init__(self, file_paths): 

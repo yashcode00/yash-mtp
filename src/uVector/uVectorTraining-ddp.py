@@ -29,7 +29,6 @@ import numpy as np
 from torch import optim
 import glob
 from torch.autograd import Variable
-# import torch.distributed
 from gaussianSmooth import *
 import logging
 from datetime import datetime
