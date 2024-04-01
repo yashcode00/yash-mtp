@@ -1,9 +1,9 @@
 import os
 import pyzipper
 
-zip_file_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_unsupervised_part2.zip'
-target_directory = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge'
-password = "8Yv+Kv9H7C96" 
+zip_file_path = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/testDiralisationOutput.zip'
+target_directory = '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets'
+password = "" 
 
 
 def unzip_with_pyzipper(zip_file_path, target_directory, password):
@@ -16,6 +16,7 @@ def unzip_with_pyzipper(zip_file_path, target_directory, password):
     # Open the zip file with pyzipper
     with pyzipper.AESZipFile(zip_file_path, 'r') as zip_ref:
         # Extract all contents to the target directory with the provided password
+        # zip_ref.extractall(target_directory, pwd=str.encode(password))
         zip_ref.extractall(target_directory, pwd=str.encode(password))
 
     print(f"File extracted to: {target_directory}")

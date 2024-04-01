@@ -45,15 +45,19 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-wantDER = False
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
+wantDER = True
+
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
+ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
+
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector"
-resultFolderGivenName = f"displace-terminator-2lang-eval-48000-0.25-predicted-rttm-lang-20-50-fast"
+resultFolderGivenName = f"wave2vec2-12lang-dev-48000-0.25-predicted-rttm-lang-20-50-synthData"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -84,30 +88,44 @@ class LanguageDiarizer:
         self.test_data = test_data
         self.gpu_id = gpu_id
         self.e_dim = 128*2
-        self.nc = 2
         self.look_back1= 20
         self.look_back2  = 50
         self.window_size = 48000
         self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
+        self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
+        self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
+
+
         print(f"the batch size for evaluation (max) is {self.max_batch_size}")
         self.sigma = 0.003 * 21
 
-        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
-        self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining_saved-model-20240305_182126/pthFiles/allModels_epoch_3"
+        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        # self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining_saved-model-20240305_182126/pthFiles/allModels_epoch_3"
+
+        ## 12 lang wave2vec2
+        self.offline_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/wave2vec2-12lang-300M-saved-model_20240308_181251/pthFiles/modelinfo_epoch_14"
+        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/wave2vec2_12lang-uVectorTraining_saved-model-20240310_041313/pthFiles/allModels_epoch_2"
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
         self.model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
-        self.config = AutoConfig.from_pretrained(self.model_name_or_path)
-        self.processor = Wav2Vec2Processor.from_pretrained(self.model_name_or_path)
+
+        # self.label_names = ['eng','not-eng']
+        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        self.label2id={label: i for i, label in enumerate(self.label_names)}
+        self.id2label={i: label for i, label in enumerate(self.label_names)}
+        self.num_labels = len(self.label_names)
+        self.nc = self.num_labels
+        # self.indices_to_extract =  [0, 1]
+        self.indices_to_extract =  [2, 4]
 
 
         logging.info(f"On GPU {self.gpu_id}")
         ## loading all the models into memory
         ### wave2vec2
-        self.model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(self.offline_model_path).to(gpu_id)
-        self.model_wave2vec2 = DDP(self.model_wave2vec2, device_ids=[gpu_id])
+        self.config, self.processor, self.model_wave2vec2, self.feature_extractor = self.load_model_wave2vec2(self.offline_model_path)
+
 
         ## the u-vector model
         self.model_lstm1, self.model_lstm2, self.model_uVector = self.load_models(self.uvector_model_path)
@@ -117,12 +135,6 @@ class LanguageDiarizer:
 
         self.target_sampling_rate = self.processor.feature_extractor.sampling_rate
         self.processor.feature_extractor.return_attention_mask = True
-
-        self.label_names = ['eng','not-eng']
-        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
-        self.label2id={label: i for i, label in enumerate(self.label_names)}
-        self.id2label={i: label for i, label in enumerate(self.label_names)}
-        self.indices_to_extract =  [0, 1]
         os.makedirs(self.resultDERPath, exist_ok=True)
 
     def load_models(self, path :str):
@@ -145,6 +157,33 @@ class LanguageDiarizer:
             logging.error("NO saved model dict found for u-vector!!")
 
         return model1, model2, model3
+    
+    def load_model_wave2vec2(self, path: str):
+        snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
+        logging.info(f"(GPU {self.gpu_id}) Loading wave2vec2 model from path: {path}")
+        # config
+        config = AutoConfig.from_pretrained(
+            self.repo_url,
+            num_labels=self.num_labels,
+            label2id=self.label2id,
+            id2label=self.id2label,
+            finetuning_task="wav2vec2_clf",
+            cache_dir=self.cache_dir,
+        )
+        processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
+        model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained("facebook/wav2vec2-xls-r-300m",
+                                                                        config=config , 
+                                                                            cache_dir=self.cache_dir
+                                                                        ).to(self.gpu_id)
+        # model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(path,
+        #                                                         # config=config , 
+        #                                                             cache_dir=self.cache_dir
+        #                                                         ).to(self.gpu_id)
+        model_wave2vec2.load_state_dict(snapshot, strict=False)
+        model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
+        feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
+        logging.info("(GPU {self.gpu_id}) Successfully loaded wave2vec2 model.")
+        return config, processor, model_wave2vec2, feature_extractor
 
     def run_command(self, command):
         try:

@@ -49,7 +49,7 @@ def ddp_setup(rank, world_size):
     torch.cuda.set_device(rank)
 
 ## This path takes a huggingface datasets library type saved directory of all the languages
-saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf"
+saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
 logging.info(f"Using dataset present at location: {saved_dataset_path}")
 
 class HiddenFeatureExtractor:
@@ -64,40 +64,58 @@ class HiddenFeatureExtractor:
         self.isOneSecond = False
         self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
         # self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
-        self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/wave2vec2-12lang-300M-saved-model_20240308_181251/pthFiles/modelinfo_epoch_14"
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
         self.hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/"
-        # self.hiddenFeatures_givenName = "combined-saved-dataset-12lang-new.hf"
-        self.givenName = "displace-terminator-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
+        self.givenName = "wave2vec2-12lang-hiddenFeatures-fast"
         self.frames = 49 if self.isOneSecond else 99
         self.cols = np.arange(0,1024,1)
         self.chunk_size = 16000 if self.isOneSecond else 32000
         # self.processed_dataset_givenName = "combined-saved-dataset-12lang-new-2sec-processed.hf"
         # self.processed_dataset_path  = os.path.join(self.hiddenFeaturesPath,self.processed_dataset_givenName)
-        # self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
-        self.label_list = ['eng', 'not-eng']
+        self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+        # self.label_list = ['eng', 'not-eng']
+        self.num_labels = len(self.label_list)
         self.label2id={label: i for i, label in enumerate(self.label_list)}
         self.id2label={i: label for i, label in enumerate(self.label_list)}
         self.input_column = "path"
         self.output_column = "language"
         self.targetDirectory = os.path.join(self.hiddenFeaturesPath,self.givenName)
+        self.config, self.processor, self.model_wave2vec2, self.feature_extractor = self.load_model(self.model_name_or_path)
+
         logging.info(f"All hidden features csv will be saved to directory --> {self.targetDirectory}")
         os.makedirs(self.targetDirectory, exist_ok=True)
-
-
-        self.config = AutoConfig.from_pretrained(self.repo_url)
-        self.processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
-
         logging.info(f"On GPU {self.gpu_id}")
-        self.model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(self.model_name_or_path).to(gpu_id)
-        self.model_wave2vec2 = DDP(self.model_wave2vec2, device_ids=[gpu_id])
-
-        self.feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
+        
         self.target_sampling_rate = self.processor.feature_extractor.sampling_rate
         self.processor.feature_extractor.return_attention_mask = True ## to return the attention masks
 
         self.label_list.sort()  # Let's sort it for determinism
         self.num_labels = len(self.label_list)
+    
+    def load_model(self, path: str):
+        snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
+        logging.info(f"(GPU {self.gpu_id}) Loading model from path: {path}")
+        # config
+        config = AutoConfig.from_pretrained(
+            self.repo_url,
+            num_labels=self.num_labels,
+            label2id=self.label2id,
+            id2label=self.id2label,
+            finetuning_task="wav2vec2_clf",
+            cache_dir=self.cache_dir,
+        )
+        processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
+        model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained("facebook/wav2vec2-xls-r-300m",
+                                                                          config=config , 
+                                                                            cache_dir=self.cache_dir
+                                                                          ).to(self.gpu_id)
+        model_wave2vec2.load_state_dict(snapshot, strict=False)
+        model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
+        feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
+        logging.info("(GPU {self.gpu_id}) Successfully loaded model.")
+        return config, processor, model_wave2vec2, feature_extractor
+
 
     def speech_file_to_array_fn(self, path):
         speech_array, sampling_rate = torchaudio.load(path)

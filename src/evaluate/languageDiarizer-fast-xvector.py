@@ -13,7 +13,6 @@ from torch.utils.data import Dataset
 import numpy as np
 import pandas as pd
 import subprocess
-import re
 from tqdm import tqdm
 import torchaudio
 import os
@@ -47,13 +46,15 @@ torch.cuda.empty_cache()
 ##################################################################################################
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
+ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
+
 wantDER = True
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
-# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/x-Vector"
-resultFolderGivenName = f"displace-terminator-2lang-dev-16000-0.25-predicted-rttm-lang-fast"
+resultFolderGivenName = f"old-wave2vec2-11lang-16000-0.25-predicted-rttm-lang-fast-syntheticdata"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -83,7 +84,7 @@ class LanguageDiarizer:
         global audioPath, sys_rttmPath
         self.test_data = test_data
         self.gpu_id = gpu_id
-        self.nc = 2
+        self.nc = 11
         self.look_back1 = 21
         self.IP_dim = 1024 * self.look_back1
         self.window_size =  16000
@@ -104,8 +105,8 @@ class LanguageDiarizer:
         # self.offline_model_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 
         ### for terminator last model
-        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
-        self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/displace-terminator-300M_xVector-20240302_160526/pthFiles/modelEpoch0_xVector.pth"
+        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults-old/modelEpoch0_xVector.pth"
 
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
@@ -115,7 +116,8 @@ class LanguageDiarizer:
 
 
         logging.info(f"On GPU {self.gpu_id}")
-        self.model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(self.offline_model_path).to(gpu_id)
+        self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
+        self.model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(self.model_name_or_path, cache_dir = self.cache_dir).to(gpu_id)
         self.model_wave2vec2 = DDP(self.model_wave2vec2, device_ids=[gpu_id])
 
 
@@ -127,11 +129,12 @@ class LanguageDiarizer:
         self.manual_seed = random.randint(1,10000)
         random.seed(self.manual_seed)
         torch.manual_seed(self.manual_seed)
-        self.label_names = ['eng','not-eng']
+        # self.label_names = ['eng','not-eng']
         # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
-        self.indices_to_extract =  [0, 1]
+        self.indices_to_extract =  [2, 4]
         os.makedirs(self.resultDERPath, exist_ok=True)
 
         try:

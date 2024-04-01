@@ -98,6 +98,7 @@ class MyDataset(Dataset):
         # loading from saved dataset
         dataset = load_from_disk(self.path)
         dataset = concatenate_datasets([dataset["train"],dataset["validation"]])
+        # dataset = dataset.select(range(25000))
         logging.info("Datasets loaded succesfully.")
         return dataset
 
@@ -172,9 +173,10 @@ class wave2vec2Finetune():
                 # Initialize Wandb with your API keywandb
                 wandb.login(key=secret_value_1)
                 if self.wandb_run_id is not None: 
-                    self.run = wandb.init(name = wandb_run_name,id = self.wandb_run_id, project="lid-1")
+                    self.run = wandb.init(name = self.wandb_run_name,id = self.wandb_run_id, project="lid-1")
                 else:
-                    self.run = wandb.init(name = wandb_run_name, project="lid-1")
+                    self.run = wandb.init(name = self.wandb_run_name, project="lid-1")
+                logging.info(f"wandb run details: {self.run}")
 
         ## loading the model
         self.feature_extractor, self.processor, self.model, self.optimizer = self.load_model()
@@ -250,21 +252,22 @@ class wave2vec2Finetune():
         train_accuracy = accuracy_score(x,y)
 
         # saving the model
-        self.save_model(epoch)
+        if self.gpu_id == 0:
+            self.save_model(epoch)
         
         print(f" (GPU {self.gpu_id}) Evaluating Wait...")
         x = np.array([])
         y = np.array([])
-        batch_iterator = tqdm(self.val_dl, desc=f"Processing Epoch {epoch} on local rank: {self.local_rank}", disable=self.gpu_id != 0)
+        batch_iterator = tqdm(self.val_dl, desc=f" (GPU {self.gpu_id}  EPOCH {epoch}) Processing next Batch ]", disable=self.gpu_id != 0)
         self.model.eval()
         for batch in batch_iterator:
             # We could avoid this line since we set the accelerator with `device_placement=True`.
             batch.to(self.gpu_id)
             with torch.no_grad():
-                outputs = model(**batch)
+                outputs = self.model(**batch)
             predictions = outputs.logits.argmax(dim=-1)
             loss = outputs.loss
-            val_loss.append(self.loss)
+            val_loss.append(loss)
             predictions, references = predictions, batch["labels"]
             try:
                 x = np.concatenate((x,predictions.cpu().numpy()),axis=0)

@@ -2,14 +2,14 @@
 #SBATCH -N 1
 #SBATCH --partition=nltmp
 #SBATCH --job-name=cbn2
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:8
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/out.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/err.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/x-Vector/"
-output_main="${log_dir}displace-terminator-dev-16000-0.25.log"
+output_main="${log_dir}old-11lang0-wave2vec-16000-0.25-syn.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 
@@ -17,10 +17,16 @@ eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wa
 conda activate wave2vec
 
 # Set proxy environment variables
-export HTTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
-export HTTPS_PROXY='http://proxy-10g.10g.siddhi.param:9090'
-export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
-export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
+export http_proxy='http://proxy-10g.10g.siddhi.param:9090'
+export https_proxy='http://proxy-10g.10g.siddhi.param:9090'
+export ftp_proxy='http://proxy-10g.10g.ßßßsiddhi.param:9090'
+export all_proxy='http://proxy-10g.10g.siddhi.param:9090'
+
+# unset HTTP_PROXY
+# unset HTTPS_PROXY
+# unset FTP_PROXY
+# unset ALL_PROXY
+
 
 # Run Python script in the background and save the output to the log file
 python3 /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-xvector.py &> "$output_main" &

@@ -43,13 +43,16 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 ## Important Intializations
 ##################################################################################################
 hiddenfeaturesPath  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
+hiddenfeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/wave2vec2-springlabs-12lang-hiddenFeatures-fast"
 batch_size = 1
 
 class MyDataset(Dataset):
     def __init__(self):
         global hiddenfeaturesPath
         self.file_paths= []
-        self.label_names = ['eng','not-eng']
+        # self.label_names = ['eng','not-eng']
+        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
         self.look_back1 = 20
@@ -127,7 +130,7 @@ class uVectorTrain:
         assert self.gpu_id != -1, "RANK environment variable not set"
 
         self.e_dim = 128*2
-        self.nc = 2
+        self.nc = 12
         self.look_back1= 20
         self.look_back2  = 50
         self.n_epochs = 100
@@ -144,8 +147,8 @@ class uVectorTrain:
         ### making output save folders 
         if self.gpu_id == 0:
             self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.wandb_run_name = f"displace_2lang-uVectorTraining_{self.timestamp}"
-            self.save_model_path = f"displace_2lang-uVectorTraining_saved-model-{self.timestamp}"
+            self.wandb_run_name = f"springlabs-uVectorTraining_{self.timestamp}"
+            self.save_model_path = f"springlabs-uVectorTraining_saved-model-{self.timestamp}"
             self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector"
             self.save_model_path = os.path.join(self.root,self.save_model_path)
             self.pth_path = f"{self.save_model_path}/pthFiles"
