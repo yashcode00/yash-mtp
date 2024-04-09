@@ -42,16 +42,15 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-hiddenfeaturesPath  = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-2lang-2sec-HiddenFeatures-wave2vec2_full_fast"
-hiddenfeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/wave2vec2-springlabs-12lang-hiddenFeatures-fast"
+hiddenfeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs/wave2vec2-springlabs-2lang-hiddenFeatures-fast"
 batch_size = 1
 
 class MyDataset(Dataset):
     def __init__(self):
         global hiddenfeaturesPath
         self.file_paths= []
-        # self.label_names = ['eng','not-eng']
-        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+        self.label_names = ['eng','not-eng']
+        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
 
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
@@ -130,7 +129,7 @@ class uVectorTrain:
         assert self.gpu_id != -1, "RANK environment variable not set"
 
         self.e_dim = 128*2
-        self.nc = 12
+        self.nc = 2
         self.look_back1= 20
         self.look_back2  = 50
         self.n_epochs = 100
@@ -147,8 +146,8 @@ class uVectorTrain:
         ### making output save folders 
         if self.gpu_id == 0:
             self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.wandb_run_name = f"springlabs-uVectorTraining_{self.timestamp}"
-            self.save_model_path = f"springlabs-uVectorTraining_saved-model-{self.timestamp}"
+            self.wandb_run_name = f"springlabs-displace-uVectorTraining_{self.timestamp}"
+            self.save_model_path = f"springlabs-displace-2lang-uVectorTraining_saved-model-{self.timestamp}"
             self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector"
             self.save_model_path = os.path.join(self.root,self.save_model_path)
             self.pth_path = f"{self.save_model_path}/pthFiles"
@@ -161,18 +160,18 @@ class uVectorTrain:
                 os.makedirs(self.chkpt_path)
                 os.makedirs(self.eval_path)
                 logging.info(f"models, checkpoints and evaluations will be saved in folder at: '{self.save_model_path}'.")
-            # ## signing in to wanddb
-            # load_dotenv()
-            # secret_value_1 = os.getenv("wandb")
+            ## signing in to wanddb
+            load_dotenv()
+            secret_value_1 = os.getenv("wandb")
 
-            # if secret_value_1 is None:
-            #     logging.error(f"Please set Environment Variables properly for wandb login. Exiting.")
-            #     sys.exit(1)
-            # else:
-            #     # Initialize Wandb with your API keywandb
-            #     wandb.login(key=secret_value_1)
-            #     self.run = wandb.init(name = self.wandb_run_name, project="huggingface")
-            #     logging.info("Login to wandb succesfull!")
+            if secret_value_1 is None:
+                logging.error(f"Please set Environment Variables properly for wandb login. Exiting.")
+                sys.exit(1)
+            else:
+                # Initialize Wandb with your API keywandb
+                wandb.login(key=secret_value_1)
+                self.run = wandb.init(name = self.wandb_run_name, project="huggingface")
+                logging.info("Login to wandb succesfull!")
     
     def save_model(self, epoch:int):
         logging.info("Saving the models snapshot.")
@@ -274,6 +273,13 @@ class uVectorTrain:
 
         # Print combined training and validation stats
         if self.gpu_id == 0:
+            wandb.log({
+                'train_loss': mean_loss,
+                'val_loss': val_mean_loss,
+                'train_accuracy':mean_acc,
+                'val_accuracy': val_mean_acc,
+
+            })
             logging.info('(GPU {}) Epoch {}: Training Loss {:.5f}, Training Accuracy {:.5f} | Validation Loss {:.5f}, Validation Accuracy {:.5f}'.format(self.gpu_id, epoch, mean_loss, mean_acc, val_mean_loss, val_mean_acc))
 
     def train(self):
@@ -283,10 +289,6 @@ class uVectorTrain:
             if self.gpu_id == 0:
                 # saving the model
                 self.save_model(epoch)
-
-            
-    def run(self):
-        self.train()
 
 
 def prepare_dataloader(dataset: Dataset):
@@ -318,7 +320,7 @@ def main():
     val_dataloader = prepare_dataloader(val_dataset)
     uvector = uVectorTrain(train_dataloader, val_dataloader)
     ## train
-    uvector.run()
+    uvector.train()
     
     return
 

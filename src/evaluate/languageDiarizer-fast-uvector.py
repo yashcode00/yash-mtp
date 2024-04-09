@@ -36,6 +36,7 @@ from torch.autograd import Variable
 from gaussianSmooth import *
 import logging
 from datetime import datetime
+from pyannote.core import Segment
 
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -96,6 +97,7 @@ class LanguageDiarizer:
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
         self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
+        self.pyannot_seg_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/vad_audio_segments"
 
 
         print(f"the batch size for evaluation (max) is {self.max_batch_size}")
@@ -237,12 +239,47 @@ class LanguageDiarizer:
         # print("Segment Labels are: ", SL)
         # lang_labels = np.zeros(len(x)+1)
         return x, lang_labels
+    
+    
+    def parseSegFile(self, segment_file):
+        """
+        Parse Pyannote segments from a file into a list of Segment objects.
 
-    def preProcessSpeech(self, path):
+        Args:
+            segment_file (str): Path to the file containing Pyannote segment string.
+
+        Returns:
+            List of Segment: List of Segment objects parsed from the file.
+        """
+        segments = []
+        # Open the file and read each line
+        with open(segment_file, 'r') as f:
+            for line in f:
+                # Split each line into start and end times
+                start, end = map(float, line.strip().split())
+                # Create Segment object and append to the list
+                segments.append(Segment(start, end))
+        return segments
+    
+    def audioVad(self, path, segments) :
+        ## loading the audio file
         speech_array, sampling_rate = torchaudio.load(path)
         resampler = torchaudio.transforms.Resample(sampling_rate, self.target_sampling_rate)
         speech_array = resampler(speech_array).squeeze().numpy()
-        return speech_array
+
+        audio_segments = []
+        # Iterate over segments
+        for start, end in segments:
+            # Convert start and end times to sample indices
+            start_sample = int(start * self.target_sampling_rate)
+            end_sample = int(end * self.target_sampling_rate)
+            # Extract segment
+            segment_waveform = speech_array[start_sample:end_sample]
+            # Create Segment object
+            segment = Segment(start, end)
+            # Append audio segment and segment object to the list
+            audio_segments.append((segment_waveform, segment))
+        return audio_segments
 
     ## function to store the hidden feature representation from the last layer of wave2vec2
     def getHiddenFeatures(self,frames):
@@ -322,10 +359,8 @@ class LanguageDiarizer:
         return outputs
 
 
-    def pipeline(self, path):
-        # Step 1: Preprocess the audio by removing silence
-        x = self.preProcessSpeech(path)
-        # Step 2: Generate overlapping frames
+    def pipeline(self, x):
+        # Step 1: Generate overlapping frames
         hop_size = int(self.hop_length_seconds * self.target_sampling_rate)
         frames = [x[i:i+self.window_size] for i in range(0, len(x) - self.window_size + 1, hop_size)]
         if len(frames[-1]) < 100:
@@ -342,15 +377,15 @@ class LanguageDiarizer:
             predictions.append(batch_predictions)
         # print(f"Finall concatenated predictipns: len={len(predictions)}, \n {predictions}")
 
-        print(f"Processed all the frames of given audio {path}!")
+        # print(f"Processed all the frames of given audio {path}!")
         # Concatenate the predictions from all minibatches
         S0 = np.concatenate([p[:, 0] for p in predictions])
         S1 = np.concatenate([p[:, 1] for p in predictions])
         # print(f"Shape of S0: {S0.shape} and S1: {S1.shape}")
         return S0, S1
+        
 
-
-    def generate_rttm_file(self,name,cp, predicted_labels, total_time):
+    def generate_rttm_file(self,name, cp, predicted_labels, total_time):
         rttm_content = ""
         # Add the start time at 0
         start_time = 0
@@ -361,39 +396,57 @@ class LanguageDiarizer:
             duration = end_time - start_time
             # Generate RTTM content
             rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
-            # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
             # Update start time for the next segment
             start_time = end_time
         
         ## add last entry
         duration = total_time - start_time
-        i = len(cp)
-        # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
-        rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        if duration > 0:
+            i = len(cp)
+            rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        return rttm_content
+        
+    def predictOne(self,audio_path: str,segFile_path: str):
+        # step 1: get all chunks usning vad
+        x = self.audioVad(audio_path, segFile_path)
+        name = audio_path.split("/")[-1].split(".")[0]
+
+        rttm_sys = ""
+        
+        ## step 2: loop through all segments and make prediction
+        for i in tqdm(range(len(x))):
+            audio_array, interval = x[i]
+            start, end = interval
+            S0, S1 = self.pipeline(audio_array)
+            x, lang_labels = self.diarize(S0, S1)
+            x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
+            ## adding offsest of strt time to all the elments
+            x = [val + start for val in x]
+            ## now generating rttm for this
+            # Get the duration in seconds
+            duration_in_seconds = audio_array.size(1) / self.target_sampling_rate
+            rttm_sys += self.generate_rttm_file(x,name, lang_labels, duration_in_seconds)
+        
+        print("*"*100)
+        print(f"Processed all chunks of the audio at path {audio_path}")
+        
+        ## Step3: compoiling and generating final rttm
         output_rttm_filename = f"{name}_LANGUAGE_sys.rttm"
         targetPath = os.path.join(self.resultDERPath,output_rttm_filename)
 
         # Export RTTM file
         with open(targetPath, "w") as rttm_file:
-            rttm_file.write(rttm_content)
+            rttm_file.write(rttm_sys)
         return targetPath
-        
-    def predictOne(self,audioPath):
-        name = audioPath.split("/")[-1].split(".")[0]
-        S0, S1 = self.pipeline(audioPath)
-        x, lang_labels = self.diarize(S0, S1)
-        x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
-        ## now generating rttm for this
-        # Load the audio file using torchaudio
-        waveform, sample_rate = torchaudio.load(audioPath)
-        # Get the duration in seconds
-        duration_in_seconds = waveform.size(1) / sample_rate
-        return self.generate_rttm_file(name, x,lang_labels, duration_in_seconds)
 
     def helper(self):
-        generated_rttms = [self.predictOne(path) for paths in self.test_data for path in paths]
+        generated_rttms = []
+        for paths in self.test_data:
+            for path in paths:
+                audio_name = path.split(".")[0]
+                seg_file_path = os.path.join(self.pyannot_seg_path, f"{audio_name}.pyannote.segment")
+                generated_rttms.append(self.predictOne(path, seg_file_path)) 
         return generated_rttms
-
     
     def run(self):
         logging.info(f"Evaluating the dataset on gpu {self.gpu_id}")

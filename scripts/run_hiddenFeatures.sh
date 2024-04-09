@@ -2,16 +2,16 @@
 #SBATCH -N 1
 #SBATCH --partition=nltmp
 #SBATCH --job-name=hf
-#SBATCH --gres=gpu:8
-#SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/out.log  # Updated output path
-#SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/err.log    # Updated error path
+#SBATCH --gres=gpu:3
+#SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/spring-labs/out.log  # Updated output path
+#SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/spring-labs/err.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
 
 # Define the Conda environment, activate it, and define the Python script and log file
-log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/asr-iitm/"
-output_main="${log_dir}wave2vec2-fairseq-hiddenfeatrues.log"
+log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/spring-labs/"
+output_main="${log_dir}displace-2lang-fairseq-hiddenfeatures.log"
 
-eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
+eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/spring-labs/wav2vec2/error.txt
 
 # Activate the Conda environment
 conda activate wave2vec

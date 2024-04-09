@@ -18,6 +18,7 @@ Thumbs.db
 /models/
 /wandb/
 /logs/
+/logs-old/
 
 # Ignore large files
 *.zip

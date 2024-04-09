@@ -50,7 +50,7 @@ def ddp_setup(rank, world_size):
     torch.cuda.set_device(rank)
 
 ## This path takes a huggingface datasets library type saved directory of all the languages
-saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf"
+saved_dataset_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
 logging.info(f"Using dataset present at location: {saved_dataset_path}")
 
 class HiddenFeatureExtractor:
@@ -65,17 +65,17 @@ class HiddenFeatureExtractor:
         self.isOneSecond = False
         self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
         # self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displce-2sec-finetunedOndev-300M-saved-model_20240218_143551/pthFiles/model_epoch_9"
-        self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt"
+        self.model_name_or_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/data2vec-aqc/SPRING_INX_data2vec_aqc_SSL.pt"
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
-        self.hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs"
-        self.givenName = "wave2vec2-springlabs-fromRTTM-2lang-hiddenFeatures-fast"
+        self.hiddenFeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/data2vec-aqc/"
+        self.givenName = "data2vec-aqc-springlabs-12lang-hiddenFeatures-fast"
         self.frames = 49 if self.isOneSecond else 99
         self.cols = np.arange(0,1024,1)
         self.chunk_size = 16000 if self.isOneSecond else 32000
         # self.processed_dataset_givenName = "combined-saved-dataset-12lang-new-2sec-processed.hf"
         # self.processed_dataset_path  = os.path.join(self.hiddenFeaturesPath,self.processed_dataset_givenName)
-        # self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
-        self.label_list = ['eng', 'not-eng']
+        self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'pun','tam', 'tel']
+        # self.label_list = ['eng', 'not-eng']
         self.num_labels = len(self.label_list)
         self.label2id={label: i for i, label in enumerate(self.label_list)}
         self.id2label={i: label for i, label in enumerate(self.label_list)}

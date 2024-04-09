@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 #SBATCH -N 1
 #SBATCH --partition=nltmp
-#SBATCH --job-name=uVector
+#SBATCH --job-name=hf
 #SBATCH --gres=gpu:8
-#SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/out.log  # Updated output path
-#SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/err.log    # Updated error path
+#SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/out.log  # Updated output path
+#SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/evaluations/err.log    # Updated error path
 #SBATCH --time=7-0:0:0  # 7 days, 0 hours, 0 minutes, and 0 seconds (you can adjust this as needed)
 
 # Define the Conda environment, activate it, and define the Python script and log file
-log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/spring-labs/"
-output_main="${log_dir}uvector-2-lang-springlabs.log"
+log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/asr-iitm/"
+output_main="${log_dir}data2vec-aqc-fairseq-hiddenfeatrues.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 
@@ -23,7 +23,7 @@ export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 
 # Run Python script in the background and save the output to the log file
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 -m torch.distributed.launch --nproc_per_node=8 /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/uVector/uVectorTraining-ddp.py &> "$output_main" &
+python3 /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/tdnn/fasterHiddenFeatures-data2vec-aqc-springlabs-ddp_sujeet.py &> "$output_main" &
 
 # Save the background job's process ID (PID)
 bg_pid=$!

@@ -37,6 +37,8 @@ from gaussianSmooth import *
 import logging
 import fairseq
 from datetime import datetime
+from pyannote.core import Segment
+
 
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -58,8 +60,9 @@ wantDER = True
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector/spring-labs"
-resultFolderGivenName = f"wave2vec2-displace-springlabs-pretrained-2lang-dev-48000-0.25-predicted-rttm-lang-20-50"
+resultFolderGivenName = f"wave2vec2-springlabs-withvad-pretrained-12lang-dev-48000-0.25-predicted-rttm-lang-20-50-displace"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
+PYANNOT_SEG_PATH =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments"
 
 class AudioPathDataset(Dataset):
     def __init__(self, file_paths): 
@@ -85,7 +88,7 @@ def ddp_setup(rank, world_size):
 
 class LanguageDiarizer:
     def __init__(self, test_data: DataLoader, gpu_id: int) -> None:
-        global audioPath, sys_rttmPath
+        global audioPath, sys_rttmPath, PYANNOT_SEG_PATH
         self.test_data = test_data
         self.gpu_id = gpu_id
         self.e_dim = 128*2
@@ -97,6 +100,7 @@ class LanguageDiarizer:
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
         self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
+        self.pyannot_seg_path = PYANNOT_SEG_PATH
 
 
         print(f"the batch size for evaluation (max) is {self.max_batch_size}")
@@ -104,18 +108,18 @@ class LanguageDiarizer:
 
         ## 12 lang wave2vec2
         self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt"
-        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/springlabs-displace-2lang-uVectorTraining_saved-model-20240409_181809/pthFiles/allModels_epoch_1"
+        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/springlabs-uVectorTraining_saved-model-20240316_180010/pthFiles/allModels_epoch_0"
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
 
-        self.label_names = ['eng','not-eng']
-        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        # self.label_names = ['eng','not-eng']
+        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
         self.num_labels = len(self.label_names)
         self.nc = self.num_labels
-        self.indices_to_extract =  [0, 1]
-        # self.indices_to_extract =  [2, 4]
+        # self.indices_to_extract =  [0, 1]
+        self.indices_to_extract =  [2, 4]
 
 
         logging.info(f"On GPU {self.gpu_id}")
@@ -190,7 +194,7 @@ class LanguageDiarizer:
         processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
         model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
         feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
-        logging.info("(GPU {self.gpu_id}) Successfully loaded model.")
+        logging.info(f"(GPU {self.gpu_id}) Successfully loaded model.")
         return processor, model_wave2vec2, feature_extractor
 
     def run_command(self, command):
@@ -233,11 +237,12 @@ class LanguageDiarizer:
         if len(x[0]) == 0:
             ## dummy lang labels
             lang_labels = np.zeros((len(x[0])+1,), dtype=int)
+            # logging.info(f"{x} is empty bro, labels generated are: {lang_labels}")
             return x, lang_labels
         try: 
             lang_labels = [np.argmax(np.bincount(SL[:math.ceil(x[0][0])]))]
         except Exception as e:
-            print("Lang lable extraction error: ",SL,"\n",e)
+            # print("Lang lable extraction error: ",SL,"\n",e)
             lang_labels = np.zeros((len(x[0])+1,), dtype=int)
             return x, lang_labels
         for i in range(1,len(x[0])+1):
@@ -245,12 +250,6 @@ class LanguageDiarizer:
         # print("Segment Labels are: ", SL)
         # lang_labels = np.zeros(len(x)+1)
         return x, lang_labels
-
-    def preProcessSpeech(self, path):
-        speech_array, sampling_rate = torchaudio.load(path)
-        resampler = torchaudio.transforms.Resample(sampling_rate, self.target_sampling_rate)
-        speech_array = resampler(speech_array).squeeze().numpy()
-        return speech_array
 
     ## function to store the hidden feature representation from the last layer of wave2vec2
     def getHiddenFeatures(self,frames):
@@ -264,10 +263,60 @@ class LanguageDiarizer:
         except Exception as err:
             print(f"Error -> {err} \nSKIPPED! Input Length was: {len(frames[-1])} and features len was : {input_values.shape}")
         return hidden_features
+    
+    @staticmethod
+    def parseSegFile(segFilepath: str):
+        logging.info(f"Reading segments at {segFilepath}")
+        """
+        Parse Pyannote segments from a file into a list of Segment objects.
+
+        Args:
+            segFilepath (str): Path to the file containing Pyannote segment string.
+
+        Returns:
+            List of Segment: List of Segment objects parsed from the file.
+        """
+        segments = []
+        # Open the file and read each line
+        with open(segFilepath, 'r') as f:
+            for line in f:
+                # Split each line into start and end times
+                start, end = map(float, line.strip().split())
+                # Create Segment object and append to the list
+                segments.append(Segment(start, end))
+        return segments
+    
+    def audioVad(self, path, segments) :
+        ## loading the audio file
+        speech_array, sampling_rate = torchaudio.load(path)
+        resampler = torchaudio.transforms.Resample(sampling_rate, self.target_sampling_rate)
+        speech_array = resampler(speech_array).squeeze().numpy()
+
+        audio_segments = []
+        # Iterate over segments
+        for start, end in segments:
+            # Convert start and end times to sample indices
+            start_sample = int(start * self.target_sampling_rate)
+            end_sample = int(end * self.target_sampling_rate)
+            # Extract segment
+            segment_waveform = speech_array[start_sample:end_sample]
+            # Create Segment object
+            segment = Segment(start, end)
+            # Append audio segment and segment object to the list
+            audio_segments.append((segment_waveform, segment))
+        return audio_segments
 
     ## This funct reads the hidden features as given by HiddenFeatrues csv and 
     ## prepares it for input to the network
     def inputUvector(self,hidden_features):
+        seq , _ = hidden_features.shape
+        if seq <= max(self.look_back1, self.look_back2):
+            look_back2 = int(seq/2) if int(seq/2) != 0 else 2
+            look_back1 = int(seq/4) if int(seq/4) != 0 else 4
+        else:
+            look_back1= self.look_back1
+            look_back2 = self.look_back2
+
         X = hidden_features.reshape(-1,1024)
 
         Xdata1=[]
@@ -278,13 +327,13 @@ class LanguageDiarizer:
         np.place(std, std == 0, 1)
         X = (X - mu) / std   
         
-        for i in range(0,len(X)-self.look_back1,1):    #High resolution low context        
-            a=X[i:(i+self.look_back1),:]        
+        for i in range(0,len(X)-look_back1,1):    #High resolution low context        
+            a=X[i:(i+look_back1),:]        
             Xdata1.append(a)
         Xdata1=np.array(Xdata1)
 
-        for i in range(0,len(X)-self.look_back2,2):     #Low resolution long context       
-            b=X[i+1:(i+self.look_back2):3,:]        
+        for i in range(0,len(X)-look_back2,2):     #Low resolution long context       
+            b=X[i+1:(i+look_back2):3,:]        
             Xdata2.append(b)
         Xdata2=np.array(Xdata2)
         
@@ -303,14 +352,16 @@ class LanguageDiarizer:
     # Additional function for model inference
     def modelInference(self, x):
         # Vectorize the input data
+        # logging.info(f"shape of input to {x.shape}")
         X1, X2 = np.vectorize(self.inputUvector, signature='(n,m)->(p,q,m),(a,s,m)')(x)
+        # logging.info(f"shape of input to x-vector/u-vector: {X1.shape} and {X2.shape}")
         batch_size = x.shape[0]
         outputs = []
         for i in range(batch_size):
             X1_i = Variable(torch.from_numpy(X1[i]).to(self.gpu_id), requires_grad=False)
             X2_i = Variable(torch.from_numpy(X2[i]).to(self.gpu_id), requires_grad=False)
 
-            print(f"Shape of processed input for uvector: X1: {X1_i.shape} and X2: {X2_i.shape}")
+            # print(f"Shape of processed input for uvector: X1: {X1_i.shape} and X2: {X2_i.shape}")
 
             # Set the model to evaluation mode
             self.model_uVector.eval()
@@ -320,22 +371,28 @@ class LanguageDiarizer:
                 val_lang_op = self.model_uVector.module.forward(X1_i, X2_i)  # Access module attribute for DDP-wrapped model
                 val_lang_op = val_lang_op.detach().cpu().numpy()
 
-            print(f"Model Output: shape: {val_lang_op.shape} and \n {val_lang_op}")
+            # print(f"Model Output: shape: {val_lang_op.shape} and \n {val_lang_op}")
             outputs.append(val_lang_op)
 
         outputs = np.concatenate(outputs, axis=0)  # Combine outputs for all elements in the batch
         # Vectorize the outputs
         outputs = np.vectorize(self.extractHE, signature='(n,m)->(n,p)')(outputs)
-        print(f"uvector model final output: shape: {outputs.shape} and \n {outputs}")
+        # print(f"uvector model final output: shape: {outputs.shape} and \n {outputs}")
         return outputs
 
 
-    def pipeline(self, path):
-        # Step 1: Preprocess the audio by removing silence
-        x = self.preProcessSpeech(path)
-        # Step 2: Generate overlapping frames
+    def pipeline(self, x):
+        # Step 1: Generate overlapping frames
         hop_size = int(self.hop_length_seconds * self.target_sampling_rate)
-        frames = [x[i:i+self.window_size] for i in range(0, len(x) - self.window_size + 1, hop_size)]
+
+        frames = []
+        for i in range(0, len(x), hop_size):
+            e = min(i+self.window_size, len(x))
+            frames.append(x[i:e])
+
+        if len(frames) == 0:
+            logging.error(f"This arr cause the issue: {len(x)}")
+            sys.exit(0)
         if len(frames[-1]) < 100:
             print(f"Last element has small length of {len(frames[-1])} while it shall be {len(frames[0])}, Dropping!")
             frames.pop()
@@ -350,18 +407,15 @@ class LanguageDiarizer:
             predictions.append(batch_predictions)
         # print(f"Finall concatenated predictipns: len={len(predictions)}, \n {predictions}")
 
-        print(f"Processed all the frames of given audio {path}!")
+        # print(f"Processed all the frames of given audio {path}!")
         # Concatenate the predictions from all minibatches
         S0 = np.concatenate([p[:, 0] for p in predictions])
         S1 = np.concatenate([p[:, 1] for p in predictions])
         # print(f"Shape of S0: {S0.shape} and S1: {S1.shape}")
         return S0, S1
 
-
-    def generate_rttm_file(self,name,cp, predicted_labels, total_time):
+    def generate_rttm_file(self, cp,name, predicted_labels, total_time, start_time):
         rttm_content = ""
-        # Add the start time at 0
-        start_time = 0
         tolang = {0:"L1",1:"L2"}
         for i in range(len(cp)):
             end_time = cp[i]
@@ -369,37 +423,68 @@ class LanguageDiarizer:
             duration = end_time - start_time
             # Generate RTTM content
             rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
-            # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
             # Update start time for the next segment
             start_time = end_time
         
         ## add last entry
         duration = total_time - start_time
-        i = len(cp)
-        # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
-        rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        if duration > 0:
+            i = len(cp)
+            rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+        return rttm_content
+        
+    def predictOne(self,audio_path: str, segFile_path: str):
+        # step 1: get all chunks usning vad
+        segments_loaded = LanguageDiarizer.parseSegFile(segFile_path)
+        x = self.audioVad(audio_path, segments_loaded)
+        name = audio_path.split("/")[-1].split(".")[0]
+
+        rttm_sys = ""
+    
+        ## step 2: loop through all segments and make prediction
+        for audio_array, interval in tqdm(x):
+            start, end = interval
+            if abs(round(end - start,2)) <= 0.05:
+                continue
+            # if len(audio_array) < 1000:
+            #     continue
+            logging.info(f"GPU: {self.gpu_id}, ON start: {start} - end: {end} , and {len(audio_array)}")
+            S0, S1 = self.pipeline(audio_array)
+            x, lang_labels = self.diarize(S0, S1)
+            x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
+            ## adding offsest of strt time to all the elments
+            x = [float(val + start) for val in x]
+            ## now generating rttm for this
+            # Get the duration in seconds
+            duration_in_seconds = len(audio_array) / self.target_sampling_rate
+            if len(x) == 0:
+                # Determine the final label using majority votingm,
+                final_labels = np.where(S0 > S1, 0, 1)
+                arr = np.argmax(np.bincount(final_labels))
+                rttm_sys += self.generate_rttm_file(x,name, [arr], duration_in_seconds, start)
+            else:
+                rttm_sys += self.generate_rttm_file(x,name, lang_labels, duration_in_seconds, start)
+        
+        print("*"*100)
+        print(f"Processed all chunks of the audio at path {audio_path}")
+        
+        ## Step3: compoiling and generating final rttm
         output_rttm_filename = f"{name}_LANGUAGE_sys.rttm"
         targetPath = os.path.join(self.resultDERPath,output_rttm_filename)
 
         # Export RTTM file
         with open(targetPath, "w") as rttm_file:
-            rttm_file.write(rttm_content)
+            rttm_file.write(rttm_sys)
         return targetPath
-        
-    def predictOne(self,audioPath):
-        name = audioPath.split("/")[-1].split(".")[0]
-        S0, S1 = self.pipeline(audioPath)
-        x, lang_labels = self.diarize(S0, S1)
-        x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
-        ## now generating rttm for this
-        # Load the audio file using torchaudio
-        waveform, sample_rate = torchaudio.load(audioPath)
-        # Get the duration in seconds
-        duration_in_seconds = waveform.size(1) / sample_rate
-        return self.generate_rttm_file(name, x,lang_labels, duration_in_seconds)
+
 
     def helper(self):
-        generated_rttms = [self.predictOne(path) for paths in self.test_data for path in paths]
+        generated_rttms = []
+        for paths in self.test_data:
+            for path in paths:
+                audio_name = path.split(".")[0].split("/")[-1]
+                seg_file_path = os.path.join(self.pyannot_seg_path, f"{audio_name}.pyannote.segment")
+                generated_rttms.append(self.predictOne(path, seg_file_path)) 
         return generated_rttms
 
     
