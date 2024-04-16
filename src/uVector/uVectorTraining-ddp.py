@@ -42,7 +42,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-hiddenfeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs/wave2vec2-springlabs-2lang-hiddenFeatures-fast"
+hiddenfeaturesPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/Phase2/wave2vec2-2lang-hiddenFeatures-fast"
 batch_size = 1
 
 class MyDataset(Dataset):
@@ -132,7 +132,7 @@ class uVectorTrain:
         self.nc = 2
         self.look_back1= 20
         self.look_back2  = 50
-        self.n_epochs = 100
+        self.n_epochs = 50
 
         ## intializing all the models now
         ## load from chekp path
@@ -146,9 +146,9 @@ class uVectorTrain:
         ### making output save folders 
         if self.gpu_id == 0:
             self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.wandb_run_name = f"springlabs-displace-uVectorTraining_{self.timestamp}"
-            self.save_model_path = f"springlabs-displace-2lang-uVectorTraining_saved-model-{self.timestamp}"
-            self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector"
+            self.wandb_run_name = f"displace-2lang-finetunedOnrttm-uVectorTraining_{self.timestamp}"
+            self.save_model_path = f"displace-2lang-finetunedOnrttm-uVectorTraining-{self.timestamp}"
+            self.root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/uVector"
             self.save_model_path = os.path.join(self.root,self.save_model_path)
             self.pth_path = f"{self.save_model_path}/pthFiles"
             self.chkpt_path = f"{self.save_model_path}/chkpt"

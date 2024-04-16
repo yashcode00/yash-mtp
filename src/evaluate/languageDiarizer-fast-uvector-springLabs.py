@@ -46,19 +46,19 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-wantDER = True
+wantDER = False
 
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector/spring-labs"
-resultFolderGivenName = f"wave2vec2-displace-springlabs-pretrained-2lang-dev-48000-0.25-predicted-rttm-lang-20-50"
+resultFolderGivenName = f"wave2vec2-displace-springlabs-pretrained-2lang-eval-48000-0.25-predicted-rttm-lang-20-50"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -104,7 +104,7 @@ class LanguageDiarizer:
 
         ## 12 lang wave2vec2
         self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt"
-        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/springlabs-displace-2lang-uVectorTraining_saved-model-20240409_181809/pthFiles/allModels_epoch_1"
+        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/springlabs-displace-2lang-uVectorTraining_saved-model-20240409_181809/pthFiles/allModels_epoch_5"
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
 

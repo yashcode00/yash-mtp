@@ -39,9 +39,9 @@ from dotenv import load_dotenv
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 # disable_caching()
-dataset_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/combined-saved-dataset.hf"
-per_device_train_batch_size = 128
-per_device_eval_batch_size = 256
+dataset_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf"
+per_device_train_batch_size = 64
+per_device_eval_batch_size =  64
 
 ##############################################################################################################################
 ### Main Distributed Training Code for finetuning wave2vec2
@@ -57,13 +57,14 @@ class MyDataset(Dataset):
 
         self.input_column = "path"
         self.output_column = "language"
-        self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        # self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        self.label_list = ['eng', 'not-eng']
         self.label_list.sort()
         self.num_labels = len(self.label_list)
         self.label2id={label: i for i, label in enumerate(self.label_list)}
         self.id2label={i: label for i, label in enumerate(self.label_list)}
         self.target_sampling_rate = 16000
-        self.chunk_size = 32000
+        self.chunk_size = 40000
         self.dataset = self.loadDataset()
 
         
@@ -131,23 +132,24 @@ class wave2vec2Finetune():
         # We need to specify the input and output column
         self.input_column = "path"
         self.output_column = "language"
-        self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        # self.label_list = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        self.label_list = ['eng', 'not-eng']
         self.label_list.sort()
         self.num_labels = len(self.label_list)
         self.label2id={label: i for i, label in enumerate(self.label_list)}
         self.id2label={i: label for i, label in enumerate(self.label_list)}
 
         self.n_epochs = 500
-        self.chunk_size = 32000 ## the audio chunk size that is used for finetuinng like in this case a  :i.e. 32000 -> 2 sec chunks samplec at 16kHz
+        self.chunk_size = 40000 ## the audio chunk size that is used for finetuinng like in this case a  :i.e. 32000 -> 2 sec chunks samplec at 16kHz
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
         self.dataset_path= dataset_path
 
         ## perform this operation only once on master gpu with global rank 0
         if self.gpu_id == 0:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.wandb_run_name = f"wave2vec2-12lang-300M-saved-model_{timestamp}"
-            self.save_model_path = f"wave2vec2-12lang-300M-saved-model_{timestamp}"
-            self.save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2",self.save_model_path)
+            self.wandb_run_name = f"wave2vec2-2lang-finetunedOnrttm_displace-300M-saved-model_{timestamp}"
+            self.save_model_path = f"wave2vec2-2lang-finetunedOnrttm_300M-saved-model_{timestamp}"
+            self.save_model_path = os.path.join("/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2",self.save_model_path)
             self.chkpt_path = f"{self.save_model_path}/chkpt"
             self.pth_path = f"{self.save_model_path}/pthFiles"
             self.eval_path = f"{self.save_model_path}/evaluations"
@@ -173,16 +175,17 @@ class wave2vec2Finetune():
                 # Initialize Wandb with your API keywandb
                 wandb.login(key=secret_value_1)
                 if self.wandb_run_id is not None: 
-                    self.run = wandb.init(name = self.wandb_run_name,id = self.wandb_run_id, project="lid-1")
+                    self.run = wandb.init(name = self.wandb_run_name,id = self.wandb_run_id, project="ld")
                 else:
-                    self.run = wandb.init(name = self.wandb_run_name, project="lid-1")
+                    self.run = wandb.init(name = self.wandb_run_name, project="ld")
                 logging.info(f"wandb run details: {self.run}")
 
         ## loading the model
-        self.feature_extractor, self.processor, self.model, self.optimizer = self.load_model()
+        self.load_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/wave2vec2-2lang-300M-saved-model_20240415_192054/pthFiles/modelinfo_epoch_2" 
+        self.feature_extractor, self.processor, self.model, self.optimizer = self.load_model(self.load_path)
         self.target_sampling_rate = self.feature_extractor.sampling_rate
 
-    def load_model(self):
+    def load_model(self, path: str):
         ###############################################################################################################
         ### Now fetching all data and componenets of the specified model
         ###############################################################################################################
@@ -213,6 +216,11 @@ class wave2vec2Finetune():
         model.freeze_feature_extractor()
         # Instantiate optimizer
         optimizer = AdamW(params=model.parameters(), lr=3e-5)
+
+        if path is not None:
+            snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
+            model.load_state_dict(snapshot, strict=False)
+            logging.info(f"Model loaded from checkpoint: {path}")
 
         model =  DDP(model, device_ids=[self.gpu_id], find_unused_parameters=True)
         
@@ -328,7 +336,7 @@ def prepareDataloader(dataset_path: str):
     ## loading the dataset from saved dataset
     df = MyDataset(dataset_path)
     # Split the main dataset into training and validation sets
-    train_size = int(0.8 * len(df))
+    train_size = int(0.95 * len(df))
     test_size = len(df) - train_size
     train_dataset, val_dataset = torch.utils.data.random_split(df, [train_size, test_size])
     logging.info(f"Original Dataset: \n Train: {len(train_dataset)} \n Val: {len(val_dataset)}")
