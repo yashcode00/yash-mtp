@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH -N 1
 #SBATCH --partition=nltmp
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:3
 #SBATCH --job-name=final
 #SBATCH --output=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/out.log  # Updated output path
 #SBATCH --error=/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/err.log    # Updated error path
@@ -23,7 +23,7 @@ export FTP_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 export ALL_PROXY='http://proxy-10g.10g.siddhi.param:9090'
 
 # Run Python script in the background and save the output to the log file
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 -m torch.distributed.launch --nproc_per_node=4 /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py &> "$output_main" &
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 -m torch.distributed.launch --nproc_per_node=3 /nlsasfs/home/nltm-st/sujitk/yash-mtp/src/wav2vec2/main_v1_1.py &> "$output_main" &
 
 # Save the background job's process ID (PID)
 bg_pid=$!

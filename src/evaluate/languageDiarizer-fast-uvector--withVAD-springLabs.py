@@ -35,7 +35,7 @@ from torch.autograd import Variable
 # import torch.distributed
 from gaussianSmooth import *
 import logging
-import fairseq
+# import fairseq
 from datetime import datetime
 from pyannote.core import Segment
 
@@ -48,21 +48,23 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-wantDER = True
+wantDER = False
 
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 
 root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector/spring-labs"
-resultFolderGivenName = f"wave2vec2-springlabs-withvad-pretrained-12lang-dev-48000-0.25-predicted-rttm-lang-20-50-displace"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/phase2/u-vector"
+resultFolderGivenName = f"wave2vec2-withvad-pretrained-2lang-eval-48000-0.25-predicted-rttm-lang-20-50-displace"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 PYANNOT_SEG_PATH =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments"
+PYANNOT_SEG_PATH = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/vad_audio_segments"
 
 class AudioPathDataset(Dataset):
     def __init__(self, file_paths): 
@@ -107,25 +109,30 @@ class LanguageDiarizer:
         self.sigma = 0.003 * 21
 
         ## 12 lang wave2vec2
-        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt"
-        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/springlabs-uVectorTraining_saved-model-20240316_180010/pthFiles/allModels_epoch_0"
+        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt"
+        # self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/springlabs-uVectorTraining_saved-model-20240316_180010/pthFiles/allModels_epoch_0"
+
+        ### 2 lang best
+        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining_saved-model-20240305_182126/pthFiles/allModels_epoch_3"
+
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
 
-        # self.label_names = ['eng','not-eng']
-        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        self.label_names = ['eng','not-eng']
+        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
         self.num_labels = len(self.label_names)
         self.nc = self.num_labels
-        # self.indices_to_extract =  [0, 1]
-        self.indices_to_extract =  [2, 4]
+        self.indices_to_extract =  [0, 1]
+        # self.indices_to_extract =  [2, 4]
 
 
         logging.info(f"On GPU {self.gpu_id}")
         ## loading all the models into memory
         ### wave2vec2
-        self.processor, self.model_wave2vec2, self.feature_extractor = self.load_model_wave2vec2(self.offline_model_path)
+        _, self.processor, self.model_wave2vec2, self.feature_extractor = self.load_model_wave2vec2(self.offline_model_path)
 
 
         ## the u-vector model
@@ -159,43 +166,43 @@ class LanguageDiarizer:
 
         return model1, model2, model3
     
-    # def load_model_wave2vec2(self, path: str):
-    #     snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
-    #     logging.info(f"(GPU {self.gpu_id}) Loading wave2vec2 model from path: {path}")
-    #     # config
-    #     config = AutoConfig.from_pretrained(
-    #         self.repo_url,
-    #         num_labels=self.num_labels,
-    #         label2id=self.label2id,
-    #         id2label=self.id2label,
-    #         finetuning_task="wav2vec2_clf",
-    #         cache_dir=self.cache_dir,
-    #     )
-    #     processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
-    #     model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained("facebook/wav2vec2-xls-r-300m",
-    #                                                                     config=config , 
-    #                                                                         cache_dir=self.cache_dir
-    #                                                                     ).to(self.gpu_id)
-    #     # model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(path,
-    #     #                                                         # config=config , 
-    #     #                                                             cache_dir=self.cache_dir
-    #     #                                                         ).to(self.gpu_id)
-    #     model_wave2vec2.load_state_dict(snapshot, strict=False)
-    #     model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
-    #     feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
-    #     logging.info("(GPU {self.gpu_id}) Successfully loaded wave2vec2 model.")
-    #     return config, processor, model_wave2vec2, feature_extractor
-
     def load_model_wave2vec2(self, path: str):
-        logging.info(f"(GPU {self.gpu_id}) Loading model from path: {path}")
-        model_wave2vec2, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([path])
-        model_wave2vec2 = model_wave2vec2[0].to(self.gpu_id)
-        model_wave2vec2.eval()
+        # snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
+        logging.info(f"(GPU {self.gpu_id}) Loading wave2vec2 model from path: {path}")
+        # config
+        config = AutoConfig.from_pretrained(
+            self.repo_url,
+            num_labels=self.num_labels,
+            label2id=self.label2id,
+            id2label=self.id2label,
+            finetuning_task="wav2vec2_clf",
+            cache_dir=self.cache_dir,
+        )
         processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
+        # model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained("facebook/wav2vec2-xls-r-300m",
+        #                                                                 config=config , 
+        #                                                                     cache_dir=self.cache_dir
+        #                                                                 ).to(self.gpu_id)
+        model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(path,
+                                                                # config=config , 
+                                                                    cache_dir=self.cache_dir
+                                                                ).to(self.gpu_id)
+        # model_wave2vec2.load_state_dict(snapshot, strict=False)
         model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
         feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
-        logging.info(f"(GPU {self.gpu_id}) Successfully loaded model.")
-        return processor, model_wave2vec2, feature_extractor
+        logging.info(f"(GPU {self.gpu_id}) Successfully loaded wave2vec2 model.")
+        return config, processor, model_wave2vec2, feature_extractor
+
+    # def load_model_wave2vec2(self, path: str):
+    #     logging.info(f"(GPU {self.gpu_id}) Loading model from path: {path}")
+    #     model_wave2vec2, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([path])
+    #     model_wave2vec2 = model_wave2vec2[0].to(self.gpu_id)
+    #     model_wave2vec2.eval()
+    #     processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
+    #     model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
+    #     feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
+    #     logging.info(f"(GPU {self.gpu_id}) Successfully loaded model.")
+    #     return processor, model_wave2vec2, feature_extractor
 
     def run_command(self, command):
         try:
@@ -259,7 +266,8 @@ class LanguageDiarizer:
         try:
             # Pass attention_mask to the model to prevent attending to padded values
             with torch.no_grad():
-                hidden_features =  self.model_wave2vec2.module.forward(input_values,mask=None ,features_only=True, padding_mask=attention_mask)['x']
+                hidden_features = self.model_wave2vec2.module.extract_hidden_states(input_values, attention_mask=attention_mask)
+                # hidden_features =  self.model_wave2vec2.module.forward(input_values,mask=None ,features_only=True, padding_mask=attention_mask)['x']
         except Exception as err:
             print(f"Error -> {err} \nSKIPPED! Input Length was: {len(frames[-1])} and features len was : {input_values.shape}")
         return hidden_features
@@ -352,7 +360,7 @@ class LanguageDiarizer:
     # Additional function for model inference
     def modelInference(self, x):
         # Vectorize the input data
-        # logging.info(f"shape of input to {x.shape}")
+        logging.info(f"shape of input to {x.shape}")
         X1, X2 = np.vectorize(self.inputUvector, signature='(n,m)->(p,q,m),(a,s,m)')(x)
         # logging.info(f"shape of input to x-vector/u-vector: {X1.shape} and {X2.shape}")
         batch_size = x.shape[0]
@@ -393,7 +401,7 @@ class LanguageDiarizer:
         if len(frames) == 0:
             logging.error(f"This arr cause the issue: {len(x)}")
             sys.exit(0)
-        if len(frames[-1]) < 100:
+        if len(frames[-1]) < 600:
             print(f"Last element has small length of {len(frames[-1])} while it shall be {len(frames[0])}, Dropping!")
             frames.pop()
         
@@ -444,7 +452,7 @@ class LanguageDiarizer:
         ## step 2: loop through all segments and make prediction
         for audio_array, interval in tqdm(x):
             start, end = interval
-            if abs(round(end - start,2)) <= 0.05:
+            if abs(round(end - start,2)) <= 1:
                 continue
             # if len(audio_array) < 1000:
             #     continue

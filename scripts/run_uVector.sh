@@ -9,7 +9,7 @@
 
 # Define the Conda environment, activate it, and define the Python script and log file
 log_dir="/nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/"
-output_main="${log_dir}uvector-displace-2-lang.log"
+output_main="${log_dir}uvector-displace-2-lang-2.log"
 
 eval "$(conda shell.bash hook)" &> /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/wav2vec2/error.txt
 

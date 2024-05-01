@@ -36,7 +36,6 @@ from torch.autograd import Variable
 from gaussianSmooth import *
 import logging
 from datetime import datetime
-from pyannote.core import Segment
 
 # Configure the logging
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -46,19 +45,19 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
-### supervised dev dataset
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+# ### supervised dev dataset
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/HE_codemixed_audio_SingleSpeakerFemale"
-wantDER = True
+wantDER = False
 
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
-ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
+# ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 
-root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/u-Vector"
-resultFolderGivenName = f"wave2vec2-12lang-dev-48000-0.25-predicted-rttm-lang-20-50-synthData"
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/phase2/u-vector"
+resultFolderGivenName = f"test-wave2vec2-displace-2lang-dev-40000-0.25-predicted-rttm-lang-20-50"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -97,36 +96,40 @@ class LanguageDiarizer:
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
         self.repo_url = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
         self.cache_dir = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/cache"
-        self.pyannot_seg_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/vad_audio_segments"
 
 
         print(f"the batch size for evaluation (max) is {self.max_batch_size}")
         self.sigma = 0.003 * 21
 
-        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
-        # self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining_saved-model-20240305_182126/pthFiles/allModels_epoch_3"
+        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.uvector_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/displace_2lang-uVectorTraining_saved-model-20240305_182126/pthFiles/allModels_epoch_3"
 
-        ## 12 lang wave2vec2
-        self.offline_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/wave2vec2-12lang-300M-saved-model_20240308_181251/pthFiles/modelinfo_epoch_14"
-        self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/wave2vec2_12lang-uVectorTraining_saved-model-20240310_041313/pthFiles/allModels_epoch_2"
+        # ## 12 lang wave2vec2
+        # self.offline_model_path =  "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/wave2vec2-12lang-300M-saved-model_20240308_181251/pthFiles/modelinfo_epoch_14"
+        # self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/uVector/wave2vec2_12lang-uVectorTraining_saved-model-20240310_041313/pthFiles/allModels_epoch_2"
+
+
+        # ## 2 lang displace
+        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/wave2vec2-2lang-finetunedOnrttm_300M-saved-model_20240416_010420/pthFiles/modelinfo_epoch_6"
+        # self.uvector_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/uVector/displace-2lang-finetunedOnrttm-uVectorTraining-20240418_083125/pthFiles/allModels_epoch_3"
+
         self.audioPath = audioPath
         self.resultDERPath = sys_rttmPath
-        self.model_name_or_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 
-        # self.label_names = ['eng','not-eng']
-        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
+        self.label_names = ['eng','not-eng']
+        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
         self.num_labels = len(self.label_names)
         self.nc = self.num_labels
-        # self.indices_to_extract =  [0, 1]
-        self.indices_to_extract =  [2, 4]
+        self.indices_to_extract =  [0, 1]
+        # self.indices_to_extract =  [2, 4]
 
 
         logging.info(f"On GPU {self.gpu_id}")
         ## loading all the models into memory
         ### wave2vec2
-        self.config, self.processor, self.model_wave2vec2, self.feature_extractor = self.load_model_wave2vec2(self.offline_model_path)
+        _, self.processor, self.model_wave2vec2, self.feature_extractor = self.load_model_wave2vec2(self.offline_model_path)
 
 
         ## the u-vector model
@@ -161,7 +164,7 @@ class LanguageDiarizer:
         return model1, model2, model3
     
     def load_model_wave2vec2(self, path: str):
-        snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
+        # snapshot = torch.load(path, map_location=torch.device('cpu'))["wave2vec2"]
         logging.info(f"(GPU {self.gpu_id}) Loading wave2vec2 model from path: {path}")
         # config
         config = AutoConfig.from_pretrained(
@@ -173,19 +176,30 @@ class LanguageDiarizer:
             cache_dir=self.cache_dir,
         )
         processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
-        model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained("facebook/wav2vec2-xls-r-300m",
-                                                                        config=config , 
-                                                                            cache_dir=self.cache_dir
-                                                                        ).to(self.gpu_id)
-        # model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(path,
-        #                                                         # config=config , 
-        #                                                             cache_dir=self.cache_dir
-        #                                                         ).to(self.gpu_id)
-        model_wave2vec2.load_state_dict(snapshot, strict=False)
+        # model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained("facebook/wav2vec2-xls-r-300m",
+                                                                        # config=config , 
+                                                                        #     cache_dir=self.cache_dir
+                                                                        # ).to(self.gpu_id)
+        model_wave2vec2 = Wav2Vec2ForSpeechClassification.from_pretrained(path,
+                                                                # config=config , 
+                                                                    cache_dir=self.cache_dir
+                                                                ).to(self.gpu_id)
+        # model_wave2vec2.load_state_dict(snapshot, strict=False)
         model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
         feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
         logging.info("(GPU {self.gpu_id}) Successfully loaded wave2vec2 model.")
         return config, processor, model_wave2vec2, feature_extractor
+
+    # def load_model_wave2vec2(self, path: str):
+    #     logging.info(f"(GPU {self.gpu_id}) Loading model from path: {path}")
+    #     model_wave2vec2, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([path])
+    #     model_wave2vec2 = model_wave2vec2[0].to(self.gpu_id)
+    #     model_wave2vec2.eval()
+    #     processor = Wav2Vec2Processor.from_pretrained(self.repo_url)
+    #     model_wave2vec2 =  DDP(model_wave2vec2, device_ids=[self.gpu_id])
+    #     feature_extractor = AutoFeatureExtractor.from_pretrained(self.repo_url , cache_dir=self.cache_dir)
+    #     logging.info("(GPU {self.gpu_id}) Successfully loaded model.")
+    #     return processor, model_wave2vec2, feature_extractor
 
     def run_command(self, command):
         try:
@@ -239,47 +253,12 @@ class LanguageDiarizer:
         # print("Segment Labels are: ", SL)
         # lang_labels = np.zeros(len(x)+1)
         return x, lang_labels
-    
-    
-    def parseSegFile(self, segment_file):
-        """
-        Parse Pyannote segments from a file into a list of Segment objects.
 
-        Args:
-            segment_file (str): Path to the file containing Pyannote segment string.
-
-        Returns:
-            List of Segment: List of Segment objects parsed from the file.
-        """
-        segments = []
-        # Open the file and read each line
-        with open(segment_file, 'r') as f:
-            for line in f:
-                # Split each line into start and end times
-                start, end = map(float, line.strip().split())
-                # Create Segment object and append to the list
-                segments.append(Segment(start, end))
-        return segments
-    
-    def audioVad(self, path, segments) :
-        ## loading the audio file
+    def preProcessSpeech(self, path):
         speech_array, sampling_rate = torchaudio.load(path)
         resampler = torchaudio.transforms.Resample(sampling_rate, self.target_sampling_rate)
         speech_array = resampler(speech_array).squeeze().numpy()
-
-        audio_segments = []
-        # Iterate over segments
-        for start, end in segments:
-            # Convert start and end times to sample indices
-            start_sample = int(start * self.target_sampling_rate)
-            end_sample = int(end * self.target_sampling_rate)
-            # Extract segment
-            segment_waveform = speech_array[start_sample:end_sample]
-            # Create Segment object
-            segment = Segment(start, end)
-            # Append audio segment and segment object to the list
-            audio_segments.append((segment_waveform, segment))
-        return audio_segments
+        return speech_array
 
     ## function to store the hidden feature representation from the last layer of wave2vec2
     def getHiddenFeatures(self,frames):
@@ -359,8 +338,10 @@ class LanguageDiarizer:
         return outputs
 
 
-    def pipeline(self, x):
-        # Step 1: Generate overlapping frames
+    def pipeline(self, path):
+        # Step 1: Preprocess the audio by removing silence
+        x = self.preProcessSpeech(path)
+        # Step 2: Generate overlapping frames
         hop_size = int(self.hop_length_seconds * self.target_sampling_rate)
         frames = [x[i:i+self.window_size] for i in range(0, len(x) - self.window_size + 1, hop_size)]
         if len(frames[-1]) < 100:
@@ -377,15 +358,15 @@ class LanguageDiarizer:
             predictions.append(batch_predictions)
         # print(f"Finall concatenated predictipns: len={len(predictions)}, \n {predictions}")
 
-        # print(f"Processed all the frames of given audio {path}!")
+        print(f"Processed all the frames of given audio {path}!")
         # Concatenate the predictions from all minibatches
         S0 = np.concatenate([p[:, 0] for p in predictions])
         S1 = np.concatenate([p[:, 1] for p in predictions])
         # print(f"Shape of S0: {S0.shape} and S1: {S1.shape}")
         return S0, S1
-        
 
-    def generate_rttm_file(self,name, cp, predicted_labels, total_time):
+
+    def generate_rttm_file(self,name,cp, predicted_labels, total_time):
         rttm_content = ""
         # Add the start time at 0
         start_time = 0
@@ -396,57 +377,39 @@ class LanguageDiarizer:
             duration = end_time - start_time
             # Generate RTTM content
             rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
+            # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
             # Update start time for the next segment
             start_time = end_time
         
         ## add last entry
         duration = total_time - start_time
-        if duration > 0:
-            i = len(cp)
-            rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
-        return rttm_content
-        
-    def predictOne(self,audio_path: str,segFile_path: str):
-        # step 1: get all chunks usning vad
-        x = self.audioVad(audio_path, segFile_path)
-        name = audio_path.split("/")[-1].split(".")[0]
-
-        rttm_sys = ""
-        
-        ## step 2: loop through all segments and make prediction
-        for i in tqdm(range(len(x))):
-            audio_array, interval = x[i]
-            start, end = interval
-            S0, S1 = self.pipeline(audio_array)
-            x, lang_labels = self.diarize(S0, S1)
-            x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
-            ## adding offsest of strt time to all the elments
-            x = [val + start for val in x]
-            ## now generating rttm for this
-            # Get the duration in seconds
-            duration_in_seconds = audio_array.size(1) / self.target_sampling_rate
-            rttm_sys += self.generate_rttm_file(x,name, lang_labels, duration_in_seconds)
-        
-        print("*"*100)
-        print(f"Processed all chunks of the audio at path {audio_path}")
-        
-        ## Step3: compoiling and generating final rttm
+        i = len(cp)
+        # rttm_content += f"Language {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> <NA> <NA>\n"
+        rttm_content += f"LANGUAGE {name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {tolang[predicted_labels[i]]} <NA> <NA>\n"
         output_rttm_filename = f"{name}_LANGUAGE_sys.rttm"
         targetPath = os.path.join(self.resultDERPath,output_rttm_filename)
 
         # Export RTTM file
         with open(targetPath, "w") as rttm_file:
-            rttm_file.write(rttm_sys)
+            rttm_file.write(rttm_content)
         return targetPath
+        
+    def predictOne(self,audioPath):
+        name = audioPath.split("/")[-1].split(".")[0]
+        S0, S1 = self.pipeline(audioPath)
+        x, lang_labels = self.diarize(S0, S1)
+        x = (x[0]*self.hop_length_seconds)+((self.window_size/16000) - self.hop_length_seconds)*0.50
+        ## now generating rttm for this
+        # Load the audio file using torchaudio
+        waveform, sample_rate = torchaudio.load(audioPath)
+        # Get the duration in seconds
+        duration_in_seconds = waveform.size(1) / sample_rate
+        return self.generate_rttm_file(name, x,lang_labels, duration_in_seconds)
 
     def helper(self):
-        generated_rttms = []
-        for paths in self.test_data:
-            for path in paths:
-                audio_name = path.split(".")[0]
-                seg_file_path = os.path.join(self.pyannot_seg_path, f"{audio_name}.pyannote.segment")
-                generated_rttms.append(self.predictOne(path, seg_file_path)) 
+        generated_rttms = [self.predictOne(path) for paths in self.test_data for path in paths]
         return generated_rttms
+
     
     def run(self):
         logging.info(f"Evaluating the dataset on gpu {self.gpu_id}")
@@ -491,4 +454,3 @@ if __name__ == '__main__':
                 "--sys_rttm_folder_path", sys_rttmPath ,
                 "--out", sys_rttmPath])
         logging.info(f"DER files are saved at {sys_rttmPath}")
-    

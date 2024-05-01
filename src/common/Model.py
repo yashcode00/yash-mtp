@@ -345,6 +345,22 @@ class CCSL_Net(nn.Module):
         
         return (lang_output)
 
+    @torch.no_grad()
+    def get_uVector(self, x1, x2):
+        """fucntion to return the LID specific u-vector"""
+        
+        e1 = self.model1(x1)
+        e2 = self.model2(x2) 
+        
+        att_input = torch.cat((e1,e2), dim=0)
+        att_input = torch.unsqueeze(att_input, 0)
+        
+        att = torch.sigmoid(self.att_fc(att_input))
+        cla = att_input # No additional layer 
+        u_lid, u_ch = self.attention(att, cla) # Get LID-specific and channel-specific u-vectors.
+        return u_lid
+
+
 
 
 

@@ -336,7 +336,7 @@ def prepareDataloader(dataset_path: str):
     ## loading the dataset from saved dataset
     df = MyDataset(dataset_path)
     # Split the main dataset into training and validation sets
-    train_size = int(0.95 * len(df))
+    train_size = int(0.9999 * len(df))
     test_size = len(df) - train_size
     train_dataset, val_dataset = torch.utils.data.random_split(df, [train_size, test_size])
     logging.info(f"Original Dataset: \n Train: {len(train_dataset)} \n Val: {len(val_dataset)}")

@@ -170,7 +170,7 @@ class uVectorTrain:
             else:
                 # Initialize Wandb with your API keywandb
                 wandb.login(key=secret_value_1)
-                self.run = wandb.init(name = self.wandb_run_name, project="huggingface")
+                self.run = wandb.init(name = self.wandb_run_name, project="ld")
                 logging.info("Login to wandb succesfull!")
     
     def save_model(self, epoch:int):

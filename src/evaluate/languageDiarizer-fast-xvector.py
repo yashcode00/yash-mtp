@@ -44,17 +44,17 @@ torch.cuda.empty_cache()
 ##################################################################################################
 ## Important Intializations
 ##################################################################################################
-# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
+audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_eval_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 ### supervised dev dataset
 # audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_audio_supervised/AUDIO_supervised/Track1_SD_Track2_LD"
 # ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/Displace2024_dev_labels_supervised/Labels/Track2_LD"
 
-audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
+# audioPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/Audio"
 ref_rttmPath = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/testDiralisationOutput/rttm"
 
-wantDER = True
-root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/x-Vector"
-resultFolderGivenName = f"old-wave2vec2-11lang-16000-0.25-predicted-rttm-lang-fast-syntheticdata"
+wantDER = False
+root = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/evaluationResults/phase2/x-vector"
+resultFolderGivenName = f"displace-wave2vec2-2lang-48000-0.25-predicted-rttm-lang-fast"
 sys_rttmPath = os.path.join(root,resultFolderGivenName)
 
 class AudioPathDataset(Dataset):
@@ -84,10 +84,10 @@ class LanguageDiarizer:
         global audioPath, sys_rttmPath
         self.test_data = test_data
         self.gpu_id = gpu_id
-        self.nc = 11
+        self.nc = 2
         self.look_back1 = 21
         self.IP_dim = 1024 * self.look_back1
-        self.window_size =  16000
+        self.window_size = 48000
         self.hop_length_seconds = 0.25
         self.gauss_window_size = 21
         self.max_batch_size = math.ceil(256/(math.ceil(self.window_size/63000)))
@@ -105,7 +105,7 @@ class LanguageDiarizer:
         # self.offline_model_path = "yashcode00/wav2vec2-large-xlsr-indian-language-classification-featureExtractor"
 
         ### for terminator last model
-        # self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
+        self.offline_model_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0"
         self.xVectormodel_path = "/nlsasfs/home/nltm-st/sujitk/yash-mtp/models/tdnn/xVectorResults-old/modelEpoch0_xVector.pth"
 
         self.audioPath = audioPath
@@ -129,12 +129,14 @@ class LanguageDiarizer:
         self.manual_seed = random.randint(1,10000)
         random.seed(self.manual_seed)
         torch.manual_seed(self.manual_seed)
-        # self.label_names = ['eng','not-eng']
+        self.label_names = ['eng','not-eng']
         # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi','pun', 'tam', 'tel']
-        self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
+        # self.label_names = ['asm', 'ben', 'eng', 'guj', 'hin', 'kan', 'mal', 'mar', 'odi', 'tam', 'tel']
         self.label2id={label: i for i, label in enumerate(self.label_names)}
         self.id2label={i: label for i, label in enumerate(self.label_names)}
-        self.indices_to_extract =  [2, 4]
+        # self.indices_to_extract =  [2, 4]
+        self.indices_to_extract =  [0, 1]
+
         os.makedirs(self.resultDERPath, exist_ok=True)
 
         try:
