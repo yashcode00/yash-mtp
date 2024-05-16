@@ -52,3 +52,4 @@ Thumbs.db
 
 # ignore datasets
 /dataset/
+/evaluationResults/

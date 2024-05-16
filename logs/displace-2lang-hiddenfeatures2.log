@@ -1,303 +1,0 @@
-2024-04-16 10:47:14,682 - Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:14,707 - world size detected is 3
-2024-04-16 10:47:20,236 - Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:20,299 - Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:20,506 - Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:22,196 - Datasets loaded succesfully from location /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:22,197 - Datasets loaded succesfully from location /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:22,197 - Datasets loaded succesfully from location /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-16 10:47:22,200 - The batch size per gpu will be 19337
-2024-04-16 10:47:22,200 - The batch size per gpu will be 19337
-2024-04-16 10:47:22,200 - The batch size per gpu will be 19337
-2024-04-16 10:47:24,888 - (GPU 0) Loading model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/wave2vec2-2lang-finetunedOnrttm_300M-saved-model_20240416_010420/pthFiles/modelinfo_epoch_6
-2024-04-16 10:47:24,888 - (GPU 2) Loading model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/wave2vec2-2lang-finetunedOnrttm_300M-saved-model_20240416_010420/pthFiles/modelinfo_epoch_6
-2024-04-16 10:47:24,888 - (GPU 1) Loading model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/wave2vec2-2lang-finetunedOnrttm_300M-saved-model_20240416_010420/pthFiles/modelinfo_epoch_6
-Some weights of the model checkpoint at facebook/wav2vec2-xls-r-300m were not used when initializing Wav2Vec2ForSpeechClassification: ['project_hid.bias', 'project_hid.weight', 'project_q.bias', 'project_q.weight', 'quantizer.codevectors', 'quantizer.weight_proj.bias', 'quantizer.weight_proj.weight', 'wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
-- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-Some weights of the model checkpoint at facebook/wav2vec2-xls-r-300m were not used when initializing Wav2Vec2ForSpeechClassification: ['project_hid.bias', 'project_hid.weight', 'project_q.bias', 'project_q.weight', 'quantizer.codevectors', 'quantizer.weight_proj.bias', 'quantizer.weight_proj.weight', 'wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
-- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at facebook/wav2vec2-xls-r-300m and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.bias', 'classifier.out_proj.weight', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at facebook/wav2vec2-xls-r-300m and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.bias', 'classifier.out_proj.weight', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-Some weights of the model checkpoint at facebook/wav2vec2-xls-r-300m were not used when initializing Wav2Vec2ForSpeechClassification: ['project_hid.bias', 'project_hid.weight', 'project_q.bias', 'project_q.weight', 'quantizer.codevectors', 'quantizer.weight_proj.bias', 'quantizer.weight_proj.weight', 'wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
-- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at facebook/wav2vec2-xls-r-300m and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.bias', 'classifier.out_proj.weight', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-2024-04-16 10:47:54,931 - (GPU {self.gpu_id}) Successfully loaded model.
-2024-04-16 10:47:54,932 - (GPU {self.gpu_id}) Successfully loaded model.
-2024-04-16 10:47:54,932 - (GPU {self.gpu_id}) Successfully loaded model.
-2024-04-16 10:47:54,972 - All hidden features csv will be saved to directory --> /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/Phase2/wave2vec2-2lang-hiddenFeatures-fast
-2024-04-16 10:47:54,973 - On GPU 0
-2024-04-16 10:47:54,973 - Finding hidden features of the dataset on gpu 0
-2024-04-16 10:47:54,975 - All hidden features csv will be saved to directory --> /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/Phase2/wave2vec2-2lang-hiddenFeatures-fast
-2024-04-16 10:47:54,975 - On GPU 1
-2024-04-16 10:47:54,975 - Finding hidden features of the dataset on gpu 1
-2024-04-16 10:47:54,975 - All hidden features csv will be saved to directory --> /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/Phase2/wave2vec2-2lang-hiddenFeatures-fast
-2024-04-16 10:47:54,975 - On GPU 2
-2024-04-16 10:47:54,975 - Finding hidden features of the dataset on gpu 2
-2024-04-16 10:47:56,429 - Processing batch 0 on GPU 0
-2024-04-16 10:47:56,429 - Processing batch 0 on GPU 1
-2024-04-16 10:47:56,429 - Processing batch 0 on GPU 2
-The provided saved dataset is : Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 58011
-})
-The provided saved dataset is : Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 58011
-})
-The provided saved dataset is : Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 58011
-})
-  0%|          | 0/38 [00:00<?, ?it/s]  0%|          | 0/38 [00:00<?, ?it/s]  0%|          | 0/38 [00:00<?, ?it/s]2024-04-16 10:49:09,326 - Processed batch 0, subset 0/38 on GPU 2
-  3%|▎         | 1/38 [01:12<44:55, 72.84s/it]2024-04-16 10:49:09,421 - Processed batch 0, subset 0/38 on GPU 0
-  3%|▎         | 1/38 [01:12<44:58, 72.94s/it]2024-04-16 10:49:09,481 - Processed batch 0, subset 0/38 on GPU 1
-  3%|▎         | 1/38 [01:12<45:00, 73.00s/it]2024-04-16 10:50:00,864 - Processed batch 0, subset 1/38 on GPU 2
-  5%|▌         | 2/38 [02:04<36:11, 60.31s/it]2024-04-16 10:50:01,261 - Processed batch 0, subset 1/38 on GPU 0
-  5%|▌         | 2/38 [02:04<36:18, 60.53s/it]2024-04-16 10:50:01,622 - Processed batch 0, subset 1/38 on GPU 1
-  5%|▌         | 2/38 [02:05<36:26, 60.73s/it]2024-04-16 10:50:51,283 - Processed batch 0, subset 2/38 on GPU 2
-  8%|▊         | 3/38 [02:54<32:32, 55.79s/it]2024-04-16 10:50:52,747 - Processed batch 0, subset 2/38 on GPU 0
-  8%|▊         | 3/38 [02:56<32:53, 56.40s/it]2024-04-16 10:50:52,936 - Processed batch 0, subset 2/38 on GPU 1
-  8%|▊         | 3/38 [02:56<32:55, 56.43s/it]2024-04-16 10:51:41,938 - Processed batch 0, subset 3/38 on GPU 2
- 11%|█         | 4/38 [03:45<30:28, 53.76s/it]2024-04-16 10:51:43,411 - Processed batch 0, subset 3/38 on GPU 0
- 11%|█         | 4/38 [03:46<30:40, 54.13s/it]2024-04-16 10:51:43,745 - Processed batch 0, subset 3/38 on GPU 1
- 11%|█         | 4/38 [03:47<30:43, 54.21s/it]2024-04-16 10:52:33,945 - Processed batch 0, subset 4/38 on GPU 2
- 13%|█▎        | 5/38 [04:37<29:13, 53.13s/it]2024-04-16 10:52:36,311 - Processed batch 0, subset 4/38 on GPU 0
- 13%|█▎        | 5/38 [04:39<29:31, 53.69s/it]2024-04-16 10:52:36,416 - Processed batch 0, subset 4/38 on GPU 1
- 13%|█▎        | 5/38 [04:39<29:30, 53.66s/it]2024-04-16 10:53:26,086 - Processed batch 0, subset 5/38 on GPU 2
- 16%|█▌        | 6/38 [05:29<28:09, 52.79s/it]2024-04-16 10:53:28,111 - Processed batch 0, subset 5/38 on GPU 1
- 16%|█▌        | 6/38 [05:31<28:15, 52.99s/it]2024-04-16 10:53:28,679 - Processed batch 0, subset 5/38 on GPU 0
- 16%|█▌        | 6/38 [05:32<28:23, 53.24s/it]2024-04-16 10:54:18,013 - Processed batch 0, subset 6/38 on GPU 2
- 18%|█▊        | 7/38 [06:21<27:07, 52.51s/it]2024-04-16 10:54:19,454 - Processed batch 0, subset 6/38 on GPU 1
- 18%|█▊        | 7/38 [06:22<27:05, 52.45s/it]2024-04-16 10:54:20,274 - Processed batch 0, subset 6/38 on GPU 0
- 18%|█▊        | 7/38 [06:23<27:13, 52.70s/it]2024-04-16 10:55:09,513 - Processed batch 0, subset 7/38 on GPU 2
- 21%|██        | 8/38 [07:13<26:05, 52.19s/it]2024-04-16 10:55:11,052 - Processed batch 0, subset 7/38 on GPU 1
- 21%|██        | 8/38 [07:14<26:05, 52.18s/it]2024-04-16 10:55:11,736 - Processed batch 0, subset 7/38 on GPU 0
- 21%|██        | 8/38 [07:15<26:09, 52.31s/it]2024-04-16 10:56:02,739 - Processed batch 0, subset 8/38 on GPU 2
- 24%|██▎       | 9/38 [08:06<25:22, 52.51s/it]2024-04-16 10:56:02,949 - Processed batch 0, subset 8/38 on GPU 1
- 24%|██▎       | 9/38 [08:06<25:10, 52.09s/it]2024-04-16 10:56:03,495 - Processed batch 0, subset 8/38 on GPU 0
- 24%|██▎       | 9/38 [08:07<25:11, 52.14s/it]2024-04-16 10:56:53,855 - Processed batch 0, subset 9/38 on GPU 2
- 26%|██▋       | 10/38 [08:57<24:18, 52.08s/it]2024-04-16 10:56:54,253 - Processed batch 0, subset 9/38 on GPU 1
- 26%|██▋       | 10/38 [08:57<24:11, 51.85s/it]2024-04-16 10:56:55,003 - Processed batch 0, subset 9/38 on GPU 0
- 26%|██▋       | 10/38 [08:58<24:14, 51.94s/it]2024-04-16 10:57:46,315 - Processed batch 0, subset 10/38 on GPU 2
- 29%|██▉       | 11/38 [09:49<23:29, 52.20s/it]2024-04-16 10:57:46,733 - Processed batch 0, subset 10/38 on GPU 1
- 29%|██▉       | 11/38 [09:50<23:25, 52.04s/it]2024-04-16 10:57:47,364 - Processed batch 0, subset 10/38 on GPU 0
- 29%|██▉       | 11/38 [09:50<23:25, 52.07s/it]2024-04-16 10:58:38,758 - Processed batch 0, subset 11/38 on GPU 2
- 32%|███▏      | 12/38 [10:42<22:39, 52.27s/it]2024-04-16 10:58:39,167 - Processed batch 0, subset 11/38 on GPU 0
- 32%|███▏      | 12/38 [10:42<22:31, 51.99s/it]2024-04-16 10:58:39,252 - Processed batch 0, subset 11/38 on GPU 1
- 32%|███▏      | 12/38 [10:42<22:36, 52.19s/it]2024-04-16 10:59:34,979 - Processed batch 0, subset 12/38 on GPU 2
- 34%|███▍      | 13/38 [11:38<22:16, 53.47s/it]2024-04-16 10:59:35,388 - Processed batch 0, subset 12/38 on GPU 0
- 34%|███▍      | 13/38 [11:38<22:11, 53.27s/it]2024-04-16 10:59:35,491 - Processed batch 0, subset 12/38 on GPU 1
- 34%|███▍      | 13/38 [11:39<22:15, 53.41s/it]2024-04-16 11:00:27,886 - Processed batch 0, subset 13/38 on GPU 2
- 37%|███▋      | 14/38 [12:31<21:19, 53.30s/it]2024-04-16 11:00:28,124 - Processed batch 0, subset 13/38 on GPU 0
- 37%|███▋      | 14/38 [12:31<21:14, 53.11s/it]2024-04-16 11:00:28,317 - Processed batch 0, subset 13/38 on GPU 1
- 37%|███▋      | 14/38 [12:31<21:17, 53.24s/it]2024-04-16 11:01:19,098 - Processed batch 0, subset 14/38 on GPU 2
- 39%|███▉      | 15/38 [13:22<20:11, 52.67s/it]2024-04-16 11:01:19,737 - Processed batch 0, subset 14/38 on GPU 0
- 39%|███▉      | 15/38 [13:23<20:11, 52.66s/it]2024-04-16 11:01:20,305 - Processed batch 0, subset 14/38 on GPU 1
- 39%|███▉      | 15/38 [13:23<20:15, 52.86s/it]2024-04-16 11:02:10,772 - Processed batch 0, subset 15/38 on GPU 2
- 42%|████▏     | 16/38 [14:14<19:12, 52.37s/it]2024-04-16 11:02:11,741 - Processed batch 0, subset 15/38 on GPU 0
- 42%|████▏     | 16/38 [14:15<19:14, 52.46s/it]2024-04-16 11:02:12,314 - Processed batch 0, subset 15/38 on GPU 1
- 42%|████▏     | 16/38 [14:15<19:17, 52.60s/it]2024-04-16 11:03:03,484 - Processed batch 0, subset 16/38 on GPU 2
- 45%|████▍     | 17/38 [15:06<18:21, 52.47s/it]2024-04-16 11:03:04,868 - Processed batch 0, subset 16/38 on GPU 0
- 45%|████▍     | 17/38 [15:08<18:25, 52.66s/it]2024-04-16 11:03:05,619 - Processed batch 0, subset 16/38 on GPU 1
- 45%|████▍     | 17/38 [15:09<18:29, 52.81s/it]2024-04-16 11:03:55,932 - Processed batch 0, subset 17/38 on GPU 2
- 47%|████▋     | 18/38 [15:59<17:29, 52.47s/it]2024-04-16 11:03:57,578 - Processed batch 0, subset 17/38 on GPU 0
- 47%|████▋     | 18/38 [16:01<17:33, 52.68s/it]2024-04-16 11:03:57,875 - Processed batch 0, subset 17/38 on GPU 1
- 47%|████▋     | 18/38 [16:01<17:32, 52.65s/it]2024-04-16 11:04:48,112 - Processed batch 0, subset 18/38 on GPU 2
- 50%|█████     | 19/38 [16:51<16:35, 52.38s/it]2024-04-16 11:04:49,163 - Processed batch 0, subset 18/38 on GPU 0
- 50%|█████     | 19/38 [16:52<16:34, 52.35s/it]2024-04-16 11:04:49,852 - Processed batch 0, subset 18/38 on GPU 1
- 50%|█████     | 19/38 [16:53<16:36, 52.45s/it]2024-04-16 11:05:40,621 - Processed batch 0, subset 19/38 on GPU 2
- 53%|█████▎    | 20/38 [17:44<15:43, 52.42s/it]2024-04-16 11:05:40,935 - Processed batch 0, subset 19/38 on GPU 0
- 53%|█████▎    | 20/38 [17:44<15:39, 52.18s/it]2024-04-16 11:05:41,626 - Processed batch 0, subset 19/38 on GPU 1
- 53%|█████▎    | 20/38 [17:45<15:40, 52.24s/it]2024-04-16 11:06:32,930 - Processed batch 0, subset 20/38 on GPU 2
- 55%|█████▌    | 21/38 [18:36<14:50, 52.39s/it]2024-04-16 11:06:33,180 - Processed batch 0, subset 20/38 on GPU 0
- 55%|█████▌    | 21/38 [18:36<14:47, 52.20s/it]2024-04-16 11:06:33,753 - Processed batch 0, subset 20/38 on GPU 1
- 55%|█████▌    | 21/38 [18:37<14:47, 52.21s/it]2024-04-16 11:07:25,056 - Processed batch 0, subset 21/38 on GPU 2
- 58%|█████▊    | 22/38 [19:28<13:56, 52.31s/it]2024-04-16 11:07:25,093 - Processed batch 0, subset 21/38 on GPU 0
- 58%|█████▊    | 22/38 [19:28<13:53, 52.11s/it]2024-04-16 11:07:25,853 - Processed batch 0, subset 21/38 on GPU 1
- 58%|█████▊    | 22/38 [19:29<13:54, 52.18s/it]2024-04-16 11:08:17,812 - Processed batch 0, subset 22/38 on GPU 0
- 61%|██████    | 23/38 [20:21<13:04, 52.29s/it]2024-04-16 11:08:17,885 - Processed batch 0, subset 22/38 on GPU 2
- 61%|██████    | 23/38 [20:21<13:06, 52.46s/it]2024-04-16 11:08:18,476 - Processed batch 0, subset 22/38 on GPU 1
- 61%|██████    | 23/38 [20:21<13:04, 52.31s/it]2024-04-16 11:09:13,731 - Processed batch 0, subset 23/38 on GPU 2
- 63%|██████▎   | 24/38 [21:17<12:28, 53.48s/it]2024-04-16 11:09:13,989 - Processed batch 0, subset 23/38 on GPU 0
- 63%|██████▎   | 24/38 [21:17<12:28, 53.46s/it]2024-04-16 11:09:14,199 - Processed batch 0, subset 23/38 on GPU 1
- 63%|██████▎   | 24/38 [21:17<12:26, 53.33s/it]2024-04-16 11:10:07,109 - Processed batch 0, subset 24/38 on GPU 2
- 66%|██████▌   | 25/38 [22:10<11:34, 53.45s/it]2024-04-16 11:10:07,421 - Processed batch 0, subset 24/38 on GPU 0
- 66%|██████▌   | 25/38 [22:10<11:34, 53.45s/it]2024-04-16 11:10:07,456 - Processed batch 0, subset 24/38 on GPU 1
- 66%|██████▌   | 25/38 [22:10<11:33, 53.31s/it]2024-04-16 11:10:59,012 - Processed batch 0, subset 25/38 on GPU 2
- 68%|██████▊   | 26/38 [23:02<10:35, 52.98s/it]2024-04-16 11:10:59,231 - Processed batch 0, subset 25/38 on GPU 0
- 68%|██████▊   | 26/38 [23:02<10:35, 52.96s/it]2024-04-16 11:10:59,932 - Processed batch 0, subset 25/38 on GPU 1
- 68%|██████▊   | 26/38 [23:03<10:36, 53.06s/it]2024-04-16 11:11:50,302 - Processed batch 0, subset 26/38 on GPU 2
- 71%|███████   | 27/38 [23:53<09:37, 52.48s/it]2024-04-16 11:11:51,487 - Processed batch 0, subset 26/38 on GPU 0
- 71%|███████   | 27/38 [23:55<09:40, 52.75s/it]2024-04-16 11:11:52,285 - Processed batch 0, subset 26/38 on GPU 1
- 71%|███████   | 27/38 [23:55<09:41, 52.85s/it]2024-04-16 11:12:44,511 - Processed batch 0, subset 27/38 on GPU 2
- 74%|███████▎  | 28/38 [24:48<08:49, 53.00s/it]2024-04-16 11:12:46,003 - Processed batch 0, subset 27/38 on GPU 0
- 74%|███████▎  | 28/38 [24:49<08:52, 53.28s/it]2024-04-16 11:12:47,412 - Processed batch 0, subset 27/38 on GPU 1
- 74%|███████▎  | 28/38 [24:50<08:55, 53.53s/it]2024-04-16 11:13:39,476 - Processed batch 0, subset 28/38 on GPU 2
- 76%|███████▋  | 29/38 [25:42<08:02, 53.59s/it]2024-04-16 11:13:40,936 - Processed batch 0, subset 28/38 on GPU 0
- 76%|███████▋  | 29/38 [25:44<08:03, 53.77s/it]2024-04-16 11:13:42,356 - Processed batch 0, subset 28/38 on GPU 1
- 76%|███████▋  | 29/38 [25:45<08:05, 53.96s/it]2024-04-16 11:14:31,868 - Processed batch 0, subset 29/38 on GPU 2
- 79%|███████▉  | 30/38 [26:35<07:05, 53.23s/it]2024-04-16 11:14:33,526 - Processed batch 0, subset 29/38 on GPU 0
- 79%|███████▉  | 30/38 [26:37<07:07, 53.42s/it]2024-04-16 11:14:35,364 - Processed batch 0, subset 29/38 on GPU 1
- 79%|███████▉  | 30/38 [26:38<07:09, 53.67s/it]2024-04-16 11:15:25,373 - Processed batch 0, subset 30/38 on GPU 2
- 82%|████████▏ | 31/38 [27:28<06:13, 53.31s/it]2024-04-16 11:15:26,175 - Processed batch 0, subset 30/38 on GPU 0
- 82%|████████▏ | 31/38 [27:29<06:12, 53.19s/it]2024-04-16 11:15:28,079 - Processed batch 0, subset 30/38 on GPU 1
- 82%|████████▏ | 31/38 [27:31<06:13, 53.38s/it]2024-04-16 11:16:19,849 - Processed batch 0, subset 31/38 on GPU 2
- 84%|████████▍ | 32/38 [28:23<05:21, 53.66s/it]2024-04-16 11:16:20,190 - Processed batch 0, subset 31/38 on GPU 0
- 84%|████████▍ | 32/38 [28:23<05:20, 53.44s/it]2024-04-16 11:16:20,810 - Processed batch 0, subset 31/38 on GPU 1
- 84%|████████▍ | 32/38 [28:24<05:19, 53.19s/it]2024-04-16 11:17:11,801 - Processed batch 0, subset 32/38 on GPU 2
- 87%|████████▋ | 33/38 [29:15<04:25, 53.15s/it]2024-04-16 11:17:12,182 - Processed batch 0, subset 32/38 on GPU 0
- 87%|████████▋ | 33/38 [29:15<04:25, 53.00s/it]2024-04-16 11:17:12,874 - Processed batch 0, subset 32/38 on GPU 1
- 87%|████████▋ | 33/38 [29:16<04:24, 52.85s/it]2024-04-16 11:18:03,509 - Processed batch 0, subset 33/38 on GPU 2
- 89%|████████▉ | 34/38 [30:07<03:30, 52.72s/it]2024-04-16 11:18:03,946 - Processed batch 0, subset 33/38 on GPU 0
- 89%|████████▉ | 34/38 [30:07<03:30, 52.63s/it]2024-04-16 11:18:06,135 - Processed batch 0, subset 33/38 on GPU 1
- 89%|████████▉ | 34/38 [30:09<03:31, 52.97s/it]2024-04-16 11:18:56,706 - Processed batch 0, subset 34/38 on GPU 0
- 92%|█████████▏| 35/38 [31:00<02:38, 52.67s/it]2024-04-16 11:18:56,952 - Processed batch 0, subset 34/38 on GPU 2
- 92%|█████████▏| 35/38 [31:00<02:38, 52.93s/it]2024-04-16 11:18:59,593 - Processed batch 0, subset 34/38 on GPU 1
- 92%|█████████▏| 35/38 [31:03<02:39, 53.12s/it]2024-04-16 11:19:48,415 - Processed batch 0, subset 35/38 on GPU 0
- 95%|█████████▍| 36/38 [31:51<01:44, 52.38s/it]2024-04-16 11:19:48,828 - Processed batch 0, subset 35/38 on GPU 2
- 95%|█████████▍| 36/38 [31:52<01:45, 52.62s/it]2024-04-16 11:19:52,017 - Processed batch 0, subset 35/38 on GPU 1
- 95%|█████████▍| 36/38 [31:55<01:45, 52.91s/it]2024-04-16 11:20:41,243 - Processed batch 0, subset 36/38 on GPU 2
-2024-04-16 11:20:41,255 - Processed batch 0, subset 36/38 on GPU 0
- 97%|█████████▋| 37/38 [32:44<00:52, 52.54s/it] 97%|█████████▋| 37/38 [32:44<00:52, 52.58s/it]2024-04-16 11:20:44,004 - Processed batch 0, subset 36/38 on GPU 1
- 97%|█████████▋| 37/38 [32:47<00:52, 52.63s/it]2024-04-16 11:21:24,412 - Processed batch 0, subset 37/38 on GPU 2
-100%|██████████| 38/38 [33:27<00:00, 49.73s/it]100%|██████████| 38/38 [33:27<00:00, 52.84s/it]
-2024-04-16 11:21:24,709 - Processed batch 0, subset 37/38 on GPU 0
-100%|██████████| 38/38 [33:28<00:00, 49.79s/it]100%|██████████| 38/38 [33:28<00:00, 52.85s/it]
-2024-04-16 11:21:24,736 - Processed batch 0, subset 37/38 on GPU 1
-100%|██████████| 38/38 [33:28<00:00, 49.06s/it]100%|██████████| 38/38 [33:28<00:00, 52.85s/it]
-2024-04-16 11:21:24,900 - All batches processed. on 0
-2024-04-16 11:21:24,900 - All batches processed. on 2
-2024-04-16 11:21:24,900 - All batches processed. on 1
-2024-04-16 11:21:24,921 - Task completed on gpu 2 with result as follow
- None
-2024-04-16 11:21:24,921 - Task completed on gpu 1 with result as follow
- None
-2024-04-16 11:21:24,921 - Task completed on gpu 0 with result as follow
- None
-On gpu 2, processing sliced chunk s:0, e:512
-On gpu 2, processing sliced chunk s:512, e:1024
-On gpu 2, processing sliced chunk s:1024, e:1536
-On gpu 2, processing sliced chunk s:1536, e:2048
-On gpu 2, processing sliced chunk s:2048, e:2560
-On gpu 2, processing sliced chunk s:2560, e:3072
-On gpu 2, processing sliced chunk s:3072, e:3584
-On gpu 2, processing sliced chunk s:3584, e:4096
-On gpu 2, processing sliced chunk s:4096, e:4608
-On gpu 2, processing sliced chunk s:4608, e:5120
-On gpu 2, processing sliced chunk s:5120, e:5632
-On gpu 2, processing sliced chunk s:5632, e:6144
-On gpu 2, processing sliced chunk s:6144, e:6656
-On gpu 2, processing sliced chunk s:6656, e:7168
-On gpu 2, processing sliced chunk s:7168, e:7680
-On gpu 2, processing sliced chunk s:7680, e:8192
-On gpu 2, processing sliced chunk s:8192, e:8704
-On gpu 2, processing sliced chunk s:8704, e:9216
-On gpu 2, processing sliced chunk s:9216, e:9728
-On gpu 2, processing sliced chunk s:9728, e:10240
-On gpu 2, processing sliced chunk s:10240, e:10752
-On gpu 2, processing sliced chunk s:10752, e:11264
-On gpu 2, processing sliced chunk s:11264, e:11776
-On gpu 2, processing sliced chunk s:11776, e:12288
-On gpu 2, processing sliced chunk s:12288, e:12800
-On gpu 2, processing sliced chunk s:12800, e:13312
-On gpu 2, processing sliced chunk s:13312, e:13824
-On gpu 2, processing sliced chunk s:13824, e:14336
-On gpu 2, processing sliced chunk s:14336, e:14848
-On gpu 2, processing sliced chunk s:14848, e:15360
-On gpu 2, processing sliced chunk s:15360, e:15872
-On gpu 2, processing sliced chunk s:15872, e:16384
-On gpu 2, processing sliced chunk s:16384, e:16896
-On gpu 2, processing sliced chunk s:16896, e:17408
-On gpu 2, processing sliced chunk s:17408, e:17920
-On gpu 2, processing sliced chunk s:17920, e:18432
-On gpu 2, processing sliced chunk s:18432, e:18944
-On gpu 2, processing sliced chunk s:18944, e:19337
-Result from 2 is 
-None
-On gpu 1, processing sliced chunk s:0, e:512
-On gpu 1, processing sliced chunk s:512, e:1024
-On gpu 1, processing sliced chunk s:1024, e:1536
-On gpu 1, processing sliced chunk s:1536, e:2048
-On gpu 1, processing sliced chunk s:2048, e:2560
-On gpu 1, processing sliced chunk s:2560, e:3072
-On gpu 1, processing sliced chunk s:3072, e:3584
-On gpu 1, processing sliced chunk s:3584, e:4096
-On gpu 1, processing sliced chunk s:4096, e:4608
-On gpu 1, processing sliced chunk s:4608, e:5120
-On gpu 1, processing sliced chunk s:5120, e:5632
-On gpu 1, processing sliced chunk s:5632, e:6144
-On gpu 1, processing sliced chunk s:6144, e:6656
-On gpu 1, processing sliced chunk s:6656, e:7168
-On gpu 1, processing sliced chunk s:7168, e:7680
-On gpu 1, processing sliced chunk s:7680, e:8192
-On gpu 1, processing sliced chunk s:8192, e:8704
-On gpu 1, processing sliced chunk s:8704, e:9216
-On gpu 1, processing sliced chunk s:9216, e:9728
-On gpu 1, processing sliced chunk s:9728, e:10240
-On gpu 1, processing sliced chunk s:10240, e:10752
-On gpu 1, processing sliced chunk s:10752, e:11264
-On gpu 1, processing sliced chunk s:11264, e:11776
-On gpu 1, processing sliced chunk s:11776, e:12288
-On gpu 1, processing sliced chunk s:12288, e:12800
-On gpu 1, processing sliced chunk s:12800, e:13312
-On gpu 1, processing sliced chunk s:13312, e:13824
-On gpu 1, processing sliced chunk s:13824, e:14336
-On gpu 1, processing sliced chunk s:14336, e:14848
-On gpu 1, processing sliced chunk s:14848, e:15360
-On gpu 1, processing sliced chunk s:15360, e:15872
-On gpu 1, processing sliced chunk s:15872, e:16384
-On gpu 1, processing sliced chunk s:16384, e:16896
-On gpu 1, processing sliced chunk s:16896, e:17408
-On gpu 1, processing sliced chunk s:17408, e:17920
-On gpu 1, processing sliced chunk s:17920, e:18432
-On gpu 1, processing sliced chunk s:18432, e:18944
-On gpu 1, processing sliced chunk s:18944, e:19337
-Result from 1 is 
-None
-On gpu 0, processing sliced chunk s:0, e:512
-On gpu 0, processing sliced chunk s:512, e:1024
-On gpu 0, processing sliced chunk s:1024, e:1536
-On gpu 0, processing sliced chunk s:1536, e:2048
-On gpu 0, processing sliced chunk s:2048, e:2560
-On gpu 0, processing sliced chunk s:2560, e:3072
-On gpu 0, processing sliced chunk s:3072, e:3584
-On gpu 0, processing sliced chunk s:3584, e:4096
-On gpu 0, processing sliced chunk s:4096, e:4608
-On gpu 0, processing sliced chunk s:4608, e:5120
-On gpu 0, processing sliced chunk s:5120, e:5632
-On gpu 0, processing sliced chunk s:5632, e:6144
-On gpu 0, processing sliced chunk s:6144, e:6656
-On gpu 0, processing sliced chunk s:6656, e:7168
-On gpu 0, processing sliced chunk s:7168, e:7680
-On gpu 0, processing sliced chunk s:7680, e:8192
-On gpu 0, processing sliced chunk s:8192, e:8704
-On gpu 0, processing sliced chunk s:8704, e:9216
-On gpu 0, processing sliced chunk s:9216, e:9728
-On gpu 0, processing sliced chunk s:9728, e:10240
-On gpu 0, processing sliced chunk s:10240, e:10752
-On gpu 0, processing sliced chunk s:10752, e:11264
-On gpu 0, processing sliced chunk s:11264, e:11776
-On gpu 0, processing sliced chunk s:11776, e:12288
-On gpu 0, processing sliced chunk s:12288, e:12800
-On gpu 0, processing sliced chunk s:12800, e:13312
-On gpu 0, processing sliced chunk s:13312, e:13824
-On gpu 0, processing sliced chunk s:13824, e:14336
-On gpu 0, processing sliced chunk s:14336, e:14848
-On gpu 0, processing sliced chunk s:14848, e:15360
-On gpu 0, processing sliced chunk s:15360, e:15872
-On gpu 0, processing sliced chunk s:15872, e:16384
-On gpu 0, processing sliced chunk s:16384, e:16896
-On gpu 0, processing sliced chunk s:16896, e:17408
-On gpu 0, processing sliced chunk s:17408, e:17920
-On gpu 0, processing sliced chunk s:17920, e:18432
-On gpu 0, processing sliced chunk s:18432, e:18944
-On gpu 0, processing sliced chunk s:18944, e:19337
-Result from 0 is 
-None
-2024-04-16 11:21:48,903 - All hidden features saved!

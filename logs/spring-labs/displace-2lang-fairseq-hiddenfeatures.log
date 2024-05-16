@@ -1,430 +1,0 @@
-2024-04-09 18:13:30.628959: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-04-09 18:13:42.903503: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-/usr/lib/python3/dist-packages/requests/__init__.py:89: RequestsDependencyWarning: urllib3 (2.2.1) or chardet (5.2.0) doesn't match a supported version!
-  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
-/nlsasfs/home/nltm-st/sujitk/.local/lib/python3.8/site-packages/huggingface_hub/utils/_runtime.py:185: UserWarning: Pydantic is installed but cannot be imported. Please check your installation. `huggingface_hub` will default to not using Pydantic. Error message: '{e}'
-  warnings.warn(
-2024-04-09 18:14:25 | INFO | root | Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-09 18:14:25 | INFO | root | world size detected is 3
-2024-04-09 18:14:30.544591: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-2024-04-09 18:14:30.544648: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-2024-04-09 18:14:30.637503: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-/usr/lib/python3/dist-packages/requests/__init__.py:89: RequestsDependencyWarning: urllib3 (2.2.1) or chardet (5.2.0) doesn't match a supported version!
-  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
-/nlsasfs/home/nltm-st/sujitk/.local/lib/python3.8/site-packages/huggingface_hub/utils/_runtime.py:185: UserWarning: Pydantic is installed but cannot be imported. Please check your installation. `huggingface_hub` will default to not using Pydantic. Error message: '{e}'
-  warnings.warn(
-2024-04-09 18:14:33 | INFO | root | Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-/usr/lib/python3/dist-packages/requests/__init__.py:89: RequestsDependencyWarning: urllib3 (2.2.1) or chardet (5.2.0) doesn't match a supported version!
-  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
-/nlsasfs/home/nltm-st/sujitk/.local/lib/python3.8/site-packages/huggingface_hub/utils/_runtime.py:185: UserWarning: Pydantic is installed but cannot be imported. Please check your installation. `huggingface_hub` will default to not using Pydantic. Error message: '{e}'
-  warnings.warn(
-2024-04-09 18:14:33 | INFO | root | Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-/usr/lib/python3/dist-packages/requests/__init__.py:89: RequestsDependencyWarning: urllib3 (2.2.1) or chardet (5.2.0) doesn't match a supported version!
-  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
-/nlsasfs/home/nltm-st/sujitk/.local/lib/python3.8/site-packages/huggingface_hub/utils/_runtime.py:185: UserWarning: Pydantic is installed but cannot be imported. Please check your installation. `huggingface_hub` will default to not using Pydantic. Error message: '{e}'
-  warnings.warn(
-2024-04-09 18:14:33 | INFO | root | Using dataset present at location: /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-09 18:14:35 | INFO | torch.distributed.distributed_c10d | Added key: store_based_barrier_key:1 to store for rank: 2
-2024-04-09 18:14:35 | INFO | torch.distributed.distributed_c10d | Added key: store_based_barrier_key:1 to store for rank: 1
-2024-04-09 18:14:35 | INFO | torch.distributed.distributed_c10d | Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 3 nodes.
-2024-04-09 18:14:35 | INFO | torch.distributed.distributed_c10d | Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 3 nodes.
-2024-04-09 18:14:35 | INFO | torch.distributed.distributed_c10d | Added key: store_based_barrier_key:1 to store for rank: 0
-2024-04-09 18:14:35 | INFO | torch.distributed.distributed_c10d | Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 3 nodes.
-2024-04-09 18:14:35 | INFO | root | Datasets loaded succesfully from location /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-09 18:14:35 | INFO | root | Datasets loaded succesfully from location /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-09 18:14:35 | INFO | root | Datasets loaded succesfully from location /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/displace-fromRttm-saved-dataset.hf
-2024-04-09 18:14:35 | INFO | root | The batch size per gpu will be 19337
-2024-04-09 18:14:35 | INFO | root | The batch size per gpu will be 19337
-2024-04-09 18:14:35 | INFO | root | The batch size per gpu will be 19337
-2024-04-09 18:14:35 | INFO | root | (GPU 0) Loading model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt
-2024-04-09 18:14:35 | INFO | root | (GPU 2) Loading model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt
-2024-04-09 18:14:35 | INFO | root | (GPU 1) Loading model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/SPRING_INX_wav2vec2_SSL.pt
-2024-04-09 18:15:01 | INFO | root | (GPU {self.gpu_id}) Successfully loaded model.
-2024-04-09 18:15:01 | INFO | root | All hidden features csv will be saved to directory --> /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs/wave2vec2-springlabs-fromRTTM-2lang-hiddenFeatures-fast
-2024-04-09 18:15:01 | INFO | root | (GPU {self.gpu_id}) Successfully loaded model.
-2024-04-09 18:15:01 | INFO | root | (GPU {self.gpu_id}) Successfully loaded model.
-2024-04-09 18:15:01 | INFO | root | All hidden features csv will be saved to directory --> /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs/wave2vec2-springlabs-fromRTTM-2lang-hiddenFeatures-fast
-2024-04-09 18:15:01 | INFO | root | All hidden features csv will be saved to directory --> /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/wav2vec2/spring-labs/wave2vec2-springlabs-fromRTTM-2lang-hiddenFeatures-fast
-2024-04-09 18:15:01 | INFO | root | On GPU 2
-2024-04-09 18:15:01 | INFO | root | Finding hidden features of the dataset on gpu 2
-2024-04-09 18:15:01 | INFO | root | On GPU 1
-2024-04-09 18:15:01 | INFO | root | On GPU 0
-2024-04-09 18:15:01 | INFO | root | Finding hidden features of the dataset on gpu 0
-2024-04-09 18:15:01 | INFO | root | Finding hidden features of the dataset on gpu 1
-2024-04-09 18:15:03 | INFO | root | Processing batch 0 on GPU 1
-2024-04-09 18:15:03 | INFO | root | Processing batch 0 on GPU 2
-2024-04-09 18:15:03 | INFO | root | Processing batch 0 on GPU 0
-The provided saved dataset is : Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 58011
-})
-The provided saved dataset is : Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 58011
-})
-  0%|          | 0/38 [00:00<?, ?it/s]  0%|          | 0/38 [00:00<?, ?it/s]The provided saved dataset is : Dataset({
-    features: ['name', 'path', 'sampling_rate', 'language'],
-    num_rows: 58011
-})
-  0%|          | 0/38 [00:00<?, ?it/s]2024-04-09 18:15:27 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:15:27 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:15:27 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:16:09 | INFO | root | Processed batch 0, subset 0/38 on GPU 0
-  3%|▎         | 1/38 [01:05<40:32, 65.74s/it]2024-04-09 18:16:09 | INFO | root | Processed batch 0, subset 0/38 on GPU 2
-  3%|▎         | 1/38 [01:05<40:37, 65.87s/it]2024-04-09 18:16:09 | INFO | root | Processed batch 0, subset 0/38 on GPU 1
-  3%|▎         | 1/38 [01:05<40:40, 65.96s/it]2024-04-09 18:16:23 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:16:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:16:25 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:17:05 | INFO | root | Processed batch 0, subset 1/38 on GPU 1
-  5%|▌         | 2/38 [02:02<36:05, 60.15s/it]2024-04-09 18:17:06 | INFO | root | Processed batch 0, subset 1/38 on GPU 0
-  5%|▌         | 2/38 [02:03<36:30, 60.84s/it]2024-04-09 18:17:07 | INFO | root | Processed batch 0, subset 1/38 on GPU 2
-  5%|▌         | 2/38 [02:04<36:49, 61.37s/it]2024-04-09 18:17:18 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:17:20 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:17:20 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:18:00 | INFO | root | Processed batch 0, subset 2/38 on GPU 1
-  8%|▊         | 3/38 [02:57<33:53, 58.09s/it]2024-04-09 18:18:02 | INFO | root | Processed batch 0, subset 2/38 on GPU 0
-  8%|▊         | 3/38 [02:58<34:09, 58.54s/it]2024-04-09 18:18:03 | INFO | root | Processed batch 0, subset 2/38 on GPU 2
-  8%|▊         | 3/38 [03:00<34:22, 58.92s/it]2024-04-09 18:18:15 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:18:15 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:18:16 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:18:55 | INFO | root | Processed batch 0, subset 3/38 on GPU 1
- 11%|█         | 4/38 [03:52<32:11, 56.80s/it]2024-04-09 18:18:55 | INFO | root | Processed batch 0, subset 3/38 on GPU 0
- 11%|█         | 4/38 [03:52<32:05, 56.63s/it]2024-04-09 18:18:57 | INFO | root | Processed batch 0, subset 3/38 on GPU 2
- 11%|█         | 4/38 [03:54<32:24, 57.20s/it]2024-04-09 18:19:09 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:19:09 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:19:11 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:19:49 | INFO | root | Processed batch 0, subset 4/38 on GPU 0
- 13%|█▎        | 5/38 [04:46<30:37, 55.69s/it]2024-04-09 18:19:50 | INFO | root | Processed batch 0, subset 4/38 on GPU 1
- 13%|█▎        | 5/38 [04:47<30:47, 55.99s/it]2024-04-09 18:19:53 | INFO | root | Processed batch 0, subset 4/38 on GPU 2
- 13%|█▎        | 5/38 [04:49<31:03, 56.48s/it]2024-04-09 18:20:03 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:20:03 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:20:07 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:20:44 | INFO | root | Processed batch 0, subset 5/38 on GPU 0
- 16%|█▌        | 6/38 [05:41<29:34, 55.45s/it]2024-04-09 18:20:45 | INFO | root | Processed batch 0, subset 5/38 on GPU 1
- 16%|█▌        | 6/38 [05:42<29:44, 55.75s/it]2024-04-09 18:20:48 | INFO | root | Processed batch 0, subset 5/38 on GPU 2
- 16%|█▌        | 6/38 [05:44<29:51, 56.00s/it]2024-04-09 18:20:59 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:20:59 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:21:02 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:21:40 | INFO | root | Processed batch 0, subset 6/38 on GPU 0
- 18%|█▊        | 7/38 [06:37<28:38, 55.43s/it]2024-04-09 18:21:40 | INFO | root | Processed batch 0, subset 6/38 on GPU 1
- 18%|█▊        | 7/38 [06:37<28:42, 55.55s/it]2024-04-09 18:21:43 | INFO | root | Processed batch 0, subset 6/38 on GPU 2
- 18%|█▊        | 7/38 [06:40<28:50, 55.83s/it]2024-04-09 18:21:56 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:21:56 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:21:57 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:22:38 | INFO | root | Processed batch 0, subset 7/38 on GPU 0
- 21%|██        | 8/38 [07:34<28:06, 56.22s/it]2024-04-09 18:22:38 | INFO | root | Processed batch 0, subset 7/38 on GPU 1
- 21%|██        | 8/38 [07:35<28:07, 56.25s/it]2024-04-09 18:22:39 | INFO | root | Processed batch 0, subset 7/38 on GPU 2
- 21%|██        | 8/38 [07:35<27:49, 55.67s/it]2024-04-09 18:22:52 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:22:52 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:22:52 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:23:34 | INFO | root | Processed batch 0, subset 8/38 on GPU 0
- 24%|██▎       | 9/38 [08:30<27:07, 56.13s/it]2024-04-09 18:23:34 | INFO | root | Processed batch 0, subset 8/38 on GPU 1
- 24%|██▎       | 9/38 [08:31<27:09, 56.20s/it]2024-04-09 18:23:35 | INFO | root | Processed batch 0, subset 8/38 on GPU 2
- 24%|██▎       | 9/38 [08:31<26:58, 55.82s/it]2024-04-09 18:23:47 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:23:47 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:23:47 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:24:29 | INFO | root | Processed batch 0, subset 9/38 on GPU 0
- 26%|██▋       | 10/38 [09:26<26:03, 55.83s/it]2024-04-09 18:24:29 | INFO | root | Processed batch 0, subset 9/38 on GPU 1
- 26%|██▋       | 10/38 [09:26<26:04, 55.89s/it]2024-04-09 18:24:30 | INFO | root | Processed batch 0, subset 9/38 on GPU 2
- 26%|██▋       | 10/38 [09:27<25:59, 55.70s/it]2024-04-09 18:24:43 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:24:43 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:24:45 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:25:25 | INFO | root | Processed batch 0, subset 10/38 on GPU 0
- 29%|██▉       | 11/38 [10:21<25:07, 55.84s/it]2024-04-09 18:25:25 | INFO | root | Processed batch 0, subset 10/38 on GPU 1
- 29%|██▉       | 11/38 [10:22<25:07, 55.82s/it]2024-04-09 18:25:27 | INFO | root | Processed batch 0, subset 10/38 on GPU 2
- 29%|██▉       | 11/38 [10:23<25:11, 56.00s/it]2024-04-09 18:25:35 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:25:36 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:25:38 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:26:18 | INFO | root | Processed batch 0, subset 11/38 on GPU 0
- 32%|███▏      | 12/38 [11:14<23:49, 54.97s/it]2024-04-09 18:26:18 | INFO | root | Processed batch 0, subset 11/38 on GPU 1
- 32%|███▏      | 12/38 [11:15<23:52, 55.09s/it]2024-04-09 18:26:20 | INFO | root | Processed batch 0, subset 11/38 on GPU 2
- 32%|███▏      | 12/38 [11:17<23:56, 55.25s/it]2024-04-09 18:26:31 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:26:31 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:26:32 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:27:13 | INFO | root | Processed batch 0, subset 12/38 on GPU 0
- 34%|███▍      | 13/38 [12:10<22:55, 55.01s/it]2024-04-09 18:27:13 | INFO | root | Processed batch 0, subset 12/38 on GPU 1
- 34%|███▍      | 13/38 [12:10<22:52, 54.90s/it]2024-04-09 18:27:14 | INFO | root | Processed batch 0, subset 12/38 on GPU 2
- 34%|███▍      | 13/38 [12:11<22:52, 54.88s/it]2024-04-09 18:27:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:27:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:27:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:28:06 | INFO | root | Processed batch 0, subset 13/38 on GPU 0
- 37%|███▋      | 14/38 [13:02<21:43, 54.32s/it]2024-04-09 18:28:06 | INFO | root | Processed batch 0, subset 13/38 on GPU 1
- 37%|███▋      | 14/38 [13:03<21:44, 54.34s/it]2024-04-09 18:28:06 | INFO | root | Processed batch 0, subset 13/38 on GPU 2
- 37%|███▋      | 14/38 [13:03<21:36, 54.01s/it]2024-04-09 18:28:16 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:28:16 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:28:16 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:28:57 | INFO | root | Processed batch 0, subset 14/38 on GPU 0
- 39%|███▉      | 15/38 [13:54<20:28, 53.42s/it]2024-04-09 18:28:57 | INFO | root | Processed batch 0, subset 14/38 on GPU 1
- 39%|███▉      | 15/38 [13:54<20:29, 53.44s/it]2024-04-09 18:28:57 | INFO | root | Processed batch 0, subset 14/38 on GPU 2
- 39%|███▉      | 15/38 [13:54<20:21, 53.12s/it]2024-04-09 18:29:08 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:29:09 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:29:09 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:29:50 | INFO | root | Processed batch 0, subset 15/38 on GPU 0
- 42%|████▏     | 16/38 [14:47<19:32, 53.29s/it]2024-04-09 18:29:51 | INFO | root | Processed batch 0, subset 15/38 on GPU 1
- 42%|████▏     | 16/38 [14:48<19:38, 53.56s/it]2024-04-09 18:29:51 | INFO | root | Processed batch 0, subset 15/38 on GPU 2
- 42%|████▏     | 16/38 [14:48<19:34, 53.41s/it]2024-04-09 18:30:01 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:30:02 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:30:02 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:30:43 | INFO | root | Processed batch 0, subset 16/38 on GPU 0
- 45%|████▍     | 17/38 [15:39<18:35, 53.13s/it]2024-04-09 18:30:45 | INFO | root | Processed batch 0, subset 16/38 on GPU 1
- 45%|████▍     | 17/38 [15:41<18:44, 53.53s/it]2024-04-09 18:30:45 | INFO | root | Processed batch 0, subset 16/38 on GPU 2
- 45%|████▍     | 17/38 [15:42<18:44, 53.56s/it]2024-04-09 18:30:54 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:30:54 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:30:56 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:31:35 | INFO | root | Processed batch 0, subset 17/38 on GPU 0
- 47%|████▋     | 18/38 [16:32<17:39, 52.97s/it]2024-04-09 18:31:36 | INFO | root | Processed batch 0, subset 17/38 on GPU 1
- 47%|████▋     | 18/38 [16:33<17:40, 53.02s/it]2024-04-09 18:31:38 | INFO | root | Processed batch 0, subset 17/38 on GPU 2
- 47%|████▋     | 18/38 [16:35<17:45, 53.30s/it]2024-04-09 18:31:46 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:31:47 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:31:49 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:32:29 | INFO | root | Processed batch 0, subset 18/38 on GPU 0
- 50%|█████     | 19/38 [17:26<16:50, 53.17s/it]2024-04-09 18:32:30 | INFO | root | Processed batch 0, subset 18/38 on GPU 1
- 50%|█████     | 19/38 [17:27<16:50, 53.16s/it]2024-04-09 18:32:33 | INFO | root | Processed batch 0, subset 18/38 on GPU 2
- 50%|█████     | 19/38 [17:30<17:01, 53.75s/it]2024-04-09 18:32:41 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:32:41 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:32:43 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:33:23 | INFO | root | Processed batch 0, subset 19/38 on GPU 0
- 53%|█████▎    | 20/38 [18:20<16:01, 53.42s/it]2024-04-09 18:33:24 | INFO | root | Processed batch 0, subset 19/38 on GPU 1
- 53%|█████▎    | 20/38 [18:20<15:59, 53.30s/it]2024-04-09 18:33:26 | INFO | root | Processed batch 0, subset 19/38 on GPU 2
- 53%|█████▎    | 20/38 [18:22<16:01, 53.43s/it]2024-04-09 18:33:35 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:33:35 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:33:36 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:34:17 | INFO | root | Processed batch 0, subset 20/38 on GPU 1
- 55%|█████▌    | 21/38 [19:14<15:06, 53.33s/it]2024-04-09 18:34:17 | INFO | root | Processed batch 0, subset 20/38 on GPU 0
- 55%|█████▌    | 21/38 [19:14<15:11, 53.61s/it]2024-04-09 18:34:18 | INFO | root | Processed batch 0, subset 20/38 on GPU 2
- 55%|█████▌    | 21/38 [19:15<15:05, 53.27s/it]2024-04-09 18:34:29 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:34:29 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:34:35 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:35:13 | INFO | root | Processed batch 0, subset 21/38 on GPU 1
- 58%|█████▊    | 22/38 [20:10<14:27, 54.20s/it]2024-04-09 18:35:13 | INFO | root | Processed batch 0, subset 21/38 on GPU 0
- 58%|█████▊    | 22/38 [20:10<14:30, 54.40s/it]2024-04-09 18:35:18 | INFO | root | Processed batch 0, subset 21/38 on GPU 2
- 58%|█████▊    | 22/38 [20:15<14:41, 55.12s/it]2024-04-09 18:35:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:35:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:35:28 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:36:07 | INFO | root | Processed batch 0, subset 22/38 on GPU 0
- 61%|██████    | 23/38 [21:03<13:32, 54.14s/it]2024-04-09 18:36:07 | INFO | root | Processed batch 0, subset 22/38 on GPU 1
- 61%|██████    | 23/38 [21:04<13:31, 54.07s/it]2024-04-09 18:36:11 | INFO | root | Processed batch 0, subset 22/38 on GPU 2
- 61%|██████    | 23/38 [21:08<13:38, 54.58s/it]2024-04-09 18:36:18 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:36:18 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:36:21 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:37:01 | INFO | root | Processed batch 0, subset 23/38 on GPU 0
- 63%|██████▎   | 24/38 [21:58<12:39, 54.25s/it]2024-04-09 18:37:02 | INFO | root | Processed batch 0, subset 23/38 on GPU 1
- 63%|██████▎   | 24/38 [21:59<12:41, 54.42s/it]2024-04-09 18:37:05 | INFO | root | Processed batch 0, subset 23/38 on GPU 2
- 63%|██████▎   | 24/38 [22:02<12:40, 54.31s/it]2024-04-09 18:37:13 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:37:13 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:37:15 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:37:55 | INFO | root | Processed batch 0, subset 24/38 on GPU 0
- 66%|██████▌   | 25/38 [22:52<11:44, 54.18s/it]2024-04-09 18:37:56 | INFO | root | Processed batch 0, subset 24/38 on GPU 1
- 66%|██████▌   | 25/38 [22:52<11:43, 54.11s/it]2024-04-09 18:37:58 | INFO | root | Processed batch 0, subset 24/38 on GPU 2
- 66%|██████▌   | 25/38 [22:55<11:42, 54.08s/it]2024-04-09 18:38:06 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:38:06 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:38:08 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:38:49 | INFO | root | Processed batch 0, subset 25/38 on GPU 1
- 68%|██████▊   | 26/38 [23:46<10:48, 54.03s/it]2024-04-09 18:38:49 | INFO | root | Processed batch 0, subset 25/38 on GPU 0
- 68%|██████▊   | 26/38 [23:46<10:50, 54.18s/it]2024-04-09 18:38:52 | INFO | root | Processed batch 0, subset 25/38 on GPU 2
- 68%|██████▊   | 26/38 [23:49<10:46, 53.90s/it]2024-04-09 18:39:00 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:39:00 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:39:02 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:39:43 | INFO | root | Processed batch 0, subset 26/38 on GPU 1
- 71%|███████   | 27/38 [24:40<09:53, 53.95s/it]2024-04-09 18:39:43 | INFO | root | Processed batch 0, subset 26/38 on GPU 0
- 71%|███████   | 27/38 [24:40<09:55, 54.14s/it]2024-04-09 18:39:46 | INFO | root | Processed batch 0, subset 26/38 on GPU 2
- 71%|███████   | 27/38 [24:42<09:51, 53.81s/it]2024-04-09 18:39:54 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:39:54 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:39:57 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:40:38 | INFO | root | Processed batch 0, subset 27/38 on GPU 0
- 74%|███████▎  | 28/38 [25:34<09:01, 54.18s/it]2024-04-09 18:40:39 | INFO | root | Processed batch 0, subset 27/38 on GPU 1
- 74%|███████▎  | 28/38 [25:36<09:04, 54.49s/it]2024-04-09 18:40:41 | INFO | root | Processed batch 0, subset 27/38 on GPU 2
- 74%|███████▎  | 28/38 [25:38<09:02, 54.29s/it]2024-04-09 18:40:51 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:40:51 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:40:52 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:41:34 | INFO | root | Processed batch 0, subset 28/38 on GPU 0
- 76%|███████▋  | 29/38 [26:31<08:12, 54.78s/it]2024-04-09 18:41:34 | INFO | root | Processed batch 0, subset 28/38 on GPU 1
- 76%|███████▋  | 29/38 [26:31<08:12, 54.76s/it]2024-04-09 18:41:36 | INFO | root | Processed batch 0, subset 28/38 on GPU 2
- 76%|███████▋  | 29/38 [26:33<08:10, 54.50s/it]2024-04-09 18:41:47 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:41:48 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:41:49 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:42:31 | INFO | root | Processed batch 0, subset 29/38 on GPU 0
- 79%|███████▉  | 30/38 [27:27<07:22, 55.37s/it]2024-04-09 18:42:32 | INFO | root | Processed batch 0, subset 29/38 on GPU 1
- 79%|███████▉  | 30/38 [27:28<07:24, 55.56s/it]2024-04-09 18:42:32 | INFO | root | Processed batch 0, subset 29/38 on GPU 2
- 79%|███████▉  | 30/38 [27:29<07:20, 55.09s/it]2024-04-09 18:42:43 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:42:44 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:42:44 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:43:26 | INFO | root | Processed batch 0, subset 30/38 on GPU 0
- 82%|████████▏ | 31/38 [28:23<06:28, 55.51s/it]2024-04-09 18:43:28 | INFO | root | Processed batch 0, subset 30/38 on GPU 1
- 82%|████████▏ | 31/38 [28:25<06:31, 55.90s/it]2024-04-09 18:43:29 | INFO | root | Processed batch 0, subset 30/38 on GPU 2
- 82%|████████▏ | 31/38 [28:25<06:28, 55.43s/it]2024-04-09 18:43:38 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:43:40 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:43:40 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:44:21 | INFO | root | Processed batch 0, subset 31/38 on GPU 0
- 84%|████████▍ | 32/38 [29:18<05:31, 55.29s/it]2024-04-09 18:44:23 | INFO | root | Processed batch 0, subset 31/38 on GPU 1
- 84%|████████▍ | 32/38 [29:19<05:32, 55.40s/it]2024-04-09 18:44:23 | INFO | root | Processed batch 0, subset 31/38 on GPU 2
- 84%|████████▍ | 32/38 [29:20<05:31, 55.25s/it]2024-04-09 18:44:32 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:44:33 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:44:34 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:45:15 | INFO | root | Processed batch 0, subset 32/38 on GPU 0
- 87%|████████▋ | 33/38 [30:12<04:34, 54.93s/it]2024-04-09 18:45:17 | INFO | root | Processed batch 0, subset 32/38 on GPU 2
- 87%|████████▋ | 33/38 [30:14<04:33, 54.71s/it]2024-04-09 18:45:17 | INFO | root | Processed batch 0, subset 32/38 on GPU 1
- 87%|████████▋ | 33/38 [30:14<04:35, 55.08s/it]2024-04-09 18:45:29 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:45:29 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:45:29 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:46:12 | INFO | root | Processed batch 0, subset 33/38 on GPU 0
- 89%|████████▉ | 34/38 [31:09<03:42, 55.54s/it]2024-04-09 18:46:12 | INFO | root | Processed batch 0, subset 33/38 on GPU 1
- 89%|████████▉ | 34/38 [31:09<03:40, 55.22s/it]2024-04-09 18:46:13 | INFO | root | Processed batch 0, subset 33/38 on GPU 2
- 89%|████████▉ | 34/38 [31:09<03:40, 55.02s/it]2024-04-09 18:46:23 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:46:23 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:46:24 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:47:06 | INFO | root | Processed batch 0, subset 34/38 on GPU 0
- 92%|█████████▏| 35/38 [32:02<02:44, 54.88s/it]2024-04-09 18:47:06 | INFO | root | Processed batch 0, subset 34/38 on GPU 2
- 92%|█████████▏| 35/38 [32:03<02:43, 54.55s/it]2024-04-09 18:47:06 | INFO | root | Processed batch 0, subset 34/38 on GPU 1
- 92%|█████████▏| 35/38 [32:03<02:44, 54.84s/it]2024-04-09 18:47:22 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:47:22 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:47:22 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:48:05 | INFO | root | Processed batch 0, subset 35/38 on GPU 0
- 95%|█████████▍| 36/38 [33:01<01:52, 56.16s/it]2024-04-09 18:48:05 | INFO | root | Processed batch 0, subset 35/38 on GPU 2
- 95%|█████████▍| 36/38 [33:02<01:51, 55.81s/it]2024-04-09 18:48:05 | INFO | root | Processed batch 0, subset 35/38 on GPU 1
- 95%|█████████▍| 36/38 [33:02<01:51, 55.97s/it]2024-04-09 18:48:19 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:48:19 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:48:19 | INFO | root | Shape of batched hidden features torch.Size([512, 99, 1024])
-2024-04-09 18:49:01 | INFO | root | Processed batch 0, subset 36/38 on GPU 1
-2024-04-09 18:49:01 | INFO | root | Processed batch 0, subset 36/38 on GPU 0
- 97%|█████████▋| 37/38 [33:58<00:56, 56.10s/it] 97%|█████████▋| 37/38 [33:58<00:56, 56.32s/it]2024-04-09 18:49:02 | INFO | root | Processed batch 0, subset 36/38 on GPU 2
- 97%|█████████▋| 37/38 [33:58<00:56, 56.11s/it]2024-04-09 18:49:15 | INFO | root | Shape of batched hidden features torch.Size([393, 99, 1024])
-2024-04-09 18:49:15 | INFO | root | Shape of batched hidden features torch.Size([393, 99, 1024])
-2024-04-09 18:49:15 | INFO | root | Shape of batched hidden features torch.Size([393, 99, 1024])
-2024-04-09 18:49:48 | INFO | root | Processed batch 0, subset 37/38 on GPU 1
-100%|██████████| 38/38 [34:45<00:00, 53.24s/it]100%|██████████| 38/38 [34:45<00:00, 54.87s/it]2024-04-09 18:49:48 | INFO | root | Processed batch 0, subset 37/38 on GPU 0
-100%|██████████| 38/38 [34:45<00:00, 53.40s/it]100%|██████████| 38/38 [34:45<00:00, 54.87s/it]2024-04-09 18:49:48 | INFO | root | Processed batch 0, subset 37/38 on GPU 2
-100%|██████████| 38/38 [34:45<00:00, 53.26s/it]100%|██████████| 38/38 [34:45<00:00, 54.88s/it]
-2024-04-09 18:49:48 | INFO | root | All batches processed. on 2
-
-2024-04-09 18:49:48 | INFO | root | All batches processed. on 1
-
-2024-04-09 18:49:48 | INFO | root | All batches processed. on 0
-2024-04-09 18:49:48 | INFO | root | Task completed on gpu 0 with result as follow
- None
-2024-04-09 18:49:48 | INFO | root | Task completed on gpu 2 with result as follow
- None
-2024-04-09 18:49:48 | INFO | root | Task completed on gpu 1 with result as follow
- None
-On gpu 2, processing sliced chunk s:0, e:512
-On gpu 2, processing sliced chunk s:512, e:1024
-On gpu 2, processing sliced chunk s:1024, e:1536
-On gpu 2, processing sliced chunk s:1536, e:2048
-On gpu 2, processing sliced chunk s:2048, e:2560
-On gpu 2, processing sliced chunk s:2560, e:3072
-On gpu 2, processing sliced chunk s:3072, e:3584
-On gpu 2, processing sliced chunk s:3584, e:4096
-On gpu 2, processing sliced chunk s:4096, e:4608
-On gpu 2, processing sliced chunk s:4608, e:5120
-On gpu 2, processing sliced chunk s:5120, e:5632
-On gpu 2, processing sliced chunk s:5632, e:6144
-On gpu 2, processing sliced chunk s:6144, e:6656
-On gpu 2, processing sliced chunk s:6656, e:7168
-On gpu 2, processing sliced chunk s:7168, e:7680
-On gpu 2, processing sliced chunk s:7680, e:8192
-On gpu 2, processing sliced chunk s:8192, e:8704
-On gpu 2, processing sliced chunk s:8704, e:9216
-On gpu 2, processing sliced chunk s:9216, e:9728
-On gpu 2, processing sliced chunk s:9728, e:10240
-On gpu 2, processing sliced chunk s:10240, e:10752
-On gpu 2, processing sliced chunk s:10752, e:11264
-On gpu 2, processing sliced chunk s:11264, e:11776
-On gpu 2, processing sliced chunk s:11776, e:12288
-On gpu 2, processing sliced chunk s:12288, e:12800
-On gpu 2, processing sliced chunk s:12800, e:13312
-On gpu 2, processing sliced chunk s:13312, e:13824
-On gpu 2, processing sliced chunk s:13824, e:14336
-On gpu 2, processing sliced chunk s:14336, e:14848
-On gpu 2, processing sliced chunk s:14848, e:15360
-On gpu 2, processing sliced chunk s:15360, e:15872
-On gpu 2, processing sliced chunk s:15872, e:16384
-On gpu 2, processing sliced chunk s:16384, e:16896
-On gpu 2, processing sliced chunk s:16896, e:17408
-On gpu 2, processing sliced chunk s:17408, e:17920
-On gpu 2, processing sliced chunk s:17920, e:18432
-On gpu 2, processing sliced chunk s:18432, e:18944
-On gpu 2, processing sliced chunk s:18944, e:19337
-Result from 2 is 
-None
-On gpu 1, processing sliced chunk s:0, e:512
-On gpu 1, processing sliced chunk s:512, e:1024
-On gpu 1, processing sliced chunk s:1024, e:1536
-On gpu 1, processing sliced chunk s:1536, e:2048
-On gpu 1, processing sliced chunk s:2048, e:2560
-On gpu 1, processing sliced chunk s:2560, e:3072
-On gpu 1, processing sliced chunk s:3072, e:3584
-On gpu 1, processing sliced chunk s:3584, e:4096
-On gpu 1, processing sliced chunk s:4096, e:4608
-On gpu 1, processing sliced chunk s:4608, e:5120
-On gpu 1, processing sliced chunk s:5120, e:5632
-On gpu 1, processing sliced chunk s:5632, e:6144
-On gpu 1, processing sliced chunk s:6144, e:6656
-On gpu 1, processing sliced chunk s:6656, e:7168
-On gpu 1, processing sliced chunk s:7168, e:7680
-On gpu 1, processing sliced chunk s:7680, e:8192
-On gpu 1, processing sliced chunk s:8192, e:8704
-On gpu 1, processing sliced chunk s:8704, e:9216
-On gpu 1, processing sliced chunk s:9216, e:9728
-On gpu 1, processing sliced chunk s:9728, e:10240
-On gpu 1, processing sliced chunk s:10240, e:10752
-On gpu 1, processing sliced chunk s:10752, e:11264
-On gpu 1, processing sliced chunk s:11264, e:11776
-On gpu 1, processing sliced chunk s:11776, e:12288
-On gpu 1, processing sliced chunk s:12288, e:12800
-On gpu 1, processing sliced chunk s:12800, e:13312
-On gpu 1, processing sliced chunk s:13312, e:13824
-On gpu 1, processing sliced chunk s:13824, e:14336
-On gpu 1, processing sliced chunk s:14336, e:14848
-On gpu 1, processing sliced chunk s:14848, e:15360
-On gpu 1, processing sliced chunk s:15360, e:15872
-On gpu 1, processing sliced chunk s:15872, e:16384
-On gpu 1, processing sliced chunk s:16384, e:16896
-On gpu 1, processing sliced chunk s:16896, e:17408
-On gpu 1, processing sliced chunk s:17408, e:17920
-On gpu 1, processing sliced chunk s:17920, e:18432
-On gpu 1, processing sliced chunk s:18432, e:18944
-On gpu 1, processing sliced chunk s:18944, e:19337
-Result from 1 is 
-None
-On gpu 0, processing sliced chunk s:0, e:512
-On gpu 0, processing sliced chunk s:512, e:1024
-On gpu 0, processing sliced chunk s:1024, e:1536
-On gpu 0, processing sliced chunk s:1536, e:2048
-On gpu 0, processing sliced chunk s:2048, e:2560
-On gpu 0, processing sliced chunk s:2560, e:3072
-On gpu 0, processing sliced chunk s:3072, e:3584
-On gpu 0, processing sliced chunk s:3584, e:4096
-On gpu 0, processing sliced chunk s:4096, e:4608
-On gpu 0, processing sliced chunk s:4608, e:5120
-On gpu 0, processing sliced chunk s:5120, e:5632
-On gpu 0, processing sliced chunk s:5632, e:6144
-On gpu 0, processing sliced chunk s:6144, e:6656
-On gpu 0, processing sliced chunk s:6656, e:7168
-On gpu 0, processing sliced chunk s:7168, e:7680
-On gpu 0, processing sliced chunk s:7680, e:8192
-On gpu 0, processing sliced chunk s:8192, e:8704
-On gpu 0, processing sliced chunk s:8704, e:9216
-On gpu 0, processing sliced chunk s:9216, e:9728
-On gpu 0, processing sliced chunk s:9728, e:10240
-On gpu 0, processing sliced chunk s:10240, e:10752
-On gpu 0, processing sliced chunk s:10752, e:11264
-On gpu 0, processing sliced chunk s:11264, e:11776
-On gpu 0, processing sliced chunk s:11776, e:12288
-On gpu 0, processing sliced chunk s:12288, e:12800
-On gpu 0, processing sliced chunk s:12800, e:13312
-On gpu 0, processing sliced chunk s:13312, e:13824
-On gpu 0, processing sliced chunk s:13824, e:14336
-On gpu 0, processing sliced chunk s:14336, e:14848
-On gpu 0, processing sliced chunk s:14848, e:15360
-On gpu 0, processing sliced chunk s:15360, e:15872
-On gpu 0, processing sliced chunk s:15872, e:16384
-On gpu 0, processing sliced chunk s:16384, e:16896
-On gpu 0, processing sliced chunk s:16896, e:17408
-On gpu 0, processing sliced chunk s:17408, e:17920
-On gpu 0, processing sliced chunk s:17920, e:18432
-On gpu 0, processing sliced chunk s:18432, e:18944
-On gpu 0, processing sliced chunk s:18944, e:19337
-Result from 0 is 
-None
-2024-04-09 18:50:15 | INFO | root | All hidden features saved!
