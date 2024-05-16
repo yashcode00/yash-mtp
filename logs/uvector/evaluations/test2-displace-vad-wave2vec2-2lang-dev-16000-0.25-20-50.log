@@ -1,0 +1,80 @@
+world size detected is 4
+2024-04-28 16:02:20 | INFO | root | The batch size per gpu will be 8
+2024-04-28 16:02:20 | INFO | root | On GPU 3
+2024-04-28 16:02:20 | INFO | root | (GPU 3) Loading wave2vec2 model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0
+2024-04-28 16:02:20 | INFO | root | The batch size per gpu will be 8
+2024-04-28 16:02:20 | INFO | root | On GPU 0
+2024-04-28 16:02:20 | INFO | root | (GPU 0) Loading wave2vec2 model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0
+2024-04-28 16:02:20 | INFO | root | The batch size per gpu will be 8
+2024-04-28 16:02:20 | INFO | root | On GPU 2
+2024-04-28 16:02:20 | INFO | root | (GPU 2) Loading wave2vec2 model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0
+2024-04-28 16:02:20 | INFO | root | The batch size per gpu will be 8
+2024-04-28 16:02:20 | INFO | root | On GPU 1
+2024-04-28 16:02:20 | INFO | root | (GPU 1) Loading wave2vec2 model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0
+Some weights of the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 were not used when initializing Wav2Vec2ForSpeechClassification: ['wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
+- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 and are newly initialized: ['wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 were not used when initializing Wav2Vec2ForSpeechClassification: ['wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
+- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 and are newly initialized: ['wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 were not used when initializing Wav2Vec2ForSpeechClassification: ['wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
+- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 and are newly initialized: ['wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 were not used when initializing Wav2Vec2ForSpeechClassification: ['wav2vec2.encoder.pos_conv_embed.conv.weight_g', 'wav2vec2.encoder.pos_conv_embed.conv.weight_v']
+- This IS expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing Wav2Vec2ForSpeechClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of Wav2Vec2ForSpeechClassification were not initialized from the model checkpoint at /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/wav2vec2/displace-terminator-pretrained-finetune-onDev-rttm-300M-saved-model_20240301_191527/pthFiles/model_epoch_0 and are newly initialized: ['wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original0', 'wav2vec2.encoder.pos_conv_embed.conv.parametrizations.weight.original1']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+2024-04-28 16:02:36 | INFO | root | (GPU 0) Successfully loaded wave2vec2 model.
+2024-04-28 16:02:36 | INFO | root | (GPU 2) Successfully loaded wave2vec2 model.
+2024-04-28 16:02:36 | INFO | root | (GPU 3) Successfully loaded wave2vec2 model.
+2024-04-28 16:02:36 | INFO | root | (GPU 1) Successfully loaded wave2vec2 model.
+2024-04-28 16:02:45 | INFO | root | Models loaded successfully from the saved path.
+2024-04-28 16:02:45 | INFO | root | Evaluating the dataset on gpu 0
+2024-04-28 16:02:45 | INFO | root | Reading segments at /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments/M053.pyannote.segment
+the batch size for evaluation (max) is 256
+2024-04-28 16:02:45 | INFO | root | Models loaded successfully from the saved path.
+2024-04-28 16:02:45 | INFO | root | Evaluating the dataset on gpu 3
+2024-04-28 16:02:45 | INFO | root | Reading segments at /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments/M008.pyannote.segment
+the batch size for evaluation (max) is 256
+2024-04-28 16:02:45 | INFO | root | Models loaded successfully from the saved path.
+2024-04-28 16:02:45 | INFO | root | Evaluating the dataset on gpu 2
+2024-04-28 16:02:45 | INFO | root | Reading segments at /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments/M058.pyannote.segment
+2024-04-28 16:02:45 | INFO | root | Models loaded successfully from the saved path.
+2024-04-28 16:02:45 | INFO | root | Evaluating the dataset on gpu 1
+the batch size for evaluation (max) is 256
+2024-04-28 16:02:45 | INFO | root | Reading segments at /nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments/B053.pyannote.segment
+the batch size for evaluation (max) is 256
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector--withVAD-springLabs.py", line 531, in <module>
+    mp.spawn(main, args=(world_size,), nprocs=world_size)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.10/site-packages/torch/multiprocessing/spawn.py", line 241, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method="spawn")
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.10/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.10/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 2 terminated with the following error:
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/envs/wave2vec/lib/python3.10/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector--withVAD-springLabs.py", line 523, in main
+    res = evaluater.run()
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector--withVAD-springLabs.py", line 499, in run
+    res = self.helper()
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector--withVAD-springLabs.py", line 493, in helper
+    generated_rttms.append(self.predictOne(path, seg_file_path))
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector--withVAD-springLabs.py", line 444, in predictOne
+    segments_loaded = LanguageDiarizer.parseSegFile(segFile_path)
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector--withVAD-springLabs.py", line 287, in parseSegFile
+    with open(segFilepath, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/nlsasfs/home/nltm-st/sujitk/yash-mtp/datasets/displace-challenge/vad_audio_segments/M058.pyannote.segment'
+

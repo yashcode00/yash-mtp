@@ -1,0 +1,36 @@
+world size detected is 2
+[W socket.cpp:464] [c10d] The server socket has failed to bind to [::]:30100 (errno: 98 - Address already in use).
+[W socket.cpp:464] [c10d] The server socket has failed to bind to 0.0.0.0:30100 (errno: 98 - Address already in use).
+[E socket.cpp:500] [c10d] The server socket has failed to listen on any local network address.
+2024-04-19 01:49:08,123 - The batch size per gpu will be 17
+2024-04-19 01:49:08,123 - On GPU 1
+2024-04-19 01:49:08,683 - (GPU 1) Loading wave2vec2 model from path: /nlsasfs/home/nltm-st/sujitk/yash-mtp/models/Phase2/wave2vec2-2lang-finetunedOnrttm_300M-saved-model_20240416_010420/pthFiles/modelinfo_epoch_6
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector.py", line 448, in <module>
+    mp.spawn(main, args=(world_size,), nprocs=world_size)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/multiprocessing/spawn.py", line 241, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method="spawn")
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector.py", line 431, in main
+    ddp_setup(rank, world_size)
+  File "/nlsasfs/home/nltm-st/sujitk/yash-mtp/src/evaluate/languageDiarizer-fast-uvector.py", line 82, in ddp_setup
+    init_process_group(backend="nccl", rank=rank, world_size=world_size)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/distributed/c10d_logger.py", line 86, in wrapper
+    func_return = func(*args, **kwargs)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 1177, in init_process_group
+    store, rank, world_size = next(rendezvous_iterator)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/distributed/rendezvous.py", line 246, in _env_rendezvous_handler
+    store = _create_c10d_store(master_addr, master_port, rank, world_size, timeout, use_libuv)
+  File "/nlsasfs/home/nltm-st/sujitk/miniconda3/lib/python3.9/site-packages/torch/distributed/rendezvous.py", line 174, in _create_c10d_store
+    return TCPStore(
+torch.distributed.DistNetworkError: The server socket has failed to listen on any local network address. The server socket has failed to bind to [::]:30100 (errno: 98 - Address already in use). The server socket has failed to bind to 0.0.0.0:30100 (errno: 98 - Address already in use).
+

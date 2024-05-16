@@ -1,0 +1,7 @@
+/opt/slurm-20.11.7/var/spool/slurmd/job243016/slurm_script: line 14: /nlsasfs/home/nltm-st/sujitk/yash-mtp/logs/spring-labs/wav2vec2/error.txt: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
